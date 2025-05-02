@@ -4,7 +4,7 @@
 [ext_resource type="Material" uid="uid://5jebs135xqdv" path="res://Assets/Prefabs/Parts/MG_1_Pod/Material.tres" id="1_ypqfj"]
 [ext_resource type="Texture2D" uid="uid://c42k3f3gfpng4" path="res://Assets/Textures/category_capsules.png" id="2_4tqmi"]
 [ext_resource type="ArrayMesh" uid="uid://dopmbmob0813s" path="res://Assets/Prefabs/Parts/MG_1_Pod/MG_1_Capsule.obj" id="2_olvrf"]
-[ext_resource type="Script" uid="uid://bju7ped2nl5sy" path="res://Scripts/AttachNode.cs" id="5_gtcd5"]
+[ext_resource type="Script" uid="uid://bju7ped2nl5sy" path="res://Scripts/CraftAssembly/AttachNode.cs" id="5_gtcd5"]
 [ext_resource type="PackedScene" uid="uid://2u1df81enha5" path="res://Assets/Prefabs/PartModules/Gravity.tscn" id="6_e5g4a"]
 [ext_resource type="PackedScene" uid="uid://dj8ouuelyxgrp" path="res://Assets/Prefabs/PartModules/ReactionWheel.tscn" id="7_a54oy"]
 [ext_resource type="PackedScene" uid="uid://dntjd5xwpde6l" path="res://Assets/Prefabs/PartModules/Iva.tscn" id="8_hc00u"]

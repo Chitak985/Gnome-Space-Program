@@ -1,0 +1,279 @@
+[gd_scene load_steps=22 format=3 uid="uid://c4i57pv2bma5o"]
+
+[ext_resource type="Script" uid="uid://bbk43dfl1gye2" path="res://Scripts/CameraControl.cs" id="1_6nnx6"]
+[ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="2_ir01g"]
+[ext_resource type="Script" uid="uid://gr3sksxxiiif" path="res://Scripts/UniverseManager.cs" id="5_nai62"]
+[ext_resource type="Script" uid="uid://bttvjiyoqtv5f" path="res://Scripts/Planet.cs" id="6_vgwxa"]
+[ext_resource type="Material" uid="uid://d23tukoaw8yvl" path="res://Assets/Materials/Water.tres" id="7_krbbp"]
+[ext_resource type="Script" uid="uid://ksmq4us6ndfy" path="res://Scripts/TerrainGen.cs" id="7_xb84m"]
+[ext_resource type="Material" uid="uid://c6ajox4r7txx4" path="res://Assets/Materials/Grass.tres" id="8_f1ge5"]
+[ext_resource type="PackedScene" uid="uid://dgfxeiig7tdtd" path="res://Assets/Prefabs/gsc.tscn" id="10_4kbfj"]
+[ext_resource type="Material" uid="uid://fse6i8dj044i" path="res://Assets/Materials/Sun.tres" id="11_gxcq7"]
+[ext_resource type="Texture2D" uid="uid://ck7qlvqe75vuk" path="res://Assets/Textures/sunSpikes.png" id="12_jg788"]
+[ext_resource type="Script" uid="uid://dvfy3eukwnfqm" path="res://Scripts/CraftAssembly/CraftManager.cs" id="13_myppp"]
+[ext_resource type="PackedScene" uid="uid://bbfeq7evhiyvn" path="res://Assets/Prefabs/CraftContainer.tscn" id="14_3wf85"]
+[ext_resource type="PackedScene" uid="uid://hlhaljtudxey" path="res://Assets/Prefabs/world_environment.tscn" id="15_w866g"]
+[ext_resource type="Script" uid="uid://cufh0hf3hm1cy" path="res://Scripts/PauseMenu.cs" id="16_o20c3"]
+[ext_resource type="Script" uid="uid://c4p5wqtqh1cpr" path="res://Scripts/SceneSwitcher.cs" id="17_hw56x"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lhdhw"]
+frequency = 0.0281
+offset = Vector3(-0.2, 0, 0)
+fractal_type = 3
+fractal_octaves = 10
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2vltj"]
+noise_type = 2
+frequency = 0.0856
+fractal_octaves = 10
+fractal_lacunarity = 3.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_symvt"]
+frequency = 0.0281
+offset = Vector3(-0.2, 0, 0)
+fractal_type = 3
+fractal_octaves = 10
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6nnx6"]
+noise_type = 2
+frequency = 0.0856
+fractal_octaves = 10
+fractal_lacunarity = 3.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m06uv"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_texture = ExtResource("12_jg788")
+billboard_mode = 1
+proximity_fade_distance = 4096.0
+distance_fade_max_distance = 4096.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_i4vn6"]
+material = SubResource("StandardMaterial3D_m06uv")
+size = Vector2(1e+07, 1e+07)
+
+[node name="Node3D2" type="Node3D"]
+
+[node name="Camera" type="Camera3D" parent="." groups=["Camera"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -891.512, 0.108031, 601607)
+cull_mask = 1047552
+far = 1e+06
+script = ExtResource("1_6nnx6")
+
+[node name="Local" type="RemoteTransform3D" parent="Camera"]
+remote_path = NodePath("../../RenderLayers/LocalContainer/LocalView/Camera3D")
+
+[node name="Scaled" type="RemoteTransform3D" parent="Camera"]
+remote_path = NodePath("../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
+
+[node name="RenderLayers" type="Control" parent="." node_paths=PackedStringArray("player", "currentPlanet") groups=["UniverseManager"]]
+z_index = -5
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_nai62")
+playerAffectedByOrigin = true
+player = NodePath("../Camera")
+maxDistanceFromOrigin = 1000.0
+scaleDownFactor = 500.0
+moveForward = 2.004
+currentPlanet = NodePath("LocalContainer/LocalView/LocalSpace/Gnobe")
+
+[node name="LocalContainer" type="SubViewportContainer" parent="RenderLayers"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="LocalView" type="SubViewport" parent="RenderLayers/LocalContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="RenderLayers/LocalContainer/LocalView"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -891.512, 0.108031, 601607)
+cull_mask = 1047553
+far = 1e+06
+
+[node name="LocalSpace" type="Node3D" parent="RenderLayers/LocalContainer/LocalView" groups=["LocalSpace"]]
+
+[node name="Gnobe" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace"]
+script = ExtResource("6_vgwxa")
+geeASL = 9.8
+radius = 600000.0
+
+[node name="PQS_Container" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Gnobe" node_paths=PackedStringArray("player")]
+script = ExtResource("7_xb84m")
+runInSeparateThread = false
+radius = 599000.0
+perQuadSubdivison = 8
+minRenderLevel = 5
+minColliderLevel = 12
+player = NodePath("../../../../../../Camera")
+material = ExtResource("8_f1ge5")
+baseNoise = SubResource("FastNoiseLite_lhdhw")
+baseNoiseDeformity = 0.02
+detailNoise = SubResource("FastNoiseLite_2vltj")
+detailNoiseDeformity = 0.01
+
+[node name="PQS_Container_Ocean" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Gnobe"]
+script = ExtResource("7_xb84m")
+runInSeparateThread = false
+radius = 600000.0
+perQuadSubdivison = 8
+maxLevel = 10
+minRenderLevel = 5
+material = ExtResource("7_krbbp")
+baseNoise = SubResource("FastNoiseLite_symvt")
+detailNoise = SubResource("FastNoiseLite_6nnx6")
+
+[node name="Misc" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Gnobe"]
+
+[node name="GSC" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Gnobe/Misc" instance=ExtResource("10_4kbfj")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -881.207, 300, 600176)
+
+[node name="LaunchLoc" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Gnobe/Misc" groups=["LaunchLocs"]]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -881.207, -100, 600187)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace"]
+transform = Transform3D(0.819152, -0.32899, -0.469846, 0, 0.819152, -0.573576, 0.573576, 0.469846, 0.67101, 0, 0, 0)
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_fade_start = 0.385
+directional_shadow_max_distance = 2680.8
+
+[node name="Sun" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/DirectionalLight3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.49598e+10)
+
+[node name="PQS_Container" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/DirectionalLight3D/Sun" node_paths=PackedStringArray("player")]
+script = ExtResource("7_xb84m")
+runInSeparateThread = false
+radius = 6.957e+07
+perQuadSubdivison = 8
+maxLevel = 15
+minRenderLevel = 5
+minColliderLevel = 9999999
+player = NodePath("../../../../../../../Camera")
+material = ExtResource("11_gxcq7")
+baseNoise = SubResource("FastNoiseLite_lhdhw")
+baseNoiseDeformity = 0.02
+detailNoise = SubResource("FastNoiseLite_2vltj")
+detailNoiseDeformity = 0.01
+scaledBillboard = SubResource("QuadMesh_i4vn6")
+
+[node name="LoadedCrafts" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace"]
+script = ExtResource("13_myppp")
+craftContainerScene = ExtResource("14_3wf85")
+
+[node name="ScaledContainer" type="SubViewportContainer" parent="RenderLayers"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="ScaledView" type="SubViewport" parent="RenderLayers/ScaledContainer"]
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="RenderLayers/ScaledContainer/ScaledView"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -891.512, 0.108031, 601607)
+near = 10.0
+far = 2e+08
+
+[node name="ScaledSpace" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" groups=["ScaledSpace"]]
+
+[node name="WorldEnvironment" parent="." instance=ExtResource("15_w866g")]
+
+[node name="PauseMenu" type="Control" parent="."]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_ir01g")
+script = ExtResource("16_o20c3")
+
+[node name="Panel" type="Panel" parent="PauseMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -190.0
+offset_right = 150.0
+offset_bottom = 190.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(75, 100)
+
+[node name="Label" type="Label" parent="PauseMenu/Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 13.0
+offset_top = 11.0
+offset_right = -13.0
+offset_bottom = 56.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 32
+text = "Paused"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Control" type="Control" parent="PauseMenu/Panel"]
+anchors_preset = 0
+offset_top = 75.0
+offset_right = 301.0
+offset_bottom = 500.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/Panel/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_right = -9.0
+offset_bottom = -120.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(150, 0)
+theme_override_constants/separation = 10
+
+[node name="Unpause" type="Button" parent="PauseMenu/Panel/Control/VBoxContainer"]
+layout_mode = 2
+text = "Resume"
+
+[node name="MainMenu" type="Button" parent="PauseMenu/Panel/Control/VBoxContainer"]
+layout_mode = 2
+text = "Space Center"
+script = ExtResource("17_hw56x")
+scenePath = "res://Scenes/SpaceCenter.tscn"
+
+[node name="MainMenu2" type="Button" parent="PauseMenu/Panel/Control/VBoxContainer"]
+layout_mode = 2
+text = "Main Menu"
+script = ExtResource("17_hw56x")
+scenePath = "res://Scenes/MainMenu.tscn"
+
+[connection signal="pressed" from="PauseMenu/Panel/Control/VBoxContainer/Unpause" to="PauseMenu" method="UnpauseButton"]
+[connection signal="pressed" from="PauseMenu/Panel/Control/VBoxContainer/MainMenu" to="PauseMenu/Panel/Control/VBoxContainer/MainMenu" method="OnClick"]
+[connection signal="pressed" from="PauseMenu/Panel/Control/VBoxContainer/MainMenu2" to="PauseMenu/Panel/Control/VBoxContainer/MainMenu2" method="OnClick"]

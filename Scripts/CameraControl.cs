@@ -6,13 +6,14 @@ public partial class CameraControl : Camera3D
 {
 	[Export]
 	public float movementSpeed = 0.1f;
-	[Export] public Label speedUI;
-	[Export] public Label posUI;
-	[Export] public Label falsePosUI;
+	//[Export] public Label speedUI;
+	//[Export] public Label posUI;
+	//[Export] public Label falsePosUI;
 	[Export] public PackedScene doodad;
 	public Vector3 linearMotion = Vector3.Zero;
 	private bool camRotating = false;
-	private Viewport vp;
+	private SubViewport localVP;
+	private SubViewport scaledVP;
 
 	private UniverseManager universeManager;
 	private Node3D localSpace;
@@ -22,7 +23,8 @@ public partial class CameraControl : Camera3D
 		universeManager = (UniverseManager)GetTree().GetFirstNodeInGroup("UniverseManager");
 		localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");
 		RenderingServer.SetDebugGenerateWireframes(true);
-		vp = GetViewport();
+		localVP = (SubViewport)GetTree().GetFirstNodeInGroup("LocalSpace").GetParent();;
+		scaledVP = (SubViewport)GetTree().GetFirstNodeInGroup("ScaledSpace").GetParent();;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -65,9 +67,9 @@ public partial class CameraControl : Camera3D
 			RotateObjectLocal(Vector3.Forward, -1f * (float)delta);
 		}
 
-		speedUI.Text = "Cam Speed: " + movementSpeed.ToString();
-		posUI.Text = "True Position: " + GlobalPosition;//(" + GlobalPosition.X + " " + GlobalPosition.Y + " " + GlobalPosition.Z + ")";
-		falsePosUI.Text = "False Position: " + (GlobalPosition - universeManager.offsetPosition);
+		//speedUI.Text = "Cam Speed: " + movementSpeed.ToString();
+		//posUI.Text = "True Position: " + GlobalPosition;//(" + GlobalPosition.X + " " + GlobalPosition.Y + " " + GlobalPosition.Z + ")";
+		//falsePosUI.Text = "False Position: " + (GlobalPosition - universeManager.offsetPosition);
 	}
 
 	// What the fuck is this shit??
@@ -91,23 +93,14 @@ public partial class CameraControl : Camera3D
 		// Kinda stinky bug I zon't care because it's just debug nonsense anyways.
 		if (Input.IsKeyLabelPressed(Key.P))
 		{
-			if (vp.DebugDraw == Viewport.DebugDrawEnum.Wireframe)
+			if (localVP.DebugDraw == Viewport.DebugDrawEnum.Wireframe)
 			{
-				vp.DebugDraw = Viewport.DebugDrawEnum.Disabled;
+				localVP.DebugDraw = Viewport.DebugDrawEnum.Disabled;
+				scaledVP.DebugDraw = Viewport.DebugDrawEnum.Disabled;
 			}else{
-				vp.DebugDraw = Viewport.DebugDrawEnum.Wireframe;
+				localVP.DebugDraw = Viewport.DebugDrawEnum.Wireframe;
+				scaledVP.DebugDraw = Viewport.DebugDrawEnum.Wireframe;
 			}
-		}
-		
-		if (Input.IsKeyLabelPressed(Key.O))
-		{
-			//MeshInstance3D mesh = new();
-			//mesh.Mesh = new BoxMesh();
-			//GetTree().Root.GetChild(0).AddChild(mesh);
-			//mesh.GlobalPosition = GlobalPosition;
-			Node3D newDoodad = (Node3D)doodad.Instantiate();
-			localSpace.AddChild(newDoodad);
-			newDoodad.GlobalPosition = GlobalPosition;
 		}
 
 		if (Input.IsMouseButtonPressed(MouseButton.WheelUp))

@@ -13,8 +13,8 @@
 [ext_resource type="PackedScene" uid="uid://ljsvwdkcmhft" path="res://Assets/Prefabs/Parts/MG_1_FuelTank/mg_1_fueltank.tscn" id="11_avdd4"]
 [ext_resource type="PackedScene" uid="uid://drmdivxomqm0s" path="res://Assets/Prefabs/Parts/GBRP_1_Engine/gbrp_1_engine.tscn" id="12_0e7k0"]
 [ext_resource type="Script" uid="uid://c4p5wqtqh1cpr" path="res://Scripts/SceneSwitcher.cs" id="13_7yytv"]
-[ext_resource type="Script" uid="uid://b4vkjl6q7rcvf" path="res://Scripts/LaunchCraft.cs" id="13_vhgu6"]
-[ext_resource type="Script" uid="uid://c5cx8q1qmmjts" path="res://Scripts/CraftAssembler.cs" id="14_8srs3"]
+[ext_resource type="Script" uid="uid://b4vkjl6q7rcvf" path="res://Scripts/CraftAssembly/LaunchCraft.cs" id="13_vhgu6"]
+[ext_resource type="Script" uid="uid://c5cx8q1qmmjts" path="res://Scripts/CraftAssembly/CraftAssembler.cs" id="14_8srs3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_otfmg"]
 energy_multiplier = 2.0

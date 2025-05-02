@@ -9,6 +9,7 @@ using System.Linq;
 public partial class UniverseManager : Node
 {
 	[Export] public bool running = true;
+	[Export] public bool playerAffectedByOrigin = false;
 	[Export] public Node3D player;
 	[Export] public Node3D cameraPivot;
 	[Export] public float maxDistanceFromOrigin = 100;
@@ -76,7 +77,7 @@ public partial class UniverseManager : Node
 
 			if (playerMagnitude > maxDistanceFromOrigin)
 			{
-                //player.GlobalPosition -= playerPosition;
+                if(playerAffectedByOrigin)player.GlobalPosition -= playerPosition;
                 //GlobalPosition -= playerPosition;
 
                 // there is a chance for everything to fall apart over time but that ok

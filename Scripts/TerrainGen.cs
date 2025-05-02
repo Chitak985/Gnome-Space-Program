@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 public partial class TerrainGen : Node3D
 {
+    [Export] public bool pauseTracking = false;
+
     [Export] public bool runInSeparateThread = true;
 
     [Export] public float radius = 600.0f;
@@ -35,6 +37,7 @@ public partial class TerrainGen : Node3D
     private Vector3 planetCenter;
 
     private Vector3 playerPos;
+    private Vector3 savedPlayerPos; // totally useless outside of debugging
     private List<Quad> quadList = [];
     private List<QuadDetailLevel> quadDetailLevels = [];
 
@@ -110,8 +113,16 @@ public partial class TerrainGen : Node3D
 
     public override void _Process(double delta)
     {
-        player = universeManager.player;
-        playerPos = player.GlobalPosition;
+        if (!pauseTracking)
+        {
+            player = universeManager.player;
+            playerPos = player.GlobalPosition;
+            savedPlayerPos = playerPos - universeManager.offsetPosition;
+        }else{
+            playerPos = savedPlayerPos + universeManager.offsetPosition;
+            
+        }
+        GD.Print(playerPos);
         planetCenter = GlobalPosition;
         //foreach (Quad quad in quadList.ToList())
         //{
@@ -258,15 +269,15 @@ public partial class TerrainGen : Node3D
 
                 planetQuad.readyToSubdivide = false;
                 foreach (QuadDetailLevel dt in quadDetailLevels)
-				{
-					if (distanceFromPlr < dt.distanceToQuad)
-					{
-						if (quadDetail < dt.detailValue)
-						{
-							planetQuad.readyToSubdivide = true;
-						}
-					}
-				}
+                {
+                    if (distanceFromPlr < dt.distanceToQuad)
+                    {
+                        if (quadDetail < dt.detailValue)
+                        {
+                            planetQuad.readyToSubdivide = true;
+                        }
+                    }
+                }
 
                 // remder!
                 if (!planetQuad.rendered && planetQuad.children == null)

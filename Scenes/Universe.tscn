@@ -14,7 +14,7 @@
 [ext_resource type="Material" uid="uid://fse6i8dj044i" path="res://Assets/Materials/Sun.tres" id="8_m06uv"]
 [ext_resource type="Texture2D" uid="uid://ck7qlvqe75vuk" path="res://Assets/Textures/sunSpikes.png" id="9_i4vn6"]
 [ext_resource type="PackedScene" uid="uid://cba4211bkgp0s" path="res://Assets/Prefabs/orbit_cam.tscn" id="11_0kuwm"]
-[ext_resource type="Script" uid="uid://dvfy3eukwnfqm" path="res://Scripts/CraftManager.cs" id="11_plivw"]
+[ext_resource type="Script" uid="uid://dvfy3eukwnfqm" path="res://Scripts/CraftAssembly/CraftManager.cs" id="11_plivw"]
 [ext_resource type="PackedScene" uid="uid://hlhaljtudxey" path="res://Assets/Prefabs/world_environment.tscn" id="12_plivw"]
 [ext_resource type="PackedScene" uid="uid://bbfeq7evhiyvn" path="res://Assets/Prefabs/CraftContainer.tscn" id="14_h7oxk"]
 

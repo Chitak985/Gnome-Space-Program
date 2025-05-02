@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://gr3sksxxiiif" path="res://Scripts/UniverseManager.cs" id="3_4aor2"]
 [ext_resource type="Script" uid="uid://bttvjiyoqtv5f" path="res://Scripts/Planet.cs" id="4_eoic4"]
 [ext_resource type="Script" uid="uid://ksmq4us6ndfy" path="res://Scripts/TerrainGen.cs" id="5_qh1gc"]
-[ext_resource type="Script" uid="uid://ddfdx2rbv2oln" path="res://Scripts/Building.cs" id="6_etsk8"]
+[ext_resource type="Script" uid="uid://ddfdx2rbv2oln" path="res://Scripts/CraftAssembly/Building.cs" id="6_etsk8"]
 [ext_resource type="Material" uid="uid://c6ajox4r7txx4" path="res://Assets/Materials/Grass.tres" id="6_lplsg"]
 [ext_resource type="Material" uid="uid://d23tukoaw8yvl" path="res://Assets/Materials/Water.tres" id="7_ehry5"]
 [ext_resource type="Material" uid="uid://c5iy0ppbidkgo" path="res://Assets/Materials/HoverGlow.tres" id="8_0oag7"]
