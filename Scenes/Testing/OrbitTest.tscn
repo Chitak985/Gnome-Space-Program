@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxm5v7tp3olbx"]
+
+[ext_resource type="Script" uid="uid://b1pdbow2xlg48" path="res://Scripts/OrbitalMechanics/OrbitTester.cs" id="1_fq7ni"]
+
+[node name="OrbitTest" type="Node3D"]
+script = ExtResource("1_fq7ni")
+
+[node name="OrbitVisualizer" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+projection = 1
+size = 50.0
