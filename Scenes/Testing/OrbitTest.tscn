@@ -1,9 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://bxm5v7tp3olbx"]
+[gd_scene load_steps=3 format=3 uid="uid://bxm5v7tp3olbx"]
 
 [ext_resource type="Script" uid="uid://b1pdbow2xlg48" path="res://Scripts/OrbitalMechanics/OrbitTester.cs" id="1_fq7ni"]
 
+[sub_resource type="Environment" id="Environment_fq7ni"]
+background_mode = 1
+
 [node name="OrbitTest" type="Node3D"]
 script = ExtResource("1_fq7ni")
+testBodySMA = 1.51
+timeSpeed = 8.29
 
 [node name="OrbitVisualizer" type="Node3D" parent="."]
 
@@ -11,3 +16,11 @@ script = ExtResource("1_fq7ni")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 projection = 1
 size = 50.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.56244)
+light_energy = 25.0
+omni_range = 4096.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_fq7ni")
