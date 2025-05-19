@@ -6,6 +6,7 @@ public partial class CelestialBody : Node
 {
     public double mass;
     public Orbit orbit;
+    public CartesianData cartesianData;
 
     // DEBUG
     public MeshInstance3D debugOrb;

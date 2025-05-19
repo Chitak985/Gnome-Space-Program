@@ -1,19 +1,43 @@
-[gd_scene load_steps=3 format=3 uid="uid://bxm5v7tp3olbx"]
+[gd_scene load_steps=5 format=3 uid="uid://bxm5v7tp3olbx"]
 
 [ext_resource type="Script" uid="uid://b1pdbow2xlg48" path="res://Scripts/OrbitalMechanics/OrbitTester.cs" id="1_fq7ni"]
+[ext_resource type="Script" uid="uid://smi7genli4un" path="res://Scripts/OrbitalMechanics/OrbitRenderer.cs" id="2_3ma7j"]
+
+[sub_resource type="Gradient" id="Gradient_3ma7j"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.02, 0.5, 1)
+colors = PackedColorArray(1, 1, 1, 0, 0.368627, 1, 0.823529, 1, 0.368627, 0.501961, 0.823529, 1, 0.368627, 0, 0.823529, 0)
 
 [sub_resource type="Environment" id="Environment_fq7ni"]
 background_mode = 1
 
-[node name="OrbitTest" type="Node3D"]
+[node name="OrbitTest" type="Node3D" node_paths=PackedStringArray("testBodyRenderer")]
 script = ExtResource("1_fq7ni")
-testBodySMA = 1.51
-timeSpeed = 8.29
+updateCartParams = true
+useVelocity = true
+orbitPos = Vector3(5.395, 1.01, 0)
+orbitVel = Vector3(0, -8.605, 0)
+testBodyRenderer = NodePath("OrbitRenderer/TestRenderer")
 
-[node name="OrbitVisualizer" type="Node3D" parent="."]
+[node name="OrbitRenderer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+[node name="TestRenderer" type="Line2D" parent="OrbitRenderer" node_paths=PackedStringArray("camera")]
+closed = true
+width = 3.0
+gradient = SubResource("Gradient_3ma7j")
+script = ExtResource("2_3ma7j")
+enabled = true
+camera = NodePath("../../CamPivot/Camera3D")
+sampleInterval = 0.05
+
+[node name="CamPivot" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="CamPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 253.045)
 projection = 1
 size = 50.0
 

@@ -19,10 +19,10 @@ public partial class PatchedConics : Node
     public static float GravConstant {get;} = 6.674e-11F;
     // Gets body-centered coordinates from orbit parameters
     // Keplerian orbital elements to earth centered whateverthefuck
-    public static (Double3, Double3) KOEtoECI(Orbit orbit, CelestialBody parent, double time, double initialTIme) //, Dr Freeman? Is it really that time again?
+    public static (Double3, Double3) KOEtoECI(Orbit orbit, CelestialBody parent, double time, double initialTime) //, Dr Freeman? Is it really that time again?
     {
-        // Mathematicians are allergic to meaningful variable names so god knows what this is supposed to be
-        double MU = GravConstant * parent.mass;
+        // yeah whatever the fRICK
+        double MU = orbit.ComputeMU();//GravConstant * parent.mass;
 
         // Compile our favourite Keplerian orbit elements
         double ECC = orbit.eccentricity;
@@ -41,13 +41,14 @@ public partial class PatchedConics : Node
         if (ECC < 1)
         {
             // Compute the mean anomaly
-            double PRD = 2 * Math.PI * Math.Sqrt(SMA * SMA * SMA / MU); //Orbital period
+            double PRD = orbit.ComputePeriod();//2 * Math.PI * Math.Sqrt(SMA * SMA * SMA / MU); //Orbital period
             double n = Math.Sqrt(MU/Math.Pow(SMA,3));
-            double M = n*(time-PRD);
+            double M = n*(time-initialTime);
             double EA = GetEccentricAnomaly(M, ECC);
 
             //double MA = EA - ECC * Math.Sin(EA);
-            V = 2 * Math.Atan(Math.Sqrt((1+ECC)/(1-ECC)) * Math.Tan(EA/2)); // V
+            //V = 2 * Math.Atan(Math.Sqrt((1+ECC)/(1-ECC)) * Math.Tan(EA/2)); // V
+            V = Math.Atan2(Math.Sqrt(1-Math.Pow(ECC,2)) * Math.Sin(EA), Math.Cos(EA) - ECC);
             // Step four
             radius = SMA * (1 - ECC*Math.Cos(EA));
             // PART FIVE! BOOBYTRAP THE LETTER H!!!
@@ -58,7 +59,7 @@ public partial class PatchedConics : Node
         }else{
             // Compute the mean anomaly HYPERBOLIC EDITION
             double n = Math.Sqrt(MU/Math.Pow(Math.Abs(SMA),3));
-            double M = n*time;
+            double M = n*(time-initialTime);
             double EA = GetHyperbolicAnomaly(M,ECC);
 
             // treu naomely
@@ -83,8 +84,69 @@ public partial class PatchedConics : Node
         return (new Double3(X,Y,Z), new Double3(V_X,V_Y,V_Z));
     }
 
+    public static (Orbit, double) ECItoKOE(CartesianData data, CelestialBody parent, double initialTime)
+    {
+        Double3 pos = data.position;
+        Double3 vel = data.velocity;
+
+        // dumbass constant
+        double MU = GravConstant * parent.mass;
+
+        // Step one, compute specific angular momentum
+        Double3 hBar = Double3.Cross(pos, vel);
+        double h = hBar.Length();
+        // Step two, compute radius
+        double r = pos.Length();
+        double v = vel.Length();
+        // Step three, compute specific energy
+        double E = (0.5 * Math.Pow(v, 2d))-(MU/r);
+        // Step four, compute semi-major axis
+        double a = -MU / (2*E);
+        // Step five compute eccentricity yadda yadda also inclination which is part six
+        double e = Math.Sqrt(1 - (Math.Pow(h,2) / (a * MU)));
+        double i = Math.Acos(hBar.Z/h);
+        // Step seven, right ascension or longitude of ascending node
+        double omega_LAN = Math.Atan2(-hBar.X,hBar.Y);
+        // Step EIGHT Argument of latitude
+        double lat = Math.Atan2(-pos.Z / Math.Sin(i), pos.X * Math.Cos(omega_LAN) + pos.Y * Math.Sin(omega_LAN));
+        if (i == 0) 
+        {
+            lat = Math.Atan2(-pos.X,pos.Y) + Math.PI/2;
+        }else if (i == Math.PI){
+            lat = Math.Atan2(-pos.X,-pos.Y) + Math.PI/2;
+        }
+
+        double p = a*(1-Math.Pow(e,2));
+        double nu = Math.Atan2(Math.Sqrt(p/MU) * Double3.Dot(pos,vel), p-r);
+        GD.Print(lat);
+        // Step ten argument of periapse ????????????/
+        double omega_AP = nu + lat;
+        // Step eleven, a meeting with an old friend known as "eccentric anomaly" or more commonly known as "electronic arts"
+        double EA = 2*Math.Atan(Math.Sqrt((1-e)/(1+e)) * Math.Tan(nu/2));
+        // Step twelve, we're done.
+        double n = Math.Sqrt(MU/Math.Pow(a,3));
+        double T = initialTime - 1/n * (EA - e * Math.Sin(EA));
+
+        // wrap up all the newly created numbers with a neat bowtie
+        Orbit orbit = new()
+        {
+            parent = parent,
+            semiMajorAxis = a,
+            eccentricity = e, 
+            inclination = i,
+            argumentOfPeriapsis = omega_AP,
+            longitudeOfAscendingNode = omega_LAN,
+            trueAnomaly = nu,
+            initialTime = T
+        };
+        orbit.ComputeMU();
+        orbit.ComputePeriod();
+        // return both orbit and time just in case time is ever needed
+        return (orbit, T);
+    }
+
     // Keplerian method of calculating eccentric anomaly apparently
-    public static double GetEccentricAnomaly(double meanAnomaly, double eccentricity, double tolerance = 1e-8, int maxIter = 100000)
+    public static double GetEccentricAnomaly(double meanAnomaly, double eccentricity, double tolerance = 1e-2, int maxIter = 100000)
     {
         double E;
 
@@ -107,8 +169,8 @@ public partial class PatchedConics : Node
         return E;
     }
 
-    // Solve for hyperbolic eccentric anomaly NOT H using Newton-Raphson
-    public static double GetHyperbolicAnomaly(double meanAnomaly, double eccentricity, double tolerance = 1e-8, int maxIter = 100000)
+    // Solve for hyperbolic eccentric anomaly because that's DIFFERENT TOO?
+    public static double GetHyperbolicAnomaly(double meanAnomaly, double eccentricity, double tolerance = 1e-2, int maxIter = 100000)
     {
         double H = Math.Log(2 * Math.Abs(meanAnomaly) / eccentricity + 1.8); // Initial guess
         for (int i = 0; i < maxIter; i++)
@@ -124,10 +186,11 @@ public partial class PatchedConics : Node
     }
 }
 
-// Orbit without defining time.
+// Orbit
 public class Orbit
 {
     public CelestialBody parent;
+    public double MU;
 
     public double semiMajorAxis;
     public double eccentricity;
@@ -135,6 +198,27 @@ public class Orbit
     public double argumentOfPeriapsis;
     public double longitudeOfAscendingNode;
     public double trueAnomaly;
+    public double initialTime;
+
+    public double period;
+
+    public double ComputeMU()
+    {
+        MU = PatchedConics.GravConstant * parent.mass;
+        return MU;
+    }
+
+    public double ComputePeriod()
+    {
+        period = 2 * Math.PI * Math.Sqrt(semiMajorAxis * semiMajorAxis * semiMajorAxis / MU); //Orbital period
+        return period;
+    }
+}
+
+// Cartesian data
+public class CartesianData
+{
+    public CelestialBody parent;
 
     public Double3 position;
     public Double3 velocity;
