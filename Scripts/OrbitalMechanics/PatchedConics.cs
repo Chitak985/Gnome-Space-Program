@@ -118,7 +118,6 @@ public partial class PatchedConics : Node
 
         double p = a*(1-Math.Pow(e,2));
         double nu = Math.Atan2(Math.Sqrt(p/MU) * Double3.Dot(pos,vel), p-r);
-        GD.Print(lat);
         // Step ten argument of periapse ????????????/
         double omega_AP = nu + lat;
         // Step eleven, a meeting with an old friend known as "eccentric anomaly" or more commonly known as "electronic arts"
@@ -128,6 +127,8 @@ public partial class PatchedConics : Node
         double T = initialTime - 1/n * (EA - e * Math.Sin(EA));
 
         // wrap up all the newly created numbers with a neat bowtie
+        // also invert semimajor axis for hyperbolic orbits
+        if (a < 0) a *= -1;
         Orbit orbit = new()
         {
             parent = parent,
@@ -137,7 +138,7 @@ public partial class PatchedConics : Node
             argumentOfPeriapsis = omega_AP,
             longitudeOfAscendingNode = omega_LAN,
             trueAnomaly = nu,
-            initialTime = T
+            time = initialTime
         };
         orbit.ComputeMU();
         orbit.ComputePeriod();
@@ -198,7 +199,7 @@ public class Orbit
     public double argumentOfPeriapsis;
     public double longitudeOfAscendingNode;
     public double trueAnomaly;
-    public double initialTime;
+    public double time;
 
     public double period;
 
@@ -212,6 +213,22 @@ public class Orbit
     {
         period = 2 * Math.PI * Math.Sqrt(semiMajorAxis * semiMajorAxis * semiMajorAxis / MU); //Orbital period
         return period;
+    }
+
+    // Dump all orbit parameters to the console
+    public void DumpOrbitParams()
+    {
+        GD.Print("------ Orbit parameter dump ------");
+        GD.Print("Semimajor-axis: " + semiMajorAxis);
+        GD.Print("Eccentricity: " + eccentricity);
+        GD.Print("Inclination: " + inclination);
+        GD.Print("Argument Of Periapsis: " + argumentOfPeriapsis);
+        GD.Print("Longitude of Ascending Node: " + longitudeOfAscendingNode);
+        GD.Print("True Anomaly: " + trueAnomaly);
+        GD.Print("Time: " + time);
+        GD.Print("Period: " + period);
+        GD.Print("MU: " + MU);
+        GD.Print("----------------------------------");
     }
 }
 

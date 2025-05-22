@@ -83,19 +83,18 @@ public partial class OrbitTester : Node3D
         {
             if (cBody.orbit != null && !paused)
             {
+                cBody.orbit.time = time;
                 if (useVelocity)
                 {
                     (Orbit orbit, double t) = PatchedConics.ECItoKOE(cBody.cartesianData, cBody.orbit.parent, time);
 
                     (Double3 position, Double3 velocity) = PatchedConics.KOEtoECI(orbit, orbit.parent, t, 0);
-
-                    GD.Print(orbit.inclination);
-                    GD.Print(position.X + " " + position.Y + " " + position.Z);
+                    //GD.Print(position.X + " " + position.Y + " " + position.Z);
                     cBody.orbit = orbit;
                     //cBody.cartesianData.position = position;
                     //cBody.cartesianData.velocity = velocity;
 
-                    cBody.debugOrb.GlobalPosition = new Vector3((float)cBody.cartesianData.position.X,(float)cBody.cartesianData.position.Y,(float)cBody.cartesianData.position.Z);
+                    cBody.debugOrb.GlobalPosition = new Vector3((float)position.X,(float)position.Y,(float)position.Z);
                 }else{
                     orbitPos = anotherBody.cartesianData.position.ToFloat3();
                     orbitVel = anotherBody.cartesianData.velocity.ToFloat3();
@@ -110,6 +109,8 @@ public partial class OrbitTester : Node3D
                     
                     cBody.debugOrb.GlobalPosition = new Vector3((float)finalPos.X,(float)finalPos.Y,(float)finalPos.Z);
                 }
+
+                cBody.orbit.DumpOrbitParams();
             }
         }
     }

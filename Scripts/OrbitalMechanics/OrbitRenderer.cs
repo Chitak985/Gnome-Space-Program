@@ -10,7 +10,7 @@ public partial class OrbitRenderer : Line2D
 	[Export] public Camera3D camera;
 
 	// Sample amount for if no orbital period exists
-	[Export] public int sampleAmnt = 100;
+	[Export] public int maxSamples = 100;
 	[Export] public float sampleInterval = 0.1f;
 
 	public double time;
@@ -31,14 +31,14 @@ public partial class OrbitRenderer : Line2D
 				Closed = true;
 			}
 
-			int samples;
-			if (cBody.orbit.period != 0)
+			int samples = (int)(cBody.orbit.period / sampleInterval);
+			if (samples > maxSamples)
 			{
-				samples = (int)(cBody.orbit.period / sampleInterval);
-			}else{
-				samples = sampleAmnt;
+				samples = maxSamples;
+				Closed = false;
 			}
-			List<Double3> points = SamplePoints(cBody, samples, sampleInterval, cBody.orbit.initialTime);
+
+			List<Double3> points = SamplePoints(cBody, samples, sampleInterval, cBody.orbit.time);
 			Vector2[] points2D = new Vector2[points.Count];
 			for (int i = 0; i < points.Count; i++)
 			{

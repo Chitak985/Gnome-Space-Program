@@ -15,8 +15,10 @@ background_mode = 1
 script = ExtResource("1_fq7ni")
 updateCartParams = true
 useVelocity = true
-orbitPos = Vector3(5.395, 1.01, 0)
-orbitVel = Vector3(0, -8.605, 0)
+orbitPos = Vector3(8.66, 2, 0)
+orbitVel = Vector3(5, 0, 0)
+testBodySMA = 0.145
+testBodyECC = 10.0
 testBodyRenderer = NodePath("OrbitRenderer/TestRenderer")
 
 [node name="OrbitRenderer" type="Control" parent="."]
@@ -32,6 +34,7 @@ gradient = SubResource("Gradient_3ma7j")
 script = ExtResource("2_3ma7j")
 enabled = true
 camera = NodePath("../../CamPivot/Camera3D")
+maxSamples = 1000
 sampleInterval = 0.05
 
 [node name="CamPivot" type="Node3D" parent="."]
