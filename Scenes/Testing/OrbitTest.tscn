@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bxm5v7tp3olbx"]
+[gd_scene load_steps=6 format=3 uid="uid://bxm5v7tp3olbx"]
 
 [ext_resource type="Script" uid="uid://b1pdbow2xlg48" path="res://Scripts/OrbitalMechanics/OrbitTester.cs" id="1_fq7ni"]
 [ext_resource type="Script" uid="uid://smi7genli4un" path="res://Scripts/OrbitalMechanics/OrbitRenderer.cs" id="2_3ma7j"]
+[ext_resource type="Script" uid="uid://deotl0qet45yq" path="res://Scripts/OrbitalMechanics/OrbitDisplay.cs" id="3_f0umb"]
 
 [sub_resource type="Gradient" id="Gradient_3ma7j"]
 interpolation_mode = 2
@@ -11,15 +12,16 @@ colors = PackedColorArray(1, 1, 1, 0, 0.368627, 1, 0.823529, 1, 0.368627, 0.5019
 [sub_resource type="Environment" id="Environment_fq7ni"]
 background_mode = 1
 
-[node name="OrbitTest" type="Node3D" node_paths=PackedStringArray("testBodyRenderer")]
+[node name="OrbitTest" type="Node3D" node_paths=PackedStringArray("testBodyRenderer", "orbitDisplay")]
 script = ExtResource("1_fq7ni")
 updateCartParams = true
 useVelocity = true
-orbitPos = Vector3(8.66, 2, 0)
-orbitVel = Vector3(5, 0, 0)
-testBodySMA = 0.145
-testBodyECC = 10.0
+orbitPos = Vector3(15, 0, 0)
+orbitVel = Vector3(-3.325, 4.3, 0)
+testBodySMA = 1.0
+testBodyECC = 0.95
 testBodyRenderer = NodePath("OrbitRenderer/TestRenderer")
+orbitDisplay = NodePath("Control")
 
 [node name="OrbitRenderer" type="Control" parent="."]
 layout_mode = 3
@@ -51,3 +53,90 @@ omni_range = 4096.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_fq7ni")
+
+[node name="Control" type="Control" parent="." node_paths=PackedStringArray("cartParent", "position", "velocity", "parent", "MU", "semiMajorAxis", "eccentricity", "inclination", "argumentOfPeriapsis", "longitudeOfAscendingNode", "trueAnomaly", "period")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_f0umb")
+cartParent = NodePath("CartDetails/Parent")
+position = NodePath("CartDetails/Pos")
+velocity = NodePath("CartDetails/Vel")
+parent = NodePath("OrbitDetails/Parent")
+MU = NodePath("OrbitDetails/MU")
+semiMajorAxis = NodePath("OrbitDetails/SMA")
+eccentricity = NodePath("OrbitDetails/ECC")
+inclination = NodePath("OrbitDetails/INC")
+argumentOfPeriapsis = NodePath("OrbitDetails/ArgPe")
+longitudeOfAscendingNode = NodePath("OrbitDetails/LonAsc")
+trueAnomaly = NodePath("OrbitDetails/TruAn")
+period = NodePath("OrbitDetails/PERIOD")
+
+[node name="OrbitDetails" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 16.199
+anchor_bottom = 16.199
+offset_left = 44.0
+offset_top = -273.96
+offset_right = 222.0
+offset_bottom = -34.9601
+
+[node name="Parent" type="Label" parent="Control/OrbitDetails"]
+layout_mode = 2
+text = "parent"
+
+[node name="MU" type="Label" parent="Control/OrbitDetails"]
+layout_mode = 2
+text = "mu"
+
+[node name="SMA" type="Label" parent="Control/OrbitDetails"]
+layout_mode = 2
+text = "sma"
+
+[node name="ECC" type="Label" parent="Control/OrbitDetails"]
+layout_mode = 2
+text = "ecc"
+
+[node name="INC" type="Label" parent="Control/OrbitDetails"]
+layout_mode = 2
+text = "inc"
+
+[node name="ArgPe" type="Label" parent="Control/OrbitDetails"]
+layout_mode = 2
+text = "argpe"
+
+[node name="LonAsc" type="Label" parent="Control/OrbitDetails"]
+layout_mode = 2
+text = "lonasc"
+
+[node name="TruAn" type="Label" parent="Control/OrbitDetails"]
+layout_mode = 2
+text = "truan"
+
+[node name="PERIOD" type="Label" parent="Control/OrbitDetails"]
+layout_mode = 2
+text = "period"
+
+[node name="CartDetails" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 16.199
+anchor_bottom = 16.199
+offset_left = 44.0
+offset_top = -383.96
+offset_right = 222.0
+offset_bottom = -306.96
+
+[node name="Parent" type="Label" parent="Control/CartDetails"]
+layout_mode = 2
+text = "parent"
+
+[node name="Pos" type="Label" parent="Control/CartDetails"]
+layout_mode = 2
+text = "pos"
+
+[node name="Vel" type="Label" parent="Control/CartDetails"]
+layout_mode = 2
+text = "vel"

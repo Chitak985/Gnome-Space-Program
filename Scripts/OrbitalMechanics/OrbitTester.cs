@@ -16,6 +16,7 @@ public partial class OrbitTester : Node3D
     [Export] public double timeSpeed = 1;
     [Export] public double time;
     [Export] public OrbitRenderer testBodyRenderer;
+    [Export] public OrbitDisplay orbitDisplay;
     public List<CelestialBody> cBodyList = [];
 
     public CelestialBody anotherBody;
@@ -51,6 +52,7 @@ public partial class OrbitTester : Node3D
         anotherBody.cartesianData.velocity = new Double3(orbitVel.X, orbitVel.Y, orbitVel.Z);
         cBodyList.Add(anotherBody);
         testBodyRenderer.cBody = anotherBody;
+        orbitDisplay.cBody = anotherBody;
         
         foreach (CelestialBody cBody in cBodyList)
         {
@@ -86,13 +88,15 @@ public partial class OrbitTester : Node3D
                 cBody.orbit.time = time;
                 if (useVelocity)
                 {
-                    (Orbit orbit, double t) = PatchedConics.ECItoKOE(cBody.cartesianData, cBody.orbit.parent, time);
+                    Orbit orbit = PatchedConics.ECItoKOE(cBody.cartesianData, cBody.orbit.parent, time);
 
-                    (Double3 position, Double3 velocity) = PatchedConics.KOEtoECI(orbit, orbit.parent, t, 0);
+                    (_, _) = PatchedConics.KOEtoECI(orbit, orbit.parent, orbit.time, 0);
                     //GD.Print(position.X + " " + position.Y + " " + position.Z);
                     cBody.orbit = orbit;
                     //cBody.cartesianData.position = position;
                     //cBody.cartesianData.velocity = velocity;
+
+                    Double3 position = cBody.cartesianData.position;
 
                     cBody.debugOrb.GlobalPosition = new Vector3((float)position.X,(float)position.Y,(float)position.Z);
                 }else{
@@ -110,7 +114,7 @@ public partial class OrbitTester : Node3D
                     cBody.debugOrb.GlobalPosition = new Vector3((float)finalPos.X,(float)finalPos.Y,(float)finalPos.Z);
                 }
 
-                cBody.orbit.DumpOrbitParams();
+                //cBody.orbit.DumpOrbitParams();
             }
         }
     }

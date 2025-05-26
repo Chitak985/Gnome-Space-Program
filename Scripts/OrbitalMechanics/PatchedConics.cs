@@ -3,15 +3,17 @@ using System;
 
 // All-encompassing class for orbital math
 /*
-Sources used:
+These are just saved links to some things i think might be useful because google is useless:
 https://en.wikipedia.org/wiki/Earth-centered_inertial
 https://www.sciencedirect.com/topics/engineering/patched-conic
 https://ai-solutions.com/_freeflyeruniversityguide/patched_conics_transfer.htm#calculatingapatchedconicsproblem
 https://www.mathworks.com/help/aerotbx/ug/keplerian2ijk.html
 https://space.stackexchange.com/questions/19322/converting-orbital-elements-to-cartesian-state-vectors
 https://space.stackexchange.com/questions/24646/finding-x-y-z-vx-vy-vz-from-hyperbolic-orbital-elements
+https://space.stackexchange.com/questions/1904/how-to-programmatically-calculate-orbital-elements-using-position-velocity-vecto
+https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
 
-Handy list of orbital formulas:
+list of orbital gobbledygook:
 https://www.bogan.ca/orbits/kepler/orbteqtn.html
 */
 public partial class PatchedConics : Node
@@ -52,10 +54,8 @@ public partial class PatchedConics : Node
             // Step four
             radius = SMA * (1 - ECC*Math.Cos(EA));
             // PART FIVE! BOOBYTRAP THE LETTER H!!!
-            H = Math.Sqrt(MU*SMA * (1 - Math.Pow(ECC,2)));
-            // Step SIX!?!?? WHERE IS STEP SIX?
-            // PART SEVEN!!!! ANGULAR MOMENTUM!
             p = SMA * (1 - Math.Pow(ECC,2));
+            H = Math.Sqrt(MU * p);
         }else{
             // Compute the mean anomaly HYPERBOLIC EDITION
             double n = Math.Sqrt(MU/Math.Pow(Math.Abs(SMA),3));
@@ -64,9 +64,10 @@ public partial class PatchedConics : Node
 
             // treu naomely
             
-            H = Math.Sqrt(MU * Math.Abs(SMA) * (ECC * ECC - 1));
-            V = 2 * Math.Atan(Math.Sqrt((ECC + 1) / (ECC - 1)) * Math.Tanh(EA / 2));
             p = Math.Abs(SMA) * (ECC * ECC - 1);
+            H = Math.Sqrt(MU * p);
+            V = 2 * Math.Atan(Math.Sqrt((ECC + 1) / (ECC - 1)) * Math.Tanh(EA / 2));
+            
             radius = p / (1 + ECC * Math.Cos(V));
         }
         
@@ -84,66 +85,116 @@ public partial class PatchedConics : Node
         return (new Double3(X,Y,Z), new Double3(V_X,V_Y,V_Z));
     }
 
-    public static (Orbit, double) ECItoKOE(CartesianData data, CelestialBody parent, double initialTime)
+    // Converts position and velocity to classical Keplerian orbital elements.
+    // Formulas taken from Basilisk https://hanspeterschaub.info/basilisk/_modules/orbitalMotion.html#rv2elem
+    public static Orbit ECItoKOE(CartesianData data, CelestialBody parent, double initialTime)
     {
-        Double3 pos = data.position;
-        Double3 vel = data.velocity;
+        // define mu, vectors, and epsilon
+        double mu = GravConstant * data.parent.mass;
+        Double3 rVec = data.position;
+        Double3 vVec = data.velocity;
+        double eps = 1e-8;
 
-        // dumbass constant
-        double MU = GravConstant * parent.mass;
+        // Specific angular momentum and its magnitude
+        Double3 hVec = Double3.Cross(rVec,vVec);
+        double h = hVec.Length();
+        double p = h * h / mu;
 
-        // Step one, compute specific angular momentum
-        Double3 hBar = Double3.Cross(pos, vel);
-        double h = hBar.Length();
-        // Step two, compute radius
-        double r = pos.Length();
-        double v = vel.Length();
-        // Step three, compute specific energy
-        double E = (0.5 * Math.Pow(v, 2d))-(MU/r);
-        // Step four, compute semi-major axis
-        double a = -MU / (2*E);
-        // Step five compute eccentricity yadda yadda also inclination which is part six
-        double e = Math.Sqrt(1 - (Math.Pow(h,2) / (a * MU)));
-        double i = Math.Acos(hBar.Z/h);
-        // Step seven, right ascension or longitude of ascending node
-        double omega_LAN = Math.Atan2(-hBar.X,hBar.Y);
-        // Step EIGHT Argument of latitude
-        double lat = Math.Atan2(-pos.Z / Math.Sin(i), pos.X * Math.Cos(omega_LAN) + pos.Y * Math.Sin(omega_LAN));
-        if (i == 0) 
+        // The line of nodes (??)
+        Double3 nVec = Double3.Cross(new Double3(0,0,1), hVec);
+        double n = nVec.Length();
+
+        // Orbit energy and eccentricity
+        double r = rVec.Length();
+        double v = vVec.Length();
+        Double3 eVec = (v * v / mu - 1.0 / r) * rVec;
+        Double3 v3 = Double3.Dot(rVec, vVec) / mu * vVec;
+        eVec = eVec - v3;
+        double e = eVec.Length();
+
+        // Semimajor axis
+        double alpha = 2.0 / r - v * v / mu;
+        double a;
+        if (Math.Abs(alpha) > eps)
         {
-            lat = Math.Atan2(-pos.X,pos.Y) + Math.PI/2;
-        }else if (i == Math.PI){
-            lat = Math.Atan2(-pos.X,-pos.Y) + Math.PI/2;
+            // elliptic or hyperbolic
+            a = 1.0 / alpha;
+        }else{
+            double rp = p / 2;
+            a = -rp;
         }
 
-        double p = a*(1-Math.Pow(e,2));
-        double nu = Math.Atan2(Math.Sqrt(p/MU) * Double3.Dot(pos,vel), p-r);
-        // Step ten argument of periapse ????????????/
-        double omega_AP = nu + lat;
-        // Step eleven, a meeting with an old friend known as "eccentric anomaly" or more commonly known as "electronic arts"
-        double EA = 2*Math.Atan(Math.Sqrt((1-e)/(1+e)) * Math.Tan(nu/2));
-        // Step twelve, we're done.
-        double n = Math.Sqrt(MU/Math.Pow(a,3));
-        double T = initialTime - 1/n * (EA - e * Math.Sin(EA));
+        // Inclination
+        double i = Math.Acos(hVec.Z / h);
 
-        // wrap up all the newly created numbers with a neat bowtie
-        // also invert semimajor axis for hyperbolic orbits
-        if (a < 0) a *= -1;
-        Orbit orbit = new()
+        // The godless part.
+        double Omega = 0; // Ascending node
+        double omega = 0; // Arg. of periapsis
+        double truAN = 0;
+        if (e >= 1e-11 && i >= 1e-11)
         {
-            parent = parent,
+            // Non circular inclined orbit
+            Omega = Math.Acos(nVec.X / n);
+            if (nVec.Y < 0.0)
+                Omega = 2.0 * Math.PI - Omega;
+            omega = Math.Acos(Math.Clamp(Double3.Dot(nVec, eVec) / n / e, -1.0, 1.0));
+            if (eVec.Z < 0.0)
+                omega = 2.0 * Math.PI - omega;
+            truAN = Math.Acos(Math.Clamp(Double3.Dot(eVec, rVec) / e / r, -1.0, 1.0));
+            if (Double3.Dot(rVec, vVec) < 0.0)
+                truAN = 2.0 * Math.PI - truAN;
+        }else if (e >= 1e-11 && i < 1e-11)
+        {
+            // Non circular equatorial orbit
+            // Equatorial orbit has no ascending node
+            Omega = 0.0;
+            // True longitude of periapsis
+            omega = Math.Acos(eVec.X / e);
+            if (eVec.Y < 0.0)
+                omega = 2.0 * Math.PI - omega;
+            truAN = Math.Acos(Math.Clamp(Double3.Dot(eVec, rVec) / e / r, -1.0, 1.0));
+            if (Double3.Dot(rVec, vVec) < 0.0)
+                truAN = 2.0 * Math.PI - truAN;   
+        }else if (e < 1e-11 && i >= 1e-11)
+        {
+            // Circular inclined orbit
+            Omega = Math.Acos(nVec.X / n);
+            if (nVec.Y < 0.0)
+                Omega = 2.0 * Math.PI - Omega;
+            omega = 0.0;
+            truAN = Math.Acos(Math.Clamp(Double3.Dot(nVec, rVec) / n / r, -1.0, 1.0));
+            if (rVec.Z < 0.0)
+                truAN = 2.0 * Math.PI - truAN;
+        }else if (e < 1e-11 && i < 1e-11)
+        {
+            // Circular equatorial orbit
+            Omega = 0.0;
+            omega = 0.0;
+            truAN = Math.Acos(rVec.X / r);
+            if (rVec.Y < 0)
+                truAN = 2.0 * Math.PI - truAN;
+        }else{
+            GD.PushError("Shit's fucked mate \n (Couldn't determine orbit type)");
+        }
+
+        if (e > 1.0 && Math.Abs(truAN) > Math.PI)
+        {
+            double twopiSigned = Math.CopySign(2.0 * Math.PI, truAN);
+            truAN -= twopiSigned;
+        }
+
+        Orbit newOrbit = new()
+        {
+            parent = data.parent,
             semiMajorAxis = a,
-            eccentricity = e, 
+            eccentricity = e,
             inclination = i,
-            argumentOfPeriapsis = omega_AP,
-            longitudeOfAscendingNode = omega_LAN,
-            trueAnomaly = nu,
-            time = initialTime
+            longitudeOfAscendingNode = Omega,
+            argumentOfPeriapsis = omega,
+            trueAnomaly = truAN,
         };
-        orbit.ComputeMU();
-        orbit.ComputePeriod();
-        // return both orbit and time just in case time is ever needed
-        return (orbit, T);
+
+        return newOrbit;
     }
 
     // Keplerian method of calculating eccentric anomaly apparently

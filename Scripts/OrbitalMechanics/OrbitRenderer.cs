@@ -38,7 +38,7 @@ public partial class OrbitRenderer : Line2D
 				Closed = false;
 			}
 
-			List<Double3> points = SamplePoints(cBody, samples, sampleInterval, cBody.orbit.time);
+			List<Double3> points = SamplePoints(cBody, samples, sampleInterval, 0);
 			Vector2[] points2D = new Vector2[points.Count];
 			for (int i = 0; i < points.Count; i++)
 			{
