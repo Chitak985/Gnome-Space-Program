@@ -1,13 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bxm5v7tp3olbx"]
+[gd_scene load_steps=5 format=3 uid="uid://bxm5v7tp3olbx"]
 
 [ext_resource type="Script" uid="uid://b1pdbow2xlg48" path="res://Scripts/OrbitalMechanics/OrbitTester.cs" id="1_fq7ni"]
 [ext_resource type="Script" uid="uid://smi7genli4un" path="res://Scripts/OrbitalMechanics/OrbitRenderer.cs" id="2_3ma7j"]
 [ext_resource type="Script" uid="uid://deotl0qet45yq" path="res://Scripts/OrbitalMechanics/OrbitDisplay.cs" id="3_f0umb"]
-
-[sub_resource type="Gradient" id="Gradient_3ma7j"]
-interpolation_mode = 2
-offsets = PackedFloat32Array(0, 0.02, 0.5, 1)
-colors = PackedColorArray(1, 1, 1, 0, 0.368627, 1, 0.823529, 1, 0.368627, 0.501961, 0.823529, 1, 0.368627, 0, 0.823529, 0)
 
 [sub_resource type="Environment" id="Environment_fq7ni"]
 background_mode = 1
@@ -16,10 +11,10 @@ background_mode = 1
 script = ExtResource("1_fq7ni")
 updateCartParams = true
 useVelocity = true
-orbitPos = Vector3(15, 0, 0)
-orbitVel = Vector3(-3.325, 4.3, 0)
-testBodySMA = 1.0
-testBodyECC = 0.95
+orbitPos = Vector3(4.35, 0, 0)
+orbitVel = Vector3(0, 13.74, 0)
+testBodySMA = 0.96
+testBodyECC = 1.415
 testBodyRenderer = NodePath("OrbitRenderer/TestRenderer")
 orbitDisplay = NodePath("Control")
 
@@ -32,18 +27,15 @@ offset_bottom = 40.0
 [node name="TestRenderer" type="Line2D" parent="OrbitRenderer" node_paths=PackedStringArray("camera")]
 closed = true
 width = 3.0
-gradient = SubResource("Gradient_3ma7j")
+default_color = Color(1, 0, 0, 1)
 script = ExtResource("2_3ma7j")
 enabled = true
 camera = NodePath("../../CamPivot/Camera3D")
-maxSamples = 1000
-sampleInterval = 0.05
 
 [node name="CamPivot" type="Node3D" parent="."]
 
 [node name="Camera3D" type="Camera3D" parent="CamPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 253.045)
-projection = 1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 25)
 size = 50.0
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
@@ -78,45 +70,54 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 16.199
 anchor_bottom = 16.199
-offset_left = 44.0
-offset_top = -273.96
-offset_right = 222.0
-offset_bottom = -34.9601
+offset_left = 29.0
+offset_top = -210.96
+offset_right = 207.0
+offset_bottom = -25.96
 
 [node name="Parent" type="Label" parent="Control/OrbitDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "parent"
 
 [node name="MU" type="Label" parent="Control/OrbitDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "mu"
 
 [node name="SMA" type="Label" parent="Control/OrbitDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "sma"
 
 [node name="ECC" type="Label" parent="Control/OrbitDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "ecc"
 
 [node name="INC" type="Label" parent="Control/OrbitDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "inc"
 
 [node name="ArgPe" type="Label" parent="Control/OrbitDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "argpe"
 
 [node name="LonAsc" type="Label" parent="Control/OrbitDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "lonasc"
 
 [node name="TruAn" type="Label" parent="Control/OrbitDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "truan"
 
 [node name="PERIOD" type="Label" parent="Control/OrbitDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "period"
 
 [node name="CartDetails" type="VBoxContainer" parent="Control"]
@@ -124,19 +125,22 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 16.199
 anchor_bottom = 16.199
-offset_left = 44.0
-offset_top = -383.96
-offset_right = 222.0
-offset_bottom = -306.96
+offset_left = 29.0
+offset_top = -286.96
+offset_right = 207.0
+offset_bottom = -216.96
 
 [node name="Parent" type="Label" parent="Control/CartDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "parent"
 
 [node name="Pos" type="Label" parent="Control/CartDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "pos"
 
 [node name="Vel" type="Label" parent="Control/CartDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "vel"

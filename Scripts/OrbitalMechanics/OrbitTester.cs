@@ -10,6 +10,7 @@ public partial class OrbitTester : Node3D
     [Export] public bool useVelocity = false;
     [Export] public Vector3 orbitPos;
     [Export] public Vector3 orbitVel;
+    [Export] public Vector3 orbitAccel;
     [Export] public double testBodySMA = 2;
     [Export] public double testBodyECC = 0;
     [Export] public double testBodyINC = 0;
@@ -64,6 +65,9 @@ public partial class OrbitTester : Node3D
             }
            
         }
+
+        //anotherBody.cartesianData.position = new Double3(orbitPos.X, orbitPos.Y, orbitPos.Z);
+        //anotherBody.cartesianData.velocity = new Double3(orbitVel.X, orbitVel.Y, orbitVel.Z);
     }
 
     public override void _Process(double delta)
@@ -79,6 +83,25 @@ public partial class OrbitTester : Node3D
         {
             anotherBody.cartesianData.position = new Double3(orbitPos.X, orbitPos.Y, orbitPos.Z);
             anotherBody.cartesianData.velocity = new Double3(orbitVel.X, orbitVel.Y, orbitVel.Z);
+
+            orbitAccel = Vector3.Zero;
+
+            if (Input.IsKeyPressed(Key.W))
+            {
+                orbitAccel.Y = 0.2f;
+            }
+            if (Input.IsKeyPressed(Key.A))
+            {
+                orbitAccel.X = -0.2f;
+            }
+            if (Input.IsKeyPressed(Key.S))
+            {
+                orbitAccel.Y = -0.2f;
+            }
+            if (Input.IsKeyPressed(Key.D))
+            {
+                orbitAccel.X = 0.2f;
+            }
         }
 
         foreach (CelestialBody cBody in cBodyList)
@@ -88,23 +111,30 @@ public partial class OrbitTester : Node3D
                 cBody.orbit.time = time;
                 if (useVelocity)
                 {
-                    Orbit orbit = PatchedConics.ECItoKOE(cBody.cartesianData, cBody.orbit.parent, time);
+                    Orbit orbit = PatchedConics.ECItoKOE(cBody.cartesianData);
 
-                    (_, _) = PatchedConics.KOEtoECI(orbit, orbit.parent, orbit.time, 0);
+                    (Double3 position, _) = PatchedConics.KOEtoECI(orbit);
                     //GD.Print(position.X + " " + position.Y + " " + position.Z);
                     cBody.orbit = orbit;
                     //cBody.cartesianData.position = position;
                     //cBody.cartesianData.velocity = velocity;
 
-                    Double3 position = cBody.cartesianData.position;
+                    //cBody.orbit.trueAnomaly = PatchedConics.TimeToTrueAnomaly(cBody.orbit, time, 0);
+
+                    //cBody.orbit = PatchedConics.AccelerateOrbit(orbit, time, new Double3(0,0,0));
+                    
+                    //GD.Print(cBody.cartesianData.velocity.Y);
+
+                    //Double3 position = cBody.cartesianData.position;
 
                     cBody.debugOrb.GlobalPosition = new Vector3((float)position.X,(float)position.Y,(float)position.Z);
                 }else{
                     orbitPos = anotherBody.cartesianData.position.ToFloat3();
                     orbitVel = anotherBody.cartesianData.velocity.ToFloat3();
 
-                    (Double3 position, Double3 velocity) = PatchedConics.KOEtoECI(cBody.orbit, cBody.orbit.parent, time, 0);//Time.GetUnixTimeFromSystem()*timeSpeed, 0);
-                    testBodyRenderer.time = time;
+                    cBody.orbit.trueAnomaly = PatchedConics.TimeToTrueAnomaly(cBody.orbit, Time.GetUnixTimeFromSystem()*timeSpeed, 0);
+
+                    (Double3 position, Double3 velocity) = PatchedConics.KOEtoECI(cBody.orbit);//Time.GetUnixTimeFromSystem()*timeSpeed, 0);
 
                     cBody.cartesianData.position = position;
                     cBody.cartesianData.velocity = velocity;
