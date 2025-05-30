@@ -40,6 +40,7 @@ _surfaces = [{
 }]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_lhdhw"]
+noise_type = 3
 frequency = 0.0281
 offset = Vector3(-0.2, 0, 0)
 fractal_type = 3
@@ -55,14 +56,15 @@ fractal_lacunarity = 3.0
 transparency = 1
 blend_mode = 1
 shading_mode = 0
+albedo_color = Color(0.61339, 0.61339, 0.61339, 1)
 albedo_texture = ExtResource("9_i4vn6")
 billboard_mode = 1
 proximity_fade_distance = 4096.0
 distance_fade_max_distance = 4096.0
 
-[sub_resource type="QuadMesh" id="QuadMesh_i4vn6"]
+[sub_resource type="QuadMesh" id="QuadMesh_tw5oi"]
 material = SubResource("StandardMaterial3D_m06uv")
-size = Vector2(1e+07, 1e+07)
+size = Vector2(3e+07, 3e+07)
 
 [node name="Node3D2" type="Node3D"]
 
@@ -322,7 +324,7 @@ baseNoise = SubResource("FastNoiseLite_lhdhw")
 baseNoiseDeformity = 0.02
 detailNoise = SubResource("FastNoiseLite_2vltj")
 detailNoiseDeformity = 0.01
-scaledBillboard = SubResource("QuadMesh_i4vn6")
+scaledBillboard = SubResource("QuadMesh_tw5oi")
 
 [node name="LoadedCrafts" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace"]
 script = ExtResource("11_plivw")

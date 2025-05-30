@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b08reqxmoktvk"]
+
+[ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
+
+[node name="ActiveSave" type="Node3D"]
+
+[node name="PlanetSystem" type="Node3D" parent="."]
+script = ExtResource("1_pocjb")

@@ -18,7 +18,8 @@ https://www.bogan.ca/orbits/kepler/orbteqtn.html
 */
 public partial class PatchedConics : Node
 {
-    public static float GravConstant {get;} = 6.674e-11F;
+    public static readonly double GravConstant = 6.674e-11;
+    public static readonly double EarthGravity = 9.80665;
     // Gets body-centered coordinates from orbit parameters
     // Keplerian orbital elements to earth centered whateverthefuck
     public static (Double3, Double3) KOEtoECI(Orbit orbit) //, Dr Freeman? Is it really that time again?

@@ -9,8 +9,7 @@ background_mode = 1
 
 [node name="OrbitTest" type="Node3D" node_paths=PackedStringArray("testBodyRenderer", "orbitDisplay")]
 script = ExtResource("1_fq7ni")
-updateCartParams = true
-useVelocity = true
+updateOrbitParams = true
 orbitPos = Vector3(4.35, 0, 0)
 orbitVel = Vector3(0, 13.74, 0)
 testBodySMA = 0.96

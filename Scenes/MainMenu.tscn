@@ -30,6 +30,7 @@ fractal_lacunarity = 3.0
 transparency = 1
 blend_mode = 1
 shading_mode = 0
+albedo_color = Color(0.61339, 0.61339, 0.61339, 1)
 albedo_texture = ExtResource("11_m7n2d")
 billboard_mode = 1
 proximity_fade_distance = 4096.0
@@ -37,7 +38,7 @@ distance_fade_max_distance = 4096.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_i4vn6"]
 material = SubResource("StandardMaterial3D_m06uv")
-size = Vector2(1e+07, 1e+07)
+size = Vector2(3e+07, 3e+07)
 
 [node name="Node3D2" type="Node3D"]
 
@@ -69,7 +70,7 @@ stretch = true
 [node name="LocalView" type="SubViewport" parent="RenderLayers/LocalContainer"]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(1920, 1080)
+size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="RenderLayers/LocalContainer/LocalView"]
@@ -166,7 +167,7 @@ stretch = true
 
 [node name="ScaledView" type="SubViewport" parent="RenderLayers/ScaledContainer"]
 handle_input_locally = false
-size = Vector2i(1920, 1080)
+size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="RenderLayers/ScaledContainer/ScaledView"]

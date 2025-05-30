@@ -37,7 +37,7 @@ public partial class OrbitTester : Node3D
             orbit = new Orbit{
                 parent = rootBody,
                 semiMajorAxis = 10,
-                inclination = 0.1,
+                inclination = 0,
                 eccentricity = 1.1,
                 argumentOfPeriapsis = 0,
                 longitudeOfAscendingNode = 0,
