@@ -2,14 +2,14 @@
 
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="2_brg3f"]
 [ext_resource type="Material" uid="uid://c6ajox4r7txx4" path="res://Assets/Materials/Grass.tres" id="2_k57b3"]
-[ext_resource type="Script" uid="uid://ksmq4us6ndfy" path="res://Scripts/TerrainGen.cs" id="2_lhdhw"]
+[ext_resource type="Script" uid="uid://ksmq4us6ndfy" path="res://Scripts/TerrainGeneration/TerrainGen.cs" id="2_lhdhw"]
 [ext_resource type="Script" uid="uid://cufh0hf3hm1cy" path="res://Scripts/PauseMenu.cs" id="3_h7oxk"]
 [ext_resource type="Material" uid="uid://d23tukoaw8yvl" path="res://Assets/Materials/Water.tres" id="3_i6dix"]
 [ext_resource type="Script" uid="uid://c4p5wqtqh1cpr" path="res://Scripts/SceneSwitcher.cs" id="4_fce38"]
 [ext_resource type="Material" uid="uid://f7ph3sm1vmfr" path="res://Assets/Materials/navball.tres" id="4_tw5oi"]
 [ext_resource type="Script" uid="uid://ctskhqca1tlrv" path="res://Scripts/FlightUi.cs" id="5_fce38"]
 [ext_resource type="Script" uid="uid://gr3sksxxiiif" path="res://Scripts/UniverseManager.cs" id="6_7jmkp"]
-[ext_resource type="Script" uid="uid://bttvjiyoqtv5f" path="res://Scripts/Planet.cs" id="7_0kuwm"]
+[ext_resource type="Script" uid="uid://bttvjiyoqtv5f" path="res://Scripts/TerrainGeneration/Planet.cs" id="7_0kuwm"]
 [ext_resource type="PackedScene" uid="uid://dgfxeiig7tdtd" path="res://Assets/Prefabs/gsc.tscn" id="8_0kuwm"]
 [ext_resource type="Material" uid="uid://fse6i8dj044i" path="res://Assets/Materials/Sun.tres" id="8_m06uv"]
 [ext_resource type="Texture2D" uid="uid://ck7qlvqe75vuk" path="res://Assets/Textures/sunSpikes.png" id="9_i4vn6"]
@@ -40,7 +40,7 @@ _surfaces = [{
 }]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_lhdhw"]
-noise_type = 3
+noise_type = 2
 frequency = 0.0281
 offset = Vector3(-0.2, 0, 0)
 fractal_type = 3
@@ -52,7 +52,7 @@ frequency = 0.0856
 fractal_octaves = 10
 fractal_lacunarity = 3.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m06uv"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b4yei"]
 transparency = 1
 blend_mode = 1
 shading_mode = 0
@@ -63,7 +63,7 @@ proximity_fade_distance = 4096.0
 distance_fade_max_distance = 4096.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_tw5oi"]
-material = SubResource("StandardMaterial3D_m06uv")
+material = SubResource("StandardMaterial3D_b4yei")
 size = Vector2(3e+07, 3e+07)
 
 [node name="Node3D2" type="Node3D"]

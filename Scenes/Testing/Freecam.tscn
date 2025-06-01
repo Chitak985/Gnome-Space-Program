@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://bbk43dfl1gye2" path="res://Scripts/CameraControl.cs" id="1_6nnx6"]
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="2_ir01g"]
 [ext_resource type="Script" uid="uid://gr3sksxxiiif" path="res://Scripts/UniverseManager.cs" id="5_nai62"]
-[ext_resource type="Script" uid="uid://bttvjiyoqtv5f" path="res://Scripts/Planet.cs" id="6_vgwxa"]
+[ext_resource type="Script" uid="uid://bttvjiyoqtv5f" path="res://Scripts/TerrainGeneration/Planet.cs" id="6_vgwxa"]
 [ext_resource type="Material" uid="uid://d23tukoaw8yvl" path="res://Assets/Materials/Water.tres" id="7_krbbp"]
-[ext_resource type="Script" uid="uid://ksmq4us6ndfy" path="res://Scripts/TerrainGen.cs" id="7_xb84m"]
+[ext_resource type="Script" uid="uid://ksmq4us6ndfy" path="res://Scripts/TerrainGeneration/TerrainGen.cs" id="7_xb84m"]
 [ext_resource type="Material" uid="uid://c6ajox4r7txx4" path="res://Assets/Materials/Grass.tres" id="8_f1ge5"]
 [ext_resource type="PackedScene" uid="uid://dgfxeiig7tdtd" path="res://Assets/Prefabs/gsc.tscn" id="10_4kbfj"]
 [ext_resource type="Material" uid="uid://fse6i8dj044i" path="res://Assets/Materials/Sun.tres" id="11_gxcq7"]
@@ -97,7 +97,7 @@ stretch = true
 [node name="LocalView" type="SubViewport" parent="RenderLayers/LocalContainer"]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(1920, 1080)
+size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="RenderLayers/LocalContainer/LocalView"]
@@ -160,7 +160,6 @@ script = ExtResource("7_xb84m")
 runInSeparateThread = false
 radius = 6.957e+07
 perQuadSubdivison = 8
-maxLevel = 15
 minRenderLevel = 5
 minColliderLevel = 9999999
 player = NodePath("../../../../../../../Camera")
@@ -186,7 +185,7 @@ stretch = true
 
 [node name="ScaledView" type="SubViewport" parent="RenderLayers/ScaledContainer"]
 handle_input_locally = false
-size = Vector2i(1920, 1080)
+size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="RenderLayers/ScaledContainer/ScaledView"]

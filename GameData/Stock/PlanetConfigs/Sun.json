@@ -1,0 +1,9 @@
+{
+  "configType": "cBody",
+  "rootBody": true,
+  "properties": {
+    "name": "Sun",
+    "mass": 1.7565459e28,
+    "radius": 69570000
+  }
+}

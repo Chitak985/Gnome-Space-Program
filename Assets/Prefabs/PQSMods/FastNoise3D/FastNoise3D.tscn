@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5ys2h41x2j2m"]
+
+[ext_resource type="Script" uid="uid://b7dpv3ijvpiti" path="res://Assets/Prefabs/PQSMods/FastNoise3D/FastNoise3D.cs" id="1_wi3ea"]
+
+[node name="FastNoise3D" type="Node"]
+script = ExtResource("1_wi3ea")

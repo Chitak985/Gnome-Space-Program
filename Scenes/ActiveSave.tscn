@@ -1,8 +1,66 @@
-[gd_scene load_steps=2 format=3 uid="uid://b08reqxmoktvk"]
+[gd_scene load_steps=3 format=3 uid="uid://b08reqxmoktvk"]
 
+[ext_resource type="Script" uid="uid://cmbavjdks057k" path="res://Scripts/Utility/SaveManager.cs" id="1_a23cl"]
 [ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
 
 [node name="ActiveSave" type="Node3D"]
+script = ExtResource("1_a23cl")
 
 [node name="PlanetSystem" type="Node3D" parent="."]
 script = ExtResource("1_pocjb")
+
+[node name="RenderLayers" type="Control" parent="PlanetSystem" groups=["UniverseManager"]]
+z_index = -5
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LocalContainer" type="SubViewportContainer" parent="PlanetSystem/RenderLayers"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="LocalView" type="SubViewport" parent="PlanetSystem/RenderLayers/LocalContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="PlanetSystem/RenderLayers/LocalContainer/LocalView"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -891.512, 0.108031, 601607)
+cull_mask = 1047553
+far = 1e+06
+
+[node name="LocalSpace" type="Node3D" parent="PlanetSystem/RenderLayers/LocalContainer/LocalView" groups=["LocalSpace"]]
+
+[node name="Planets" type="Node3D" parent="PlanetSystem/RenderLayers/LocalContainer/LocalView/LocalSpace"]
+
+[node name="ScaledContainer" type="SubViewportContainer" parent="PlanetSystem/RenderLayers"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="ScaledView" type="SubViewport" parent="PlanetSystem/RenderLayers/ScaledContainer"]
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="PlanetSystem/RenderLayers/ScaledContainer/ScaledView"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -891.512, 0.108031, 601607)
+near = 10.0
+far = 2e+08
+
+[node name="ScaledSpace" type="Node3D" parent="PlanetSystem/RenderLayers/ScaledContainer/ScaledView" groups=["ScaledSpace"]]

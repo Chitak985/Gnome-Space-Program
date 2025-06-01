@@ -305,6 +305,7 @@ public class Orbit
     public double argumentOfPeriapsis;
     public double longitudeOfAscendingNode;
     public double trueAnomaly;
+    public double trueAnomalyAtEpoch;
     public double time;
 
     public double period;

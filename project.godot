@@ -25,12 +25,6 @@ window/stretch/aspect="expand"
 
 project/assembly_name="GnomeSpaceProgram"
 
-[global_group]
-
-ScaledSpace=""
-LocalSpace=""
-UniverseManager=""
-
 [physics]
 
 3d/physics_engine="Jolt Physics"

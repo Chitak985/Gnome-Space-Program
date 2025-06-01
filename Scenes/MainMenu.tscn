@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://dacy2c0buk3vv" path="res://Scripts/CameraMouseMovement.cs" id="1_rrcx7"]
 [ext_resource type="Script" uid="uid://gr3sksxxiiif" path="res://Scripts/UniverseManager.cs" id="3_fh7cp"]
-[ext_resource type="Script" uid="uid://bttvjiyoqtv5f" path="res://Scripts/Planet.cs" id="4_8e205"]
-[ext_resource type="Script" uid="uid://ksmq4us6ndfy" path="res://Scripts/TerrainGen.cs" id="5_7467j"]
+[ext_resource type="Script" uid="uid://bttvjiyoqtv5f" path="res://Scripts/TerrainGeneration/Planet.cs" id="4_8e205"]
+[ext_resource type="Script" uid="uid://ksmq4us6ndfy" path="res://Scripts/TerrainGeneration/TerrainGen.cs" id="5_7467j"]
 [ext_resource type="Material" uid="uid://c6ajox4r7txx4" path="res://Assets/Materials/Grass.tres" id="6_2x1g0"]
 [ext_resource type="Material" uid="uid://d23tukoaw8yvl" path="res://Assets/Materials/Water.tres" id="7_riqfo"]
 [ext_resource type="Theme" uid="uid://rakpeu6pf05y" path="res://Assets/Materials/MainMenu/MainMenuUI.tres" id="10_loo7a"]
