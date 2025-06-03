@@ -20,23 +20,20 @@ public partial class OrbitRenderer : Line2D
 	{
 		if (enabled)
 		{
-			if (cBody.orbit.eccentricity > 1)
-			{
-				Closed = false;
-			}else{
-				Closed = true;
-			}
+			//if (cBody.orbit.eccentricity > 1)
+			//{
+			//	Closed = false;
+			//}else{
+			//	Closed = true;
+			//}
 
-			List<Double3> points = SamplePoints(cBody, precision);
+			List<Double3> points = SamplePoints(cBody, precision, camera);
 			Vector2[] points2D = new Vector2[points.Count];
 			for (int i = 0; i < points.Count; i++)
 			{
 				Double3 point = points[i];
 
-				Vector3 floatPos = new(
-					(float)point.X,
-					(float)point.Y,
-					(float)point.Z);
+				Vector3 floatPos = point.GetPosYUp().ToFloat3();
 
 				Vector2 position = camera.UnprojectPosition(floatPos);
 
@@ -47,7 +44,7 @@ public partial class OrbitRenderer : Line2D
 	}
 
 	// Sample multiple points in orbit
-	public static List<Double3> SamplePoints(CelestialBody body, double precision)
+	public static List<Double3> SamplePoints(CelestialBody body, double precision, Camera3D camera)
 	{
 		Orbit orbit = body.orbit;
 		
@@ -73,14 +70,18 @@ public partial class OrbitRenderer : Line2D
 				argumentOfPeriapsis = orbit.argumentOfPeriapsis,
 				longitudeOfAscendingNode = orbit.longitudeOfAscendingNode,
 				trueAnomaly = startTrueAn + i/precision,
-				time = orbit.time,
 				period = orbit.period
 			};
             // Velocity is not used here so we discard it
             (Double3 position, _) = PatchedConics.KOEtoECI(newOrbit);
 			//GD.Print(newOrbit.trueAnomaly);
 			//GD.Print($"{position.X} {position.Y} {position.Z}");
-			positions.Add(position);
+			if (!camera.IsPositionBehind(position.GetPosYUp().ToFloat3()))
+			{
+				positions.Add(position);
+			}//else{
+			//	positions.Add(position);
+			//}
         }
 
 		return positions;

@@ -1,9 +1,12 @@
 using Godot;
 using Godot.Collections;
+using System;
 using System.Collections.Generic;
 
 public partial class PlanetSystem : Node3D
 {
+	[Export] public PackedScene orbitRendererPrefab;
+
 	public static PlanetSystem Instance;
 	public static readonly string ConfigPath = "res://GameData";
 
@@ -12,6 +15,7 @@ public partial class PlanetSystem : Node3D
 	public Node3D localSpace;
 	public Node3D localSpacePlanets;
 	public Node3D scaledSpace;
+	public Control orbitRenderers;
 
 	// Since patched conics require an SOI, then have a "root SOI" in the form of a "root body"
 	public CelestialBody rootBody;
@@ -24,6 +28,7 @@ public partial class PlanetSystem : Node3D
 		Instance = this;
 		localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");
 		localSpacePlanets = (Node3D)localSpace.FindChild("Planets");
+		orbitRenderers = (Control)GetTree().GetFirstNodeInGroup("OrbitRenderers");
 		CreateSystem(GetPlanetConfigs(ConfigPath));
 	}
 
@@ -98,10 +103,13 @@ public partial class PlanetSystem : Node3D
 			if (parent != null)
 			{
 				cBody.orbit.parent = parent;
+				if (cBody.orbit.sphereOfInfluence <= 0) // 14959800320 * ((5.289772250524424*10^22) / (1.7565459*10^28))^(2/5)
+					cBody.orbit.sphereOfInfluence = cBody.orbit.semiMajorAxis * Math.Pow(5.289772250524424e22 / 1.7565459e28, 2f/5f);
 				cBody.cartesianData.parent = parent;
 				parent.childPlanets.Add(cBody);
 			}
 			localSpacePlanets.AddChild(cBody);
+			cBody.Name = cBody.name;
 		}
 	}
 
@@ -110,7 +118,22 @@ public partial class PlanetSystem : Node3D
 		CelestialBody cBody = ParseConfig(configPath);
 		// Add cBody to the great planetary list (and set as root body if it is)
 		celestialBodies.Add(cBody);
+		if (cBody.orbit != null)
+		{
+			OrbitRenderer renderer = (OrbitRenderer)orbitRendererPrefab.Instantiate();
+			renderer.cBody = cBody;
+			renderer.camera = (Camera3D)GetTree().GetFirstNodeInGroup("Camera");
+			orbitRenderers.AddChild(renderer);
+		}
 		if (cBody.isRoot) rootBody = cBody;
+        cBody.pqsSphere = new TerrainGen
+        {
+			cBody = cBody,
+			runInSeparateThread = false,
+			player = (Camera3D)GetTree().GetFirstNodeInGroup("Camera"),
+            radius = (float)cBody.radius
+        };
+        cBody.AddChild(cBody.pqsSphere);
 	}
 
 	public static CelestialBody ParseConfig(string path)
@@ -161,12 +184,13 @@ public partial class PlanetSystem : Node3D
 			cBody.parentName = orbit.TryGetValue("parent", out var pnm) ? (string)pnm : null;
 			cBody.orbit = new Orbit{
 				semiMajorAxis = orbit.TryGetValue("semiMajorAxis", out var sma) ? (double)sma : MissingNum(path, "orbit/semiMajorAxis"),
-				inclination = orbit.TryGetValue("inclination", out var inc) ? (double)inc : MissingNum(path, "orbit/inclination"),
+				inclination = orbit.TryGetValue("inclination", out var inc) ? (double)inc + Math.PI : MissingNum(path, "orbit/inclination"),
 				eccentricity = orbit.TryGetValue("eccentricity", out var ecc) ? (double)ecc : MissingNum(path, "orbit/eccentricity"),
 				argumentOfPeriapsis = orbit.TryGetValue("argumentOfPeriapsis", out var arp) ? (double)arp : MissingNum(path, "orbit/argumentOfPeriapsis"),
 				longitudeOfAscendingNode = orbit.TryGetValue("longitudeOfAscendingNode", out var lon) ? (double)lon : MissingNum(path, "orbit/longitudeOfAscendingNode"),
 				trueAnomaly = orbit.TryGetValue("trueAnomaly", out var tra) ? (double)tra : 0,
 				trueAnomalyAtEpoch = orbit.TryGetValue("trueAnomalyAtEpoch", out var tre) ? (double)tre : MissingNum(path, "orbit/trueAnomalyAtEpoch"),
+				sphereOfInfluence = orbit.TryGetValue("sphereOfInfluence", out var soi) ? (double)soi : -1,
 			};
 		}else{
 			GD.PrintRich($"{classTag} CBody {cBody.name} is missing its orbit! If this is intended, then disregard this message.");
@@ -178,10 +202,16 @@ public partial class PlanetSystem : Node3D
 			velocity = Double3.Zero
 		};
 
+		// Oceans
+		if (ConfigUtility.TryGetDictionary("ocean", data, out Dictionary ocean))
+		{
+			
+		}
+
 		// PQS
 		if (ConfigUtility.TryGetDictionary("pqs", data, out Dictionary pqs))
 		{
-			if (ConfigUtility.TryGetArray("pqsMods", pqs, out Array pqsMods))
+			if (ConfigUtility.TryGetArray("pqsMods", pqs, out Godot.Collections.Array pqsMods))
 			{
 				// Initialize pqs mods for the cBody
 				cBody.pqsMods = [];

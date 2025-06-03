@@ -15,24 +15,20 @@ public partial class TerrainGen : Node3D
     [Export] public bool runInSeparateThread = true;
 
     [Export] public float radius = 600.0f;
-    [Export] public int perQuadSubdivison = 16;
+    [Export] public int perQuadSubdivison = 8;
     [Export] public int minLevel = 4;
     [Export] public int maxLevel = 12;
     [Export] public int minRenderLevel = 0;
     [Export] public int minColliderLevel = 10;
     [Export] public Node3D player;
-    [Export] public Material material;
+    //[Export] public Material material;
     [Export] public Node3D scaledSpace;
-    [Export] public UniverseManager universeManager;
-
-    // noises
-    [Export] public FastNoiseLite baseNoise;
-    [Export] public float baseNoiseDeformity;
-    [Export] public FastNoiseLite detailNoise;
-    [Export] public float detailNoiseDeformity;
+    //[Export] public UniverseManager universeManager;
 
     // extras
     [Export] public Mesh scaledBillboard;
+
+    public CelestialBody cBody;
 
     private Vector3 planetCenter;
 
@@ -41,9 +37,7 @@ public partial class TerrainGen : Node3D
     private List<Quad> quadList = [];
     private List<QuadDetailLevel> quadDetailLevels = [];
 
-    private List<Quad> quadsToUnsub = [];
-
-    private List<Quad> quadsQueuedForDeletion = [];
+    private readonly List<Quad> quadsQueuedForDeletion = [];
 
     private Node3D scaledContainer;
 
@@ -52,7 +46,6 @@ public partial class TerrainGen : Node3D
     public override void _Ready()
     {
         scaledSpace = (Node3D)GetTree().GetFirstNodeInGroup("ScaledSpace");
-        universeManager = (UniverseManager)GetTree().GetFirstNodeInGroup("UniverseManager");
 
         scaledContainer = new();
         scaledSpace.AddChild(scaledContainer);
@@ -70,7 +63,6 @@ public partial class TerrainGen : Node3D
             associatedNode = scaledContainer,
             objectRadius = radius
         };
-        universeManager.objectList.Add(scaledObject);
 
         for (int i = 1; i < maxLevel+1; i++)
         {
@@ -80,23 +72,7 @@ public partial class TerrainGen : Node3D
                 distToQuad = float.PositiveInfinity;
             }
             quadDetailLevels.Add(new QuadDetailLevel(){detailValue = i, distanceToQuad = distToQuad});
-            GD.Print("Detail value distance: " + distToQuad);
-            GD.Print("Detail value true increment: " + (i-minLevel));
-            GD.Print("Created detail with value: " + i);
         }
-
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 1, distanceToQuad = 99999999999});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 2, distanceToQuad = 99999999999});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 3, distanceToQuad = 99999999999});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 4, distanceToQuad = 99999999999});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 5, distanceToQuad = 99999999999});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 6, distanceToQuad = radius/4});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 7, distanceToQuad = radius/8});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 8, distanceToQuad = radius/16});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 9, distanceToQuad = radius/32});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 10, distanceToQuad = radius/64});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 11, distanceToQuad = radius/128});
-        //quadDetailLevels.Add(new QuadDetailLevel(){detailValue = 12, distanceToQuad = radius/256});
 
         GD.Print("Planet generator starting..");
         
@@ -113,21 +89,8 @@ public partial class TerrainGen : Node3D
 
     public override void _Process(double delta)
     {
-        if (!pauseTracking)
-        {
-            player = universeManager.player;
-            playerPos = player.GlobalPosition;
-            savedPlayerPos = playerPos - universeManager.offsetPosition;
-        }else{
-            playerPos = savedPlayerPos + universeManager.offsetPosition;
-            
-        }
-        GD.Print(playerPos);
+        playerPos = player.GlobalPosition;
         planetCenter = GlobalPosition;
-        //foreach (Quad quad in quadList.ToList())
-        //{
-        //    GD.Print(quad.detailLevel);
-        //}
     }
 
     // giant function that makes a cube
@@ -222,7 +185,6 @@ public partial class TerrainGen : Node3D
 
             largeMesh.SubdivideDepth = perQuadSubdivison + 4;
             largeMesh.SubdivideWidth = perQuadSubdivison + 4;
-            //largeMesh.Size = new Vector2((1+1/perQuadSubdivison)^2,(1+1/perQuadSubdivison)^2);
 
             quad.scale = new Vector3(radius*2,radius*2,radius*2);
             quad.detailLevel = 1;
@@ -250,7 +212,6 @@ public partial class TerrainGen : Node3D
             };
             quad.originalCollider = collisionShape;
             quad.collider = collisionShape;
-            //GD.Print(quad.collider);
         }
     }
 
@@ -258,7 +219,6 @@ public partial class TerrainGen : Node3D
     {
         while (true)
         {
-            //GD.Print(quadList.Count);
             // make it run at 60 fps or sum sh
             await Task.Delay(1);
             for (int i = 0; i < quadList.Count; i++)
@@ -310,7 +270,6 @@ public partial class TerrainGen : Node3D
         {
             if (quad.children == null)
             {
-                //GD.Print("fuck me");
                 SubdivideQuad(quad);
                 CallDeferred(nameof(UnRenderQuad), quad);
             }
@@ -318,7 +277,6 @@ public partial class TerrainGen : Node3D
         {
             if (quad.children != null)
             {
-                //GD.Print("ay fuck off m8");
                 UnSubdivideQuad(quad);
             }
         }
@@ -332,8 +290,6 @@ public partial class TerrainGen : Node3D
 		Quad quad2 = new();
 		Quad quad3 = new();
 		Quad quad4 = new();
-
-		//GD.Print(container.GlobalRotationDegrees);
 
 		// Turned on some neurons to think of this one
 		Vector3 globalFacingX = quad.basis.X;
@@ -382,14 +338,12 @@ public partial class TerrainGen : Node3D
         {
             Quad childQuad = quad.children[i];
             quadList.Remove(childQuad);
-            //quad.rendered = false;
             CallDeferred(nameof(UnRenderQuad), childQuad);
 
             childQuad.meshData = null;
             childQuad.originalMeshData = null;
             if(childQuad.mesh is ArrayMesh arrayMesh)arrayMesh.Dispose();
 
-            //childQuad.QueueFree();
             // game crashed due to a potential race condition so im moving this all into my own "queue" system
             quadsQueuedForDeletion.Add(childQuad);
         }
@@ -406,8 +360,6 @@ public partial class TerrainGen : Node3D
             meshObject.Position = quad.position;
             meshObject.Scale = quad.scale;
 
-            meshObject.Mesh.SurfaceSetMaterial(0,material);
-
             quad.renderedMesh = meshBody;
 
             meshBody.AddChild(meshObject); 
@@ -423,13 +375,6 @@ public partial class TerrainGen : Node3D
             // add colliders if such act is permitted
             if (quad.detailLevel >= minColliderLevel)
             {
-                //CollisionShape3D collisionShape = new(){
-                //    Shape = quad.collider,
-                //    Scale = quad.scale/(perQuadSubdivison+1),
-                //};
-                //meshBody.AddChild(collisionShape);
-                //collisionShape.GlobalPosition = meshObject.GlobalPosition;
-                //collisionShape.GlobalRotationDegrees = quad.colliderRotation;
                 meshObject.CreateTrimeshCollision();
             }
         }
@@ -485,17 +430,13 @@ public partial class TerrainGen : Node3D
         Vector3 quadPosition = quad.position;
         Vector3 quadScale = quad.scale;
 
-        //GD.Print(quad.originalMeshData);
         Vector3[] originalVertices = (Vector3[])quad.originalMeshData[(int)Mesh.ArrayType.Vertex];
         int[] indices = (int[])quad.originalMeshData[(int)Mesh.ArrayType.Index];
 
         Vector3[] largeVertices = (Vector3[])quad.largeMeshData[(int)Mesh.ArrayType.Vertex];
         int[] largeIndices = (int[])quad.largeMeshData[(int)Mesh.ArrayType.Index];
 
-        //GD.Print(largeVertices.Count);
-
         Vector3 quadNodeGlobalPos = quadPosition / quadScale.X;
-        float quadNodeSizeToRadius = radius / quadScale.X;
 
         // data used in the creation of the new mesh
         Godot.Collections.Array newMeshData = quad.originalMeshData.Duplicate();
@@ -504,28 +445,13 @@ public partial class TerrainGen : Node3D
         Vector3[] newNormals = new Vector3[originalVertices.Length];
 
         // processing of the mesh data
-        (Vector3[] newVertices, List<Vector3> newGlobalVertices) = ProcessVertices(quadNodeGlobalPos, quadNodeSizeToRadius, originalVertices, 1f);
-        (Vector3[] newLargeVertices, List<Vector3> newLargeGlobalVertices) = ProcessVertices(quadNodeGlobalPos, quadNodeSizeToRadius, largeVertices, 1.445f);
+        (Vector3[] newVertices, List<Vector3> newGlobalVertices) = ProcessVertices(quadNodeGlobalPos, quadScale.X, originalVertices, 1f);
+        (Vector3[] newLargeVertices, List<Vector3> newLargeGlobalVertices) = ProcessVertices(quadNodeGlobalPos, quadScale.X, largeVertices, 1.445f);
 
         // collider
-        //GD.Print(quad.collider
 
         newTemporaryNormals = MeshManipulation.calculateSmoothNormals(newLargeVertices, largeIndices);
         newNormals = FilterCenterVector3s(newTemporaryNormals, 2, perQuadSubdivison+4);
-
-        //GD.Print(newNormals.Length);
-        //GD.Print(newTemporaryNormals.Length);
-
-        //int perimeter = 100;
-        //for (int i = 0; i < newVertices.ToList().Count; i++)
-        //{
-        //    if (i >= perimeter)
-        //    {
-        //        newVertices[i-perimeter] = new Vector3(0,0,0);
-        //    }
-        //}
-
-        //newVertices[8^2] = new Vector3(0,0,0);
 
         // Creation of the new mesh
         newMeshData[(int)Mesh.ArrayType.Vertex] = newVertices;
@@ -537,7 +463,7 @@ public partial class TerrainGen : Node3D
         return (newMesh, newMeshData, newGlobalVertices);
     }
 
-    private (Vector3[], List<Vector3>) ProcessVertices(Vector3 quadNodeGlobalPos, float quadNodeSizeToRadius, Vector3[] originalVertices, float offsetSize)
+    private (Vector3[], List<Vector3>) ProcessVertices(Vector3 quadNodeGlobalPos, float quadScale, Vector3[] originalVertices, float offsetSize)
     {
         // THis has to be a var for some dumb fucking reason;
         var newVertices = new Vector3[originalVertices.Length];
@@ -549,14 +475,25 @@ public partial class TerrainGen : Node3D
 
             Vector3 globalVertex = vertex + quadNodeGlobalPos;
 
-            Vector3 noiseSamplePoint = globalVertex/quadNodeSizeToRadius;
-            float noiseOffset = SampleNoise(baseNoise, noiseSamplePoint, baseNoiseDeformity)+1;
-            noiseOffset += SampleNoise(detailNoise, noiseSamplePoint, detailNoiseDeformity);
+            float quadNodeSizeToRadius = radius / quadScale;
+            Vector3 noiseSamplePoint = globalVertex / quadNodeSizeToRadius;
+            float noiseOffset = 0;
+            if (cBody.pqsMods != null)
+            {
+                foreach (Node mod in cBody.pqsMods)
+                {
+                    if (mod is FastNoise3D fastNoise3D)
+                    {
+                        noiseOffset += fastNoise3D.SamplePoint(noiseSamplePoint);
+                    }
+                }
+            }
+            float quadNodeSizeToRadius2 = (radius + noiseOffset) / quadScale;
 
-            Vector3 normalizedVertPos = (globalVertex - Vector3.Zero).Normalized() * quadNodeSizeToRadius * noiseOffset;
+            Vector3 normalizedVertPos = (globalVertex - Vector3.Zero).Normalized() * quadNodeSizeToRadius2;
 
             Vector3 newVertex = normalizedVertPos - quadNodeGlobalPos;
-            Vector3 newGlobalVertex = normalizedVertPos / quadNodeSizeToRadius * radius;
+            Vector3 newGlobalVertex = normalizedVertPos / quadNodeSizeToRadius2 * radius;
 
             newVertices[v]=newVertex;
             newGlobalVertices.Add(newGlobalVertex);
@@ -567,7 +504,6 @@ public partial class TerrainGen : Node3D
     private static float SampleNoise(FastNoiseLite noise, Vector3 position, float amplitude)
     {
         float val = noise.GetNoise3D(position.X*10,position.Y*10,position.Z*10);
-        //GD.Print(val);
         return val*amplitude;
     }
 

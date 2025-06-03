@@ -23,6 +23,13 @@ public class Double3(double x, double y, double z)
     public static Double3 Zero { get; } = new Double3(0,0,0);
     public static Double3 One { get; } = new Double3(1,1,1);
 
+    // Functions to get points with Y as up rather than Z
+    // (Because I don't want to even LOOK at the coordinate transformation functions again thank you very much)
+    public Double3 GetPosYUp()
+    {
+        return new Double3(X,Z,Y);
+    }
+
     // I add to this as I go so don't expect everything you need to be here
     public double Length()
     {

@@ -1,26 +1,20 @@
-[gd_scene load_steps=7 format=3 uid="uid://bxm5v7tp3olbx"]
+[gd_scene load_steps=6 format=3 uid="uid://bxm5v7tp3olbx"]
 
 [ext_resource type="Script" uid="uid://b1pdbow2xlg48" path="res://Scripts/OrbitalMechanics/OrbitTester.cs" id="1_fq7ni"]
-[ext_resource type="Script" uid="uid://smi7genli4un" path="res://Scripts/OrbitalMechanics/OrbitRenderer.cs" id="2_3ma7j"]
+[ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="2_6l4ax"]
 [ext_resource type="Script" uid="uid://deotl0qet45yq" path="res://Scripts/OrbitalMechanics/OrbitDisplay.cs" id="3_f0umb"]
 [ext_resource type="Script" uid="uid://cmbavjdks057k" path="res://Scripts/Utility/SaveManager.cs" id="4_6l4ax"]
-
-[sub_resource type="Gradient" id="Gradient_f0umb"]
-offsets = PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1)
-colors = PackedColorArray(1, 0, 0, 1, 1, 0.65098, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0.94902, 1, 0.766326, 0.000313042, 0.730732, 1)
-metadata/_snap_enabled = true
 
 [sub_resource type="Environment" id="Environment_fq7ni"]
 background_mode = 1
 
-[node name="OrbitTest" type="Node3D" node_paths=PackedStringArray("testBodyRenderer", "orbitDisplay")]
+[node name="OrbitTest" type="Node3D" node_paths=PackedStringArray("orbitDisplay")]
 script = ExtResource("1_fq7ni")
 updateOrbitParams = true
 orbitPos = Vector3(4.35, 0, 0)
 orbitVel = Vector3(0, 12.865, 0)
 testBodySMA = 0.96
 testBodyECC = 0.01
-testBodyRenderer = NodePath("OrbitRenderer/TestRenderer")
 orbitDisplay = NodePath("Control")
 
 [node name="OrbitRenderer" type="Control" parent="."]
@@ -29,13 +23,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="TestRenderer" type="Line2D" parent="OrbitRenderer" node_paths=PackedStringArray("camera")]
-closed = true
-width = 3.0
-gradient = SubResource("Gradient_f0umb")
-script = ExtResource("2_3ma7j")
-enabled = true
-camera = NodePath("../../CamPivot/Camera3D")
+[node name="TestRenderer" parent="OrbitRenderer" instance=ExtResource("2_6l4ax")]
 
 [node name="CamPivot" type="Node3D" parent="."]
 

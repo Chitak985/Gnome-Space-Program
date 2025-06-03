@@ -1,13 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://b08reqxmoktvk"]
+[gd_scene load_steps=6 format=3 uid="uid://b08reqxmoktvk"]
 
 [ext_resource type="Script" uid="uid://cmbavjdks057k" path="res://Scripts/Utility/SaveManager.cs" id="1_a23cl"]
 [ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
+[ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
+[ext_resource type="Script" uid="uid://bbk43dfl1gye2" path="res://Scripts/CameraControl.cs" id="3_e1hhh"]
+[ext_resource type="Script" uid="uid://gr3sksxxiiif" path="res://Scripts/UniverseManager.cs" id="5_xtqc4"]
 
 [node name="ActiveSave" type="Node3D"]
 script = ExtResource("1_a23cl")
 
 [node name="PlanetSystem" type="Node3D" parent="."]
 script = ExtResource("1_pocjb")
+orbitRendererPrefab = ExtResource("3_212tm")
 
 [node name="RenderLayers" type="Control" parent="PlanetSystem" groups=["UniverseManager"]]
 z_index = -5
@@ -36,13 +40,16 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="PlanetSystem/RenderLayers/LocalContainer/LocalView"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -891.512, 0.108031, 601607)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -45.1401, 600120, 70.8232)
 cull_mask = 1047553
 far = 1e+06
 
 [node name="LocalSpace" type="Node3D" parent="PlanetSystem/RenderLayers/LocalContainer/LocalView" groups=["LocalSpace"]]
 
 [node name="Planets" type="Node3D" parent="PlanetSystem/RenderLayers/LocalContainer/LocalView/LocalSpace"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="PlanetSystem/RenderLayers/LocalContainer/LocalView/LocalSpace"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
 
 [node name="ScaledContainer" type="SubViewportContainer" parent="PlanetSystem/RenderLayers"]
 layout_mode = 1
@@ -59,8 +66,30 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="PlanetSystem/RenderLayers/ScaledContainer/ScaledView"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -891.512, 0.108031, 601607)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -45.1401, 600120, 70.8232)
 near = 10.0
 far = 2e+08
 
 [node name="ScaledSpace" type="Node3D" parent="PlanetSystem/RenderLayers/ScaledContainer/ScaledView" groups=["ScaledSpace"]]
+
+[node name="OrbitRenderers" type="Control" parent="PlanetSystem/RenderLayers" groups=["OrbitRenderers"]]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Camera" type="Camera3D" parent="." groups=["Camera"]]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -45.1401, 600120, 70.8232)
+cull_mask = 1047552
+far = 1e+06
+script = ExtResource("3_e1hhh")
+movementSpeed = 1e+07
+
+[node name="Local" type="RemoteTransform3D" parent="Camera"]
+remote_path = NodePath("../../PlanetSystem/RenderLayers/LocalContainer/LocalView/Camera3D")
+
+[node name="Scaled" type="RemoteTransform3D" parent="Camera"]
+remote_path = NodePath("../../PlanetSystem/RenderLayers/ScaledContainer/ScaledView/Camera3D")
+
+[node name="UniverseMan" type="Node3D" parent="."]
+script = ExtResource("5_xtqc4")

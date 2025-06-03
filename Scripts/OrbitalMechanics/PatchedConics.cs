@@ -306,7 +306,7 @@ public class Orbit
     public double longitudeOfAscendingNode;
     public double trueAnomaly;
     public double trueAnomalyAtEpoch;
-    public double time;
+    public double sphereOfInfluence;
 
     public double period;
 
@@ -332,7 +332,6 @@ public class Orbit
         GD.Print("Argument Of Periapsis: " + argumentOfPeriapsis);
         GD.Print("Longitude of Ascending Node: " + longitudeOfAscendingNode);
         GD.Print("True Anomaly: " + trueAnomaly);
-        GD.Print("Time: " + time);
         GD.Print("Period: " + period);
         GD.Print("MU: " + MU);
         GD.Print("----------------------------------");

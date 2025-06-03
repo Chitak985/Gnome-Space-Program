@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using Godot.Collections;
 
@@ -10,7 +11,7 @@ public partial class FastNoise3D : Node
 
     public float SamplePoint(Vector3 position)
     {
-        float height = noise.GetNoise3D(position.X, position.Y, position.Z);
+        float height = (noise.GetNoise3D(position.X*10, position.Y*10, position.Z*10) + 1.0f) * 0.5f;
         return height * deformity + offset;
     }
 
@@ -34,13 +35,13 @@ public partial class FastNoise3D : Node
         deformity = dict.TryGetValue("deformity", out var def) ? (float)def : (float)PlanetSystem.MissingNum(path, "pqs/mods/fastNoise3D/deformity");
         offset = dict.TryGetValue("offset", out var off) ? (float)off : (float)PlanetSystem.MissingNum(path, "pqs/mods/fastNoise3D/offset");
         // convert array to vector3 offset
-        if (ConfigUtility.TryGetArray("noiseOffset", dict, out Array offs))
+        if (ConfigUtility.TryGetArray("noiseOffset", dict, out Godot.Collections.Array offs))
         {
             noise.Offset = new Vector3((float)offs[0],(float)offs[1],(float)offs[2]);
         }else{
             noise.Offset = new Vector3(0,0,0);
         }
-        noise.Frequency = dict.TryGetValue("frequency", out var frq) ? (float)frq : (float)PlanetSystem.MissingNum(path, "pqs/mods/fastNoise3D/frequency") / 10000f;
+        noise.Frequency = dict.TryGetValue("frequency", out var frq) ? (float)frq / 10000f : (float)PlanetSystem.MissingNum(path, "pqs/mods/fastNoise3D/frequency");
 
         // Fractal noise
         if (ConfigUtility.TryGetDictionary("fractal", dict, out Dictionary fractal))
@@ -60,7 +61,7 @@ public partial class FastNoise3D : Node
             noise.FractalLacunarity = fractal.TryGetValue("lacunarity", out var lac) ?
                 (int)lac :
                 (int)PlanetSystem.MissingNum(path, "pqs/mods/fastNoise3D/fractal/lacunarity");
-            noise.FractalGain = fractal.TryGetValue("lacunarity", out var gin) ?
+            noise.FractalGain = fractal.TryGetValue("gain", out var gin) ?
                 (float)gin :
                 (float)PlanetSystem.MissingNum(path, "pqs/mods/fastNoise3D/fractal/gain");
             noise.FractalWeightedStrength = fractal.TryGetValue("weightedStrength", out var wsr) ?

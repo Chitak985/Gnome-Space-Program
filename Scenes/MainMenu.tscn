@@ -1,30 +1,15 @@
-[gd_scene load_steps=18 format=3 uid="uid://buejer35m8rkv"]
+[gd_scene load_steps=13 format=3 uid="uid://buejer35m8rkv"]
 
 [ext_resource type="Script" uid="uid://dacy2c0buk3vv" path="res://Scripts/CameraMouseMovement.cs" id="1_rrcx7"]
 [ext_resource type="Script" uid="uid://gr3sksxxiiif" path="res://Scripts/UniverseManager.cs" id="3_fh7cp"]
 [ext_resource type="Script" uid="uid://bttvjiyoqtv5f" path="res://Scripts/TerrainGeneration/Planet.cs" id="4_8e205"]
 [ext_resource type="Script" uid="uid://ksmq4us6ndfy" path="res://Scripts/TerrainGeneration/TerrainGen.cs" id="5_7467j"]
-[ext_resource type="Material" uid="uid://c6ajox4r7txx4" path="res://Assets/Materials/Grass.tres" id="6_2x1g0"]
-[ext_resource type="Material" uid="uid://d23tukoaw8yvl" path="res://Assets/Materials/Water.tres" id="7_riqfo"]
 [ext_resource type="Theme" uid="uid://rakpeu6pf05y" path="res://Assets/Materials/MainMenu/MainMenuUI.tres" id="10_loo7a"]
-[ext_resource type="Material" uid="uid://fse6i8dj044i" path="res://Assets/Materials/Sun.tres" id="10_pjscj"]
 [ext_resource type="Script" uid="uid://c4p5wqtqh1cpr" path="res://Scripts/SceneSwitcher.cs" id="11_if7li"]
 [ext_resource type="Texture2D" uid="uid://ck7qlvqe75vuk" path="res://Assets/Textures/sunSpikes.png" id="11_m7n2d"]
 [ext_resource type="Script" uid="uid://djtoxfwqrseqd" path="res://Scripts/QuitGame.cs" id="12_fh7cp"]
 [ext_resource type="Texture2D" uid="uid://cekqkvmnxci7r" path="res://Assets/Textures/shithead.png" id="13_fh7cp"]
 [ext_resource type="PackedScene" uid="uid://hlhaljtudxey" path="res://Assets/Prefabs/world_environment.tscn" id="14_8e205"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_lhdhw"]
-frequency = 0.0281
-offset = Vector3(-0.2, 0, 0)
-fractal_type = 3
-fractal_octaves = 10
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_2vltj"]
-noise_type = 2
-frequency = 0.0856
-fractal_octaves = 10
-fractal_lacunarity = 3.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m06uv"]
 transparency = 1
@@ -90,28 +75,18 @@ radius = 600000.0
 script = ExtResource("5_7467j")
 runInSeparateThread = false
 radius = 600000.0
-perQuadSubdivison = 8
 maxLevel = 15
 minRenderLevel = 5
 minColliderLevel = 14
 player = NodePath("../../../../../../Camera3D")
-material = ExtResource("6_2x1g0")
-baseNoise = SubResource("FastNoiseLite_lhdhw")
-baseNoiseDeformity = 0.02
-detailNoise = SubResource("FastNoiseLite_2vltj")
-detailNoiseDeformity = 0.01
 
 [node name="PQS_Container_Ocean" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Gnobe" node_paths=PackedStringArray("player")]
 script = ExtResource("5_7467j")
 runInSeparateThread = false
 radius = 601000.0
-perQuadSubdivison = 8
 maxLevel = 10
 minRenderLevel = 5
 player = NodePath("../../../../../../Camera3D")
-material = ExtResource("7_riqfo")
-baseNoise = SubResource("FastNoiseLite_lhdhw")
-detailNoise = SubResource("FastNoiseLite_2vltj")
 
 [node name="Misc" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Gnobe"]
 
@@ -129,16 +104,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.49598e+10)
 script = ExtResource("5_7467j")
 runInSeparateThread = false
 radius = 6.957e+07
-perQuadSubdivison = 8
 maxLevel = 15
 minRenderLevel = 5
 minColliderLevel = 9999999
 player = NodePath("../../../../../../../Camera3D")
-material = ExtResource("10_pjscj")
-baseNoise = SubResource("FastNoiseLite_lhdhw")
-baseNoiseDeformity = 0.02
-detailNoise = SubResource("FastNoiseLite_2vltj")
-detailNoiseDeformity = 0.01
 scaledBillboard = SubResource("QuadMesh_i4vn6")
 
 [node name="CamContainer" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace"]

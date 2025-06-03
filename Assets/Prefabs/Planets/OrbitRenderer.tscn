@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://oo6ip25lyjt3"]
+
+[ext_resource type="Script" uid="uid://smi7genli4un" path="res://Scripts/OrbitalMechanics/OrbitRenderer.cs" id="1_cwc7o"]
+
+[sub_resource type="Gradient" id="Gradient_f0umb"]
+offsets = PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1)
+colors = PackedColorArray(1, 0, 0, 1, 1, 0.65098, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0.94902, 1, 0.766326, 0.000313042, 0.730732, 1)
+metadata/_snap_enabled = true
+
+[node name="OrbitRenderer" type="Line2D"]
+closed = true
+width = 3.0
+gradient = SubResource("Gradient_f0umb")
+script = ExtResource("1_cwc7o")
+enabled = true
+precision = 1000.0

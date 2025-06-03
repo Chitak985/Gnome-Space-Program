@@ -108,7 +108,6 @@ public partial class OrbitTester : Node3D
         {
             if (cBody.orbit != null && !paused)
             {
-                cBody.orbit.time = time;
                 if (useVelocity)
                 {
                     Orbit orbit = PatchedConics.ECItoKOE(cBody.cartesianData);

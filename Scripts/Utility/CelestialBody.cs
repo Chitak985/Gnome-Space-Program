@@ -44,8 +44,9 @@ public partial class CelestialBody : Node3D
             (Double3 position, Double3 velocity) = PatchedConics.KOEtoECI(orbit);
             cartesianData.position = position;
             cartesianData.velocity = velocity;
-            GD.Print(SaveManager.Instance.saveTime);
-            GD.Print($"{cartesianData.position.X}, {cartesianData.position.Y}, {cartesianData.position.Z}");
+            //GD.Print(SaveManager.Instance.saveTime);
+            //GD.Print($"{cartesianData.position.X}, {cartesianData.position.Y}, {cartesianData.position.Z}");
+            Position = cartesianData.position.GetPosYUp().ToFloat3();
         }
     }
 }

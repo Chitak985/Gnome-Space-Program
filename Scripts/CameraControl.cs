@@ -20,7 +20,7 @@ public partial class CameraControl : Camera3D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		universeManager = (UniverseManager)GetTree().GetFirstNodeInGroup("UniverseManager");
+		//universeManager = (UniverseManager)GetTree().GetFirstNodeInGroup("UniverseManager");
 		localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");
 		RenderingServer.SetDebugGenerateWireframes(true);
 		localVP = (SubViewport)GetTree().GetFirstNodeInGroup("LocalSpace").GetParent();;
