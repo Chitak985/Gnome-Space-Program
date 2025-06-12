@@ -19,5 +19,8 @@ public partial class SaveManager : Node
     {
         // Increment time since save creation (for orbital calculations mostly)
         saveTime += delta * 1000 * timeSpeed / 1000;
+
+        // Set physics speed to match time speed
+        Engine.TimeScale = timeSpeed;
     }
 }

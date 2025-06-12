@@ -5,5 +5,33 @@
     "name": "Sun",
     "mass": 1.7565459e28,
     "radius": 69570000
+  },
+  "pqs": {
+    "pqsMods": [
+      {
+        "mod": "fastNoise3D",
+        "type": "cellular",
+        "seed": 0,
+        "noiseOffset": [0,0,0],
+        "deformity": 1200000,
+        "offset": 0,
+        "frequency": 10000,
+        "fractal": {
+          "type": "fbm",
+          "octaves": 10,
+          "lacunarity": 2,
+          "gain": 0.5,
+          "weightedStrength": 0,
+          "pingPongParams": {
+            "pingPongStrength": 2
+          }
+        },
+        "cellular": {
+          "distanceFunction": "euclidean",
+          "jitter": 1,
+          "returnType": "distance"
+        }
+      }
+    ]
   }
 }

@@ -122,7 +122,7 @@ public partial class PlanetSystem : Node3D
 		{
 			OrbitRenderer renderer = (OrbitRenderer)orbitRendererPrefab.Instantiate();
 			renderer.cBody = cBody;
-			renderer.camera = (Camera3D)GetTree().GetFirstNodeInGroup("Camera");
+			renderer.camera = ((RemoteCam)GetTree().GetFirstNodeInGroup("Camera")).localCamera;
 			orbitRenderers.AddChild(renderer);
 		}
 		if (cBody.isRoot) rootBody = cBody;
@@ -130,7 +130,6 @@ public partial class PlanetSystem : Node3D
         {
 			cBody = cBody,
 			runInSeparateThread = false,
-			player = (Camera3D)GetTree().GetFirstNodeInGroup("Camera"),
             radius = (float)cBody.radius
         };
         cBody.AddChild(cBody.pqsSphere);

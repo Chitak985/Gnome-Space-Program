@@ -3,7 +3,7 @@ using Godot.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-// TODO: make a "sphre of influence" system to keep the influencing planet at 0,0,0 (floating point imprecision bullshit)
+// TODO: make a "sphere of influence" system to keep the influencing planet at 0,0,0 (floating point imprecision bullshit)
 // Somehow invert the position of every body so that the actual planet of influence remains stationary??? HOW TF DO I DO THAT?
 
 public partial class UniverseManager : Node

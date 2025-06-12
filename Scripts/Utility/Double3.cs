@@ -36,6 +36,16 @@ public class Double3(double x, double y, double z)
         return Math.Sqrt(X*X + Y*Y + Z*Z);
     }
 
+    public double DistanceTo(Double3 vec)
+    {
+        return Math.Sqrt(Math.Pow(X - vec.X, 2) + Math.Pow(Y - vec.Y, 2) + Math.Pow(Z - vec.Z, 2));
+    }
+
+    public Double3 DirectionTo(Double3 vec)
+    {
+        return (this-vec).Normalized();
+    }
+
     public Double3 Clip(double min, double max)
     {
         double x = X;
@@ -97,5 +107,15 @@ public class Double3(double x, double y, double z)
             (float)X,
             (float)Y,
             (float)Z);
+    }
+
+    public static Double3 ConvertToDouble3(Vector3 vec)
+    {
+        return new Double3(vec.X, vec.Y, vec.Z);
+    }
+
+    public override string ToString()
+    {
+        return $"{X}, {Y}, {Z}";
     }
 }

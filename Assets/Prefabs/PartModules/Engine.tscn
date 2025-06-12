@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://e48at2cr02s6"]
-
-[ext_resource type="Script" uid="uid://btckmrxe5bymc" path="res://Scripts/PartModules/Engine.cs" id="1_qti1h"]
-
-[node name="Engine" type="Node3D"]
-script = ExtResource("1_qti1h")

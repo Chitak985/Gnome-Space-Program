@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 // All-encompassing class for orbital math
 /*
@@ -290,6 +291,47 @@ public partial class PatchedConics : Node
                 break;
         }
         return H;
+    }
+
+    // Checks what SOI a location is currently in and returns the corresponding cBody
+    public static (CelestialBody, Double3) GetSOI(CartesianData location)
+    {
+        if (PlanetSystem.Instance != null)
+        {
+            // Set SOI to infinity if orbit doesn't exist (only applicable to root body) 
+            double currentPlanetSOI = location.parent.orbit == null ? double.PositiveInfinity : location.parent.orbit.sphereOfInfluence;
+
+            if (location.parent != null)
+            {
+                if (location.position.DistanceTo(Double3.Zero) <= currentPlanetSOI)
+                {
+                    // Search orbiting bodies
+                    foreach (CelestialBody cBody in location.parent.childPlanets)
+                    {
+                        double cBodySOI = cBody.orbit == null ? double.PositiveInfinity : cBody.orbit.sphereOfInfluence;
+                        if (location.position.DistanceTo(cBody.cartesianData.position) < cBodySOI)
+                        {
+                            // Return child celestial because we are within both its and the parents SOI
+                            return (cBody, location.position - cBody.cartesianData.position);
+                        }
+                    }
+                    // Return current cBody because we are not within any child SOI
+                    return (location.parent, location.position);
+                }else{
+                    // Return parent body because we are outside the sphere of influence
+                    return (location.parent.orbit.parent, location.position + location.parent.cartesianData.position);
+                }
+            }else{
+                // Return root body as last resort fallback
+                // This should NEVER run because the outputted position is ambiguous!
+                GD.Print("Uh oh");
+                return (PlanetSystem.Instance.rootBody, Double3.Zero);
+            }
+        }else{
+            // No planets exist so we can't return anything
+            GD.Print("PlanetSystem Instance has not been set! It literally doesn't exist what are you doing!?!");
+            return (null, null);
+        }
     }
 }
 

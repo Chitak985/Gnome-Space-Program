@@ -1,10 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://b08reqxmoktvk"]
+[gd_scene load_steps=12 format=3 uid="uid://b08reqxmoktvk"]
 
 [ext_resource type="Script" uid="uid://cmbavjdks057k" path="res://Scripts/Utility/SaveManager.cs" id="1_a23cl"]
 [ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
 [ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
-[ext_resource type="Script" uid="uid://bbk43dfl1gye2" path="res://Scripts/CameraControl.cs" id="3_e1hhh"]
-[ext_resource type="Script" uid="uid://gr3sksxxiiif" path="res://Scripts/UniverseManager.cs" id="5_xtqc4"]
+[ext_resource type="Script" uid="uid://cx562yu367by5" path="res://Scripts/FlightLogic/FlightManager.cs" id="4_0mdm0"]
+[ext_resource type="Script" uid="uid://cq2ypk30m1p81" path="res://Scripts/FlightLogic/FloatingOrigin.cs" id="5_xtqc4"]
+[ext_resource type="Script" uid="uid://ccsh3foyy7qd5" path="res://Scripts/Utility/RemoteCam.cs" id="6_0mdm0"]
+[ext_resource type="Script" uid="uid://ddof7qyevir3s" path="res://Scripts/FlightLogic/Craft.cs" id="6_ijjgm"]
+[ext_resource type="Script" uid="uid://dd80yp4sx7ohp" path="res://Scripts/FlightLogic/OrbitDriver.cs" id="8_yxkbd"]
+[ext_resource type="PackedScene" uid="uid://hlhaljtudxey" path="res://Assets/Prefabs/world_environment.tscn" id="9_2c3j4"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_0mdm0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ijjgm"]
 
 [node name="ActiveSave" type="Node3D"]
 script = ExtResource("1_a23cl")
@@ -40,7 +48,7 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="PlanetSystem/RenderLayers/LocalContainer/LocalView"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -45.1401, 600120, 70.8232)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 cull_mask = 1047553
 far = 1e+06
 
@@ -66,7 +74,7 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="PlanetSystem/RenderLayers/ScaledContainer/ScaledView"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -45.1401, 600120, 70.8232)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 near = 10.0
 far = 2e+08
 
@@ -78,18 +86,43 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Camera" type="Camera3D" parent="." groups=["Camera"]]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -45.1401, 600120, 70.8232)
-cull_mask = 1047552
-far = 1e+06
-script = ExtResource("3_e1hhh")
-movementSpeed = 1e+07
+[node name="ActiveCraft" type="Node" parent="." node_paths=PackedStringArray("currentCraft")]
+script = ExtResource("4_0mdm0")
+currentCraft = NodePath("Craft")
 
-[node name="Local" type="RemoteTransform3D" parent="Camera"]
-remote_path = NodePath("../../PlanetSystem/RenderLayers/LocalContainer/LocalView/Camera3D")
-
-[node name="Scaled" type="RemoteTransform3D" parent="Camera"]
-remote_path = NodePath("../../PlanetSystem/RenderLayers/ScaledContainer/ScaledView/Camera3D")
-
-[node name="UniverseMan" type="Node3D" parent="."]
+[node name="FloatingOrigin" type="Node" parent="ActiveCraft"]
 script = ExtResource("5_xtqc4")
+enabled = false
+
+[node name="Craft" type="RigidBody3D" parent="ActiveCraft" node_paths=PackedStringArray("modules")]
+script = ExtResource("6_ijjgm")
+modules = NodePath("Modules")
+freeMovement = true
+DEBUG_moveSpeed = 1e+07
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ActiveCraft/Craft"]
+mesh = SubResource("BoxMesh_0mdm0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ActiveCraft/Craft"]
+shape = SubResource("BoxShape3D_ijjgm")
+
+[node name="RemoteCam" type="Node3D" parent="ActiveCraft/Craft" node_paths=PackedStringArray("localCamera", "scaledCamera") groups=["Camera"]]
+script = ExtResource("6_0mdm0")
+localCamera = NodePath("../../../PlanetSystem/RenderLayers/LocalContainer/LocalView/Camera3D")
+scaledCamera = NodePath("../../../PlanetSystem/RenderLayers/ScaledContainer/ScaledView/Camera3D")
+
+[node name="Local" type="RemoteTransform3D" parent="ActiveCraft/Craft/RemoteCam"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+remote_path = NodePath("../../../../PlanetSystem/RenderLayers/LocalContainer/LocalView/Camera3D")
+
+[node name="Scaled" type="RemoteTransform3D" parent="ActiveCraft/Craft/RemoteCam"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+remote_path = NodePath("../../../../PlanetSystem/RenderLayers/ScaledContainer/ScaledView/Camera3D")
+
+[node name="Modules" type="Node" parent="ActiveCraft/Craft"]
+
+[node name="OrbitDriver" type="Node" parent="ActiveCraft/Craft/Modules" node_paths=PackedStringArray("craft")]
+script = ExtResource("8_yxkbd")
+craft = NodePath("../..")
+
+[node name="WorldEnvironment" parent="." instance=ExtResource("9_2c3j4")]

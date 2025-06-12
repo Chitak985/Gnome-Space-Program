@@ -12,6 +12,7 @@ config_version=5
 
 config/name="GnomeSpaceProgram"
 config/description="A spaceflight simulation game involving gnomes."
+config/tags=PackedStringArray("3d", "physics")
 run/main_scene="uid://buejer35m8rkv"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="uid://ghib0t8cv3ka"

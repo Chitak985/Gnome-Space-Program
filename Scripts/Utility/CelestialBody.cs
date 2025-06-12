@@ -36,8 +36,14 @@ public partial class CelestialBody : Node3D
     }
 
     public override void _Process(double delta)
-    {
+    {   
         // Propagate the cBody's orbit
+
+        // Subtract the current influencing cBody's position from our position
+        Double3 originPos = cartesianData.position - FlightManager.Instance.currentCraft.currentInfluence.cartesianData.position;
+
+        Position = originPos.GetPosYUp().ToFloat3();
+
         if (orbit != null)
         {
             orbit.trueAnomaly = PatchedConics.TimeToTrueAnomaly(orbit, SaveManager.Instance.saveTime, 0) + orbit.trueAnomalyAtEpoch;
@@ -46,7 +52,11 @@ public partial class CelestialBody : Node3D
             cartesianData.velocity = velocity;
             //GD.Print(SaveManager.Instance.saveTime);
             //GD.Print($"{cartesianData.position.X}, {cartesianData.position.Y}, {cartesianData.position.Z}");
-            Position = cartesianData.position.GetPosYUp().ToFloat3();
         }
+    }
+
+    public override string ToString()
+    {
+        return name;
     }
 }

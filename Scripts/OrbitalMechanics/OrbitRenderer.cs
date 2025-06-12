@@ -33,7 +33,7 @@ public partial class OrbitRenderer : Line2D
 			{
 				Double3 point = points[i];
 
-				Vector3 floatPos = point.GetPosYUp().ToFloat3();
+				Vector3 floatPos = point.GetPosYUp().ToFloat3() + FloatingOrigin.Instance.offset.ToFloat3();
 
 				Vector2 position = camera.UnprojectPosition(floatPos);
 
@@ -76,10 +76,10 @@ public partial class OrbitRenderer : Line2D
             (Double3 position, _) = PatchedConics.KOEtoECI(newOrbit);
 			//GD.Print(newOrbit.trueAnomaly);
 			//GD.Print($"{position.X} {position.Y} {position.Z}");
-			if (!camera.IsPositionBehind(position.GetPosYUp().ToFloat3()))
-			{
+			//if (!camera.IsPositionBehind(position.GetPosYUp().ToFloat3()))
+			//{
 				positions.Add(position);
-			}//else{
+			//}//else{
 			//	positions.Add(position);
 			//}
         }

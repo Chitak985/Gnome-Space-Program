@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dj8ouuelyxgrp"]
-
-[ext_resource type="Script" uid="uid://cs54ujy0a25v1" path="res://Scripts/PartModules/ReactionWheel.cs" id="1_umhf1"]
-
-[node name="ReactionWheel" type="Node3D"]
-script = ExtResource("1_umhf1")

@@ -11,7 +11,6 @@
 [ext_resource type="PackedScene" uid="uid://dgfxeiig7tdtd" path="res://Assets/Prefabs/gsc.tscn" id="8_0kuwm"]
 [ext_resource type="Texture2D" uid="uid://ck7qlvqe75vuk" path="res://Assets/Textures/sunSpikes.png" id="9_i4vn6"]
 [ext_resource type="PackedScene" uid="uid://cba4211bkgp0s" path="res://Assets/Prefabs/orbit_cam.tscn" id="11_0kuwm"]
-[ext_resource type="Script" uid="uid://dvfy3eukwnfqm" path="res://Scripts/CraftAssembly/CraftManager.cs" id="11_plivw"]
 [ext_resource type="PackedScene" uid="uid://hlhaljtudxey" path="res://Assets/Prefabs/world_environment.tscn" id="12_plivw"]
 [ext_resource type="PackedScene" uid="uid://bbfeq7evhiyvn" path="res://Assets/Prefabs/CraftContainer.tscn" id="14_h7oxk"]
 
@@ -37,10 +36,9 @@ _surfaces = [{
 }]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_brg3f"]
-noise_type = 3
+noise_type = 2
 frequency = 0.0281
 offset = Vector3(-0.2, 0, 0)
-fractal_type = 3
 fractal_octaves = 10
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_h7oxk"]
@@ -65,6 +63,51 @@ distance_fade_max_distance = 4096.0
 [sub_resource type="QuadMesh" id="QuadMesh_tw5oi"]
 material = SubResource("StandardMaterial3D_b4yei")
 size = Vector2(3e+07, 3e+07)
+
+[sub_resource type="CSharpScript" id="CSharpScript_f3agq"]
+script/source = "using Godot;
+using System;
+using System.Threading.Tasks;
+
+public partial class CraftManager : Node3D
+{
+	[Export] public PackedScene craftContainerScene;
+	// Called when the node enters the scene tree for the first time.
+	public Node3D launchLoc;
+	public UniverseManager universeManager;
+	public override void _Ready()
+	{
+		launchLoc = (Node3D)GetTree().GetFirstNodeInGroup(\"LaunchLocs\");
+		universeManager = (UniverseManager)GetTree().GetFirstNodeInGroup(\"UniverseManager\");
+		
+		if (Globals.Launching)
+		{
+			FlightInfo craftContainer = (FlightInfo)craftContainerScene.Instantiate();
+			AddChild(craftContainer);
+			GD.Print(Globals.SavedCraft);
+			Globals.Launching = false;
+			Globals.SavedCraft.Instantiate(craftContainer);
+			Globals.SavedCraft.CreateJoints(craftContainer);
+			//Globals.SavedCraft.FreezeCraft(false);
+			craftContainer.GlobalPosition = launchLoc.GlobalPosition;
+			craftContainer.GlobalRotationDegrees = launchLoc.GlobalRotationDegrees;
+			craftContainer.targetRotation = launchLoc.GlobalRotation;
+			craftContainer.rootPart = Globals.SavedCraft.instancedParts[0];
+			Globals.SavedCraft.FreezeCraft(false);
+			Globals.SavedCraft.TogglePartModules(true);
+
+			universeManager.player = Globals.SavedCraft.instancedParts[0];
+
+			craftContainer.createIVAUI(Globals.SavedCraft);
+		}
+	}
+
+	// Called every frame. 'delta' is the elapsed time since the previous frame.
+	//public override void _Process(double delta)
+	//{
+	//}
+}
+"
 
 [node name="Node3D2" type="Node3D"]
 
@@ -312,7 +355,7 @@ player = NodePath("../../../../../../../Camera")
 scaledBillboard = SubResource("QuadMesh_tw5oi")
 
 [node name="LoadedCrafts" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace"]
-script = ExtResource("11_plivw")
+script = SubResource("CSharpScript_f3agq")
 craftContainerScene = ExtResource("14_h7oxk")
 
 [node name="ScaledContainer" type="SubViewportContainer" parent="RenderLayers"]

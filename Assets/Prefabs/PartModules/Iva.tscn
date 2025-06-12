@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dntjd5xwpde6l"]
-
-[ext_resource type="Script" uid="uid://ciotkn5fjwt7r" path="res://Scripts/PartModules/Iva.cs" id="1_vfgbq"]
-
-[node name="IVA" type="RemoteTransform3D"]
-remote_path = NodePath("../IVA_View/IVA")
-script = ExtResource("1_vfgbq")
