@@ -309,17 +309,17 @@ public partial class PatchedConics : Node
                     foreach (CelestialBody cBody in location.parent.childPlanets)
                     {
                         double cBodySOI = cBody.orbit == null ? double.PositiveInfinity : cBody.orbit.sphereOfInfluence;
-                        if (location.position.DistanceTo(cBody.cartesianData.position) < cBodySOI)
+                        if (location.position.DistanceTo(cBody.cartesianData.position.GetPosYUp()) < cBodySOI)
                         {
                             // Return child celestial because we are within both its and the parents SOI
-                            return (cBody, location.position - cBody.cartesianData.position);
+                            return (cBody, location.position - cBody.cartesianData.position.GetPosYUp());
                         }
                     }
                     // Return current cBody because we are not within any child SOI
                     return (location.parent, location.position);
                 }else{
                     // Return parent body because we are outside the sphere of influence
-                    return (location.parent.orbit.parent, location.position + location.parent.cartesianData.position);
+                    return (location.parent.orbit.parent, location.position + location.parent.cartesianData.position.GetPosYUp());
                 }
             }else{
                 // Return root body as last resort fallback

@@ -40,7 +40,7 @@ public partial class CelestialBody : Node3D
         // Propagate the cBody's orbit
 
         // Subtract the current influencing cBody's position from our position
-        Double3 originPos = cartesianData.position - FlightManager.Instance.currentCraft.currentInfluence.cartesianData.position;
+        Double3 originPos = cartesianData.position - FlightManager.Instance.currentCraft.currentInfluence.cartesianData.position - FloatingOrigin.Instance.offset;
 
         Position = originPos.GetPosYUp().ToFloat3();
 

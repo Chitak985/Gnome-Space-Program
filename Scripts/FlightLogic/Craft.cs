@@ -73,9 +73,9 @@ public partial class Craft : RigidBody3D
             }
 
             if (Input.IsKeyPressed(Key.E)){
-                RotateObjectLocal(Vector3.Forward, 1f * (float)delta);
+                RotateObjectLocal(Vector3.Forward, 0.02f);
             }else if (Input.IsKeyPressed(Key.Q)){
-                RotateObjectLocal(Vector3.Forward, -1f * (float)delta);
+                RotateObjectLocal(Vector3.Forward, -0.02f);
             }
         }else{
             Freeze = false;

@@ -16,7 +16,8 @@ public partial class FloatingOrigin : Node
         Instance = this;
     }
 
-    public override void _PhysicsProcess(double delta)
+    // Stupid function but we need things to be synchronized
+    public void RunCheck()
     {
         if (enabled)
         {
