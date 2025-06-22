@@ -16,22 +16,25 @@ public partial class FloatingOrigin : Node
         Instance = this;
     }
 
-    // Stupid function but we need things to be synchronized
-    public void RunCheck()
+    // This sucks
+    public override void _Process(double delta)
     {
         if (enabled)
         {
             Craft currentCraft = FlightManager.Instance.currentCraft;
 
-            if (currentCraft.truePosition != null)
+            if (currentCraft.GlobalPosition != null)
             {
-                double craftDistance = currentCraft.truePosition.Length();
+                double craftDistance = currentCraft.GlobalPosition.Length();
 
                 if (craftDistance > distanceThreshold)
                 {
-                    offset -= currentCraft.truePosition;
-
+                    offset -= Double3.ConvertToDouble3(currentCraft.GlobalPosition);
                     currentCraft.Position = Vector3.Zero;
+                    foreach (CelestialBody cbody in PlanetSystem.Instance.celestialBodies)
+                    {
+                        cbody.ProcessOrbitalPosition();
+                    }
                 }
             }
         }else{

@@ -16,6 +16,7 @@
 
 [node name="ActiveSave" type="Node3D"]
 script = ExtResource("1_a23cl")
+timeSpeed = 0.0
 
 [node name="PlanetSystem" type="Node3D" parent="."]
 script = ExtResource("1_pocjb")
@@ -93,7 +94,6 @@ currentCraft = NodePath("Craft")
 
 [node name="FloatingOrigin" type="Node" parent="ActiveCraft"]
 script = ExtResource("5_xtqc4")
-enabled = false
 
 [node name="Craft" type="RigidBody3D" parent="ActiveCraft" node_paths=PackedStringArray("modules")]
 script = ExtResource("6_ijjgm")

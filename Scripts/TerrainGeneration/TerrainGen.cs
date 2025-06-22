@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 
 public partial class TerrainGen : Node3D
 {
-    [Export] public bool pauseTracking = false;
-
     [Export] public bool runInSeparateThread = true;
 
     [Export] public float radius = 600.0f;
@@ -33,9 +31,8 @@ public partial class TerrainGen : Node3D
     private Vector3 planetCenter;
 
     private Vector3 playerPos;
-    private Vector3 savedPlayerPos; // totally useless outside of debugging
-    private List<Quad> quadList = [];
-    private List<QuadDetailLevel> quadDetailLevels = [];
+    private readonly List<Quad> quadList = [];
+    private readonly List<QuadDetailLevel> quadDetailLevels = [];
 
     private readonly List<Quad> quadsQueuedForDeletion = [];
 
@@ -196,7 +193,7 @@ public partial class TerrainGen : Node3D
               List<Vector3> globalQuadVertices) = ProcessQuadMesh(quad, quadMesh);
 
             (Godot.Collections.Array largeMeshData,
-              List<Vector3> globalLargeVertices) = ProcessQuadMesh(quad, largeMesh);
+              _) = ProcessQuadMesh(quad, largeMesh);
 
             quad.meshData = quadMeshData;
 
@@ -432,7 +429,6 @@ public partial class TerrainGen : Node3D
         Vector3 quadScale = quad.scale;
 
         Vector3[] originalVertices = (Vector3[])quad.originalMeshData[(int)Mesh.ArrayType.Vertex];
-        int[] indices = (int[])quad.originalMeshData[(int)Mesh.ArrayType.Index];
 
         Vector3[] largeVertices = (Vector3[])quad.largeMeshData[(int)Mesh.ArrayType.Vertex];
         int[] largeIndices = (int[])quad.largeMeshData[(int)Mesh.ArrayType.Index];
@@ -442,17 +438,12 @@ public partial class TerrainGen : Node3D
         // data used in the creation of the new mesh
         Godot.Collections.Array newMeshData = quad.originalMeshData.Duplicate();
 
-        Vector3[] newTemporaryNormals = new Vector3[largeVertices.Length];
-        Vector3[] newNormals = new Vector3[originalVertices.Length];
-
         // processing of the mesh data
         (Vector3[] newVertices, List<Vector3> newGlobalVertices) = ProcessVertices(quadNodeGlobalPos, quadScale.X, originalVertices, 1f);
-        (Vector3[] newLargeVertices, List<Vector3> newLargeGlobalVertices) = ProcessVertices(quadNodeGlobalPos, quadScale.X, largeVertices, 1.445f);
+        (Vector3[] newLargeVertices, _) = ProcessVertices(quadNodeGlobalPos, quadScale.X, largeVertices, 1.445f);
 
-        // collider
-
-        newTemporaryNormals = MeshManipulation.calculateSmoothNormals(newLargeVertices, largeIndices);
-        newNormals = FilterCenterVector3s(newTemporaryNormals, 2, perQuadSubdivison+4);
+        Vector3[] newTemporaryNormals = MeshManipulation.calculateSmoothNormals(newLargeVertices, largeIndices);
+        Vector3[] newNormals = FilterCenterVector3s(newTemporaryNormals, 2, perQuadSubdivison + 4);
 
         // Creation of the new mesh
         newMeshData[(int)Mesh.ArrayType.Vertex] = newVertices;

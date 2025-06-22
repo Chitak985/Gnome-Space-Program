@@ -39,8 +39,14 @@ public partial class CelestialBody : Node3D
     {   
         // Propagate the cBody's orbit
 
+        ProcessOrbitalPosition();
+    }
+
+    // Process the cBody orbital positioning calculations. Used by floating origin to "force" repositioning to avoid jitter.
+    public void ProcessOrbitalPosition()
+    {
         // Subtract the current influencing cBody's position from our position
-        Double3 originPos = cartesianData.position - FlightManager.Instance.currentCraft.currentInfluence.cartesianData.position - FloatingOrigin.Instance.offset;
+        Double3 originPos = cartesianData.position + FloatingOrigin.Instance.offset.GetPosYUp();
 
         Position = originPos.GetPosYUp().ToFloat3();
 

@@ -33,13 +33,13 @@ public partial class OrbitDriver : Node
         enabled = true;
     }
 
-    public override void _PhysicsProcess(double delta)
+    public override void _Process(double delta)
     {
         if (enabled)
         {
             // Use Newtonian motion (game engine physics) if time warp is under 10x
-            cartData.position = Double3.ConvertToDouble3(craft.Position) - FloatingOrigin.Instance.offset;
-
+            cartData.position = Double3.ConvertToDouble3(craft.Position) - craft.currentInfluence.cartesianData.position.GetPosYUp() - FloatingOrigin.Instance.offset;
+            
             (CelestialBody cBody, Double3 newPosition) = PatchedConics.GetSOI(cartData);
             if (craft.currentInfluence != cBody)
             {
@@ -47,7 +47,7 @@ public partial class OrbitDriver : Node
                 craft.currentInfluence = cBody;
                 orbit.parent = cBody;
                 cartData.parent = cBody;
-                craft.Position = newPosition.ToFloat3();
+                //craft.Position = newPosition.ToFloat3();
             }
         }
     }
