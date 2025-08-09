@@ -1,26 +1,55 @@
 using Godot;
+using Godot.Collections;
 using System;
+using System.Collections.Generic;
 
-public partial class SaveManager : Node
+public partial class SaveManager : Control
 {
-    public static SaveManager Instance;
-
-    [Export] public double timeSpeed = 1;
-
-    // In milliseconds
-    public double saveTime;
-
-    public override void _Ready()
+    public void CreateSave(SaveData saveData)
     {
-        Instance = this;
+
     }
 
-    public override void _Process(double delta)
+    public static List<PlanetPack> GetPlanetPacks()
     {
-        // Increment time since save creation (for orbital calculations mostly)
-        saveTime += delta * 1000 * timeSpeed / 1000;
+        List<PlanetPack> planetPacks = [];
 
-        // Set physics speed to match time speed
-        Engine.TimeScale = timeSpeed;
+        List<string> metaConfigs = ConfigUtility.GetConfigs(ConfigUtility.GameData, "cPackMeta");
+
+        foreach (string cfgPath in metaConfigs)
+        {
+            Dictionary data = ConfigUtility.ParseConfig(cfgPath);
+
+            // ugh
+            PlanetPack pack = new PlanetPack
+            {
+                type = (string)data["packType"],
+                name = (string)data["name"],
+                path = (string)data["path"],
+            };
+
+            if (ConfigUtility.TryGetDictionary("displayData", data, out Dictionary displayData))
+            {
+                pack.displayName = (string)displayData["displayName"];
+            }
+
+            planetPacks.Add(pack);
+        }
+
+        return planetPacks;
     }
+}
+
+public struct PlanetPack
+{
+    public string type;
+    public string name;
+    public string displayName;
+    public string path;
+}
+
+public struct SaveData
+{
+    // Path to 
+    public string rootPSystem;
 }

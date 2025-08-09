@@ -131,7 +131,7 @@ public partial class OrbitTester : Node3D
                     orbitPos = anotherBody.cartesianData.position.ToFloat3();
                     orbitVel = anotherBody.cartesianData.velocity.ToFloat3();
 
-                    cBody.orbit.trueAnomaly = PatchedConics.TimeToTrueAnomaly(cBody.orbit, SaveManager.Instance.saveTime, 0);
+                    cBody.orbit.trueAnomaly = PatchedConics.TimeToTrueAnomaly(cBody.orbit, ActiveSave.Instance.saveTime, 0);
                     GD.Print(cBody.orbit.period);
 
                     (Double3 position, Double3 velocity) = PatchedConics.KOEtoECI(cBody.orbit);//Time.GetUnixTimeFromSystem()*timeSpeed, 0);

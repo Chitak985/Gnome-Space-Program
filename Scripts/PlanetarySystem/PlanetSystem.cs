@@ -8,6 +8,7 @@ public partial class PlanetSystem : Node3D
 	[Export] public PackedScene orbitRendererPrefab;
 
 	public static PlanetSystem Instance;
+	// Default config path
 	public static readonly string ConfigPath = "res://GameData";
 
 	public static readonly string classTag = "([color=green]PlanetSystem[color=white])";
@@ -23,13 +24,24 @@ public partial class PlanetSystem : Node3D
 	public List<CelestialBody> celestialBodies = [];
 
 	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+	/*public override void _Ready()
 	{
 		Instance = this;
 		localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");
 		localSpacePlanets = (Node3D)localSpace.FindChild("Planets");
 		orbitRenderers = (Control)GetTree().GetFirstNodeInGroup("OrbitRenderers");
 		CreateSystem(GetPlanetConfigs(ConfigPath));
+	}*/
+
+	// Start the Planet System for this particular save
+	public void InitSystem(List<string> chosenPacks)
+	{
+        // Get all relevant celestial body configs loaded in this save
+        List<string> planetConfigs = [];
+        foreach (string pack in chosenPacks)
+		{
+            planetConfigs.AddRange(GetPlanetConfigs(pack));
+        }
 	}
 
 	public void CreateSystem(List<string> configs)

@@ -52,7 +52,7 @@ public partial class CelestialBody : Node3D
 
         if (orbit != null)
         {
-            orbit.trueAnomaly = PatchedConics.TimeToTrueAnomaly(orbit, SaveManager.Instance.saveTime, 0) + orbit.trueAnomalyAtEpoch;
+            orbit.trueAnomaly = PatchedConics.TimeToTrueAnomaly(orbit, ActiveSave.Instance.saveTime, 0) + orbit.trueAnomalyAtEpoch;
             (Double3 position, Double3 velocity) = PatchedConics.KOEtoECI(orbit);
             cartesianData.position = position;
             cartesianData.velocity = velocity;

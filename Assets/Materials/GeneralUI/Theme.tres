@@ -1,24 +1,40 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://b4ia03110swah"]
+[gd_resource type="Theme" load_steps=14 format=3 uid="uid://b4ia03110swah"]
 
-[ext_resource type="StyleBox" uid="uid://dce6unkt2kpfk" path="res://Assets/Materials/GeneralUI/button_hover.tres" id="1_iy3bl"]
 [ext_resource type="StyleBox" uid="uid://bex3aipdq6gde" path="res://Assets/Materials/GeneralUI/label.tres" id="1_mwhhf"]
-[ext_resource type="StyleBox" uid="uid://cld2a7f5w4g0h" path="res://Assets/Materials/GeneralUI/button_normal.tres" id="1_vlywg"]
-[ext_resource type="StyleBox" uid="uid://upc2ld4fp4d8" path="res://Assets/Materials/GeneralUI/button_press.tres" id="2_5fwyf"]
+[ext_resource type="FontVariation" uid="uid://ckkhw5pqir4c7" path="res://Assets/Fonts/VCR_OST_HighMargin.tres" id="1_yryix"]
+[ext_resource type="StyleBox" uid="uid://dce6unkt2kpfk" path="res://Assets/Materials/GeneralUI/Button/button_hover.tres" id="2_dirlc"]
+[ext_resource type="StyleBox" uid="uid://upc2ld4fp4d8" path="res://Assets/Materials/GeneralUI/Button/button_press.tres" id="3_hqfxh"]
+[ext_resource type="StyleBox" uid="uid://cld2a7f5w4g0h" path="res://Assets/Materials/GeneralUI/Button/button_normal.tres" id="4_27f02"]
 [ext_resource type="StyleBox" uid="uid://ym67sb4x7cs0" path="res://Assets/Materials/GeneralUI/panel.tres" id="5_jmk56"]
+[ext_resource type="StyleBox" uid="uid://brbtjoqcqagif" path="res://Assets/Materials/GeneralUI/OptionButton/button_hover.tres" id="6_5b12m"]
 [ext_resource type="StyleBox" uid="uid://ds5qk5utji6w" path="res://Assets/Materials/GeneralUI/throttle_foreg.tres" id="6_ifukn"]
 [ext_resource type="StyleBox" uid="uid://cfuo28a102x4u" path="res://Assets/Materials/GeneralUI/throttle_backg.tres" id="6_xkgf2"]
+[ext_resource type="StyleBox" uid="uid://6y80ygj8bqic" path="res://Assets/Materials/GeneralUI/OptionButton/button_normal.tres" id="7_mvnfj"]
+[ext_resource type="StyleBox" uid="uid://c1rxvmxou4rxx" path="res://Assets/Materials/GeneralUI/OptionButton/button_press.tres" id="8_ahioa"]
+[ext_resource type="StyleBox" uid="uid://cyqx3jqydk5d0" path="res://Assets/Materials/GeneralUI/marginPanel.tres" id="10_hqfxh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5fwyf"]
 
 [resource]
 Button/font_sizes/font_size = 20
+Button/fonts/font = ExtResource("1_yryix")
 Button/styles/focus = SubResource("StyleBoxEmpty_5fwyf")
-Button/styles/hover = ExtResource("1_iy3bl")
-Button/styles/hover_pressed = ExtResource("2_5fwyf")
-Button/styles/normal = ExtResource("1_vlywg")
-Button/styles/pressed = ExtResource("2_5fwyf")
+Button/styles/hover = ExtResource("2_dirlc")
+Button/styles/hover_pressed = ExtResource("3_hqfxh")
+Button/styles/normal = ExtResource("4_27f02")
+Button/styles/pressed = ExtResource("3_hqfxh")
+Label/fonts/font = ExtResource("1_yryix")
 Label/styles/normal = ExtResource("1_mwhhf")
+OptionButton/styles/hover = ExtResource("6_5b12m")
+OptionButton/styles/hover_pressed = ExtResource("6_5b12m")
+OptionButton/styles/normal = ExtResource("7_mvnfj")
+OptionButton/styles/pressed = ExtResource("8_ahioa")
 Panel/styles/panel = ExtResource("5_jmk56")
-PanelContainer/styles/panel = null
+PanelContainer/styles/panel = ExtResource("5_jmk56")
+PopupMenu/fonts/font = ExtResource("1_yryix")
+PopupMenu/fonts/font_separator = ExtResource("1_yryix")
+PopupMenu/fonts/title_font = ExtResource("1_yryix")
+PopupMenu/styles/panel = ExtResource("10_hqfxh")
 ProgressBar/styles/background = ExtResource("6_xkgf2")
 ProgressBar/styles/fill = ExtResource("6_ifukn")
+ScrollContainer/styles/panel = ExtResource("10_hqfxh")

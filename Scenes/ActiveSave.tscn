@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://b08reqxmoktvk"]
 
-[ext_resource type="Script" uid="uid://cmbavjdks057k" path="res://Scripts/Utility/SaveManager.cs" id="1_a23cl"]
+[ext_resource type="Script" uid="uid://c3i0ynvo54sk1" path="res://Scripts/Utility/ActiveSave.cs" id="1_2c3j4"]
 [ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
 [ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
 [ext_resource type="Script" uid="uid://cx562yu367by5" path="res://Scripts/FlightLogic/FlightManager.cs" id="4_0mdm0"]
@@ -15,8 +15,7 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_ijjgm"]
 
 [node name="ActiveSave" type="Node3D"]
-script = ExtResource("1_a23cl")
-timeSpeed = 0.0
+script = ExtResource("1_2c3j4")
 
 [node name="PlanetSystem" type="Node3D" parent="."]
 script = ExtResource("1_pocjb")
