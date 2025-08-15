@@ -93,7 +93,7 @@ offset_top = 192.0
 offset_right = 768.0
 offset_bottom = 447.0
 script = ExtResource("2_853f1")
-rootSystemChoice = NodePath("ScrollContainer/VBoxContainer/PlanetPackChooser/RootSystem")
+rootSystemChoice = NodePath("")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainMenuUI/SaveManager/SaveCreation"]
 layout_mode = 0
@@ -102,20 +102,7 @@ offset_top = 13.0
 offset_right = 367.0
 offset_bottom = 206.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMenuUI/SaveManager/SaveCreation/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PlanetPackChooser" type="VBoxContainer" parent="MainMenuUI/SaveManager/SaveCreation/ScrollContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MainMenuUI/SaveManager/SaveCreation/ScrollContainer/VBoxContainer/PlanetPackChooser"]
-layout_mode = 2
-tooltip_text = "A central system is required, but doesn't need to be the system you start at."
-mouse_filter = 0
-text = "Root Planetary System:"
-
-[node name="RootSystem" type="OptionButton" parent="MainMenuUI/SaveManager/SaveCreation/ScrollContainer/VBoxContainer/PlanetPackChooser"]
+[node name="Tree" type="Tree" parent="MainMenuUI/SaveManager/SaveCreation/ScrollContainer"]
 layout_mode = 2
 
 [node name="CancelButton" type="Button" parent="MainMenuUI/SaveManager/SaveCreation"]

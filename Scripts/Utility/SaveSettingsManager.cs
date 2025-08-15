@@ -7,18 +7,16 @@ using System.Collections.Generic;
 public partial class SaveSettingsManager : Panel
 {
     public List<PlanetPack> planetPacks;
-    [Export] public OptionButton rootSystemChoice;
-
+    [Export] public Dictionary<Variant, Variant> options;
     public override void _Ready()
     {
         planetPacks = SaveManager.GetPlanetPacks();
         GD.Print($"Got Planet Packs! Total: {planetPacks.Count}");
+    }
 
-        for (int i = 0; i < planetPacks.Count; i++)
-        {
-            GD.Print(planetPacks[i].path);
-            rootSystemChoice.AddItem(planetPacks[i].displayName, i);
-        }
+    public void CreateOptionTree()
+    {
+
     }
 
     //public SaveData CompileSaveData()
