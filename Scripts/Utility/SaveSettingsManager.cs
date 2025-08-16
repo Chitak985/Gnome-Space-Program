@@ -29,10 +29,35 @@ public partial class SaveSettingsManager : Panel
     public void CreateOptionTree(Dictionary<string, SaveParam> saveSchema)
     {
         GD.Print(saveSchema.ElementAt(0));
+
+        Dictionary<string, TreeItem> categories = [];
+
         TreeItem root = saveParamTree.CreateItem();
-        root.SetText(0, "huh");
-        TreeItem test0 = saveParamTree.CreateItem(root);
-        test0.SetText(0, "buh");
+
+        foreach (KeyValuePair<string, SaveParam> saveParam in saveSchema)
+        {
+            // Handle categories
+            // If a category exists, then don't make a new one.
+            SaveParam param = saveParam.Value;
+            string category = param.category;
+
+            if (categories.TryGetValue(category, out TreeItem catItem))
+            {
+                CreateOptionTreeItem(saveParamTree, param, catItem);
+            }else{
+                TreeItem newCatItem = saveParamTree.CreateItem(root);
+                newCatItem.SetText(0, category);
+                categories.Add(category, newCatItem);
+                CreateOptionTreeItem(saveParamTree, param, newCatItem);
+            }
+        }
+    }
+
+    // Determine what to do and then do it. Fuck else am I supposed to say?
+    public void CreateOptionTreeItem(Tree tree, SaveParam param, TreeItem parent)
+    {
+        TreeItem item = tree.CreateItem(parent);
+        item.SetText(0, param.name);
     }
 
     //public SaveData CompileSaveData()
