@@ -86,14 +86,14 @@ text = "A funny silly wacky goofy game"
 layout_mode = 2
 text = "Test Save"
 
-[node name="SaveCreation" type="Panel" parent="MainMenuUI/SaveManager" node_paths=PackedStringArray("rootSystemChoice")]
+[node name="SaveCreation" type="Panel" parent="MainMenuUI/SaveManager" node_paths=PackedStringArray("saveParamTree")]
 layout_mode = 0
 offset_left = 384.0
 offset_top = 192.0
 offset_right = 768.0
 offset_bottom = 447.0
 script = ExtResource("2_853f1")
-rootSystemChoice = NodePath("")
+saveParamTree = NodePath("ScrollContainer/Tree")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainMenuUI/SaveManager/SaveCreation"]
 layout_mode = 0
@@ -104,6 +104,9 @@ offset_bottom = 206.0
 
 [node name="Tree" type="Tree" parent="MainMenuUI/SaveManager/SaveCreation/ScrollContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+hide_root = true
 
 [node name="CancelButton" type="Button" parent="MainMenuUI/SaveManager/SaveCreation"]
 layout_mode = 0

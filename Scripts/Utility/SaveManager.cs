@@ -2,11 +2,12 @@ using Godot;
 using Godot.Collections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class SaveManager : Control
 {
-    // Schema for generic save parameters. Use for very simple values.
-    public static System.Collections.Generic.Dictionary<string, SaveParam> genericParamSchema;
+    public static string CPackMetaName = "cPackMeta";
+    public static string SaveParamName = "saveParameters";
 
     public void CreateSave(SaveData saveData)
     {
@@ -17,7 +18,7 @@ public partial class SaveManager : Control
     {
         List<PlanetPack> planetPacks = [];
 
-        List<string> metaConfigs = ConfigUtility.GetConfigs(ConfigUtility.GameData, "cPackMeta");
+        List<string> metaConfigs = ConfigUtility.GetConfigs(ConfigUtility.GameData, CPackMetaName);
 
         foreach (string cfgPath in metaConfigs)
         {
@@ -41,6 +42,55 @@ public partial class SaveManager : Control
 
         return planetPacks;
     }
+
+    /* 
+    SUMMARY:
+    Returns a dictionary of every save schema. 
+    This is only ever useful for save creation as save parameters should be read from the savefile itself.
+    Save parameters alone DO NOTHING! They are just variables to be used by various... things. Anything, really.
+    */
+    public static System.Collections.Generic.Dictionary<string, SaveParam> GetSaveSchemas()
+    {
+        System.Collections.Generic.Dictionary<string, SaveParam> schemas = [];
+
+        List<string> schemaConfigs = ConfigUtility.GetConfigs(ConfigUtility.GameData, SaveParamName);
+
+        // Loop over every schema config FILE
+        foreach (string configPath in schemaConfigs)
+        {
+            Dictionary schemaData = ConfigUtility.ParseConfig(configPath);
+
+            // Loop over every schema DICTIONARY within the file! First checking if it's there, of course.
+            if (ConfigUtility.TryGetArray("parameters", schemaData, out Godot.Collections.Array dict))
+            {
+                foreach (Dictionary scheme in dict.Select(v => (Dictionary)v))
+                {
+                    // Initialize with the important stuff
+                    SaveParam saveParam = new()
+                    {
+                        name = (string)scheme["name"],
+                        resetOnLoad = (bool)scheme["resetOnLoad"],
+                        category = (string)scheme["category"],
+                        data = scheme["data"]
+                    };
+
+                    // We check if it has input information, if not, then inputData remains null.
+                    if (ConfigUtility.TryGetDictionary("selector", scheme, out Dictionary inpDict))
+                    {
+                        saveParam.inputData = new()
+                        {
+                            selectorType = (string)inpDict["arraySelectorType"]
+                        };
+                    }
+
+                    // Throw it into the dictionary
+                    schemas.Add(saveParam.name, saveParam);
+                }
+            }
+        }
+
+        return schemas;
+    }
 }
 
 public struct PlanetPack
@@ -58,10 +108,18 @@ public struct SaveData
 }
 
 // Data-driven save schema for if modders want to patch in their own savegame parameters.
+// Hopefully it's versatile enough. I started overthinking so I'm just gonna go with whatever this is,
 public struct SaveParam
 {
     public string name;
-    public bool selectable; // Whether or not it can be selected during save creation
-    public string arraySelectorType; // Not used by anything other than arrays and dictionaries. Can be "single" or "multiple"
+    public bool resetOnLoad;
+    public string category;
     public Variant data;
+    public SaveCreationInput inputData;
+}
+
+// Struct that tells the save creation UI what to do with regards to user input 
+public struct SaveCreationInput
+{
+    public string selectorType; // Non array/dictionary items will be auto determined. Can be "single" or "multiple"
 }

@@ -5,7 +5,10 @@
         "name": "rootSystem",
         "resetOnLoad": false,
 
-        "data": ["THIS_ARRAY_WILL_BE_POPULATED_PROCEDURALLY!"],
+        "category": "Celestial Bodies",
+        "data": [
+          "THIS_ARRAY_WILL_BE_POPULATED_PROCEDURALLY!",
+        ],
 
         "selector": {
           "arraySelectorType": "optionSingle"
