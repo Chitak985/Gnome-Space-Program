@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://clregntcqf7ix"]
+
+[node name="LineEdit" type="LineEdit"]
+size_flags_horizontal = 3
+placeholder_text = "Placeholder_Text"

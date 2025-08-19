@@ -2,6 +2,17 @@
   "configType": "saveParameters",
   "parameters": [
     {
+        "name": "saveName",
+        "resetOnLoad": false,
+
+        "category": "General",
+        "data": "New Game",
+
+        "selector": {
+          "arraySelectorType": "not_applicable"
+        }
+    },
+    {
         "name": "rootSystem",
         "resetOnLoad": false,
 
@@ -11,26 +22,7 @@
         ],
 
         "selector": {
-          "dependsOn": "",
           "arraySelectorType": "optionSingle"
-        }
-    },
-    {
-        "name": "testing",
-        "resetOnLoad": false,
-
-        "category": "Awesome settings",
-        "data": [
-          "ahhh",
-        ],
-
-        "selector": {
-          "arraySelectorType": "optionSingle"
-        },
-
-        "dependency": {
-          "setting": "rootSystem",
-          "item": "TEST1"
         }
     }
   ]

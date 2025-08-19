@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=17 format=3 uid="uid://b4ia03110swah"]
+[gd_resource type="Theme" load_steps=19 format=3 uid="uid://b4ia03110swah"]
 
 [ext_resource type="StyleBox" uid="uid://bex3aipdq6gde" path="res://Assets/Materials/GeneralUI/label.tres" id="1_mwhhf"]
 [ext_resource type="FontVariation" uid="uid://ckkhw5pqir4c7" path="res://Assets/Fonts/VCR_OST_HighMargin.tres" id="1_yryix"]
@@ -6,9 +6,11 @@
 [ext_resource type="StyleBox" uid="uid://upc2ld4fp4d8" path="res://Assets/Materials/GeneralUI/Button/button_press.tres" id="3_hqfxh"]
 [ext_resource type="StyleBox" uid="uid://cld2a7f5w4g0h" path="res://Assets/Materials/GeneralUI/Button/button_normal.tres" id="4_27f02"]
 [ext_resource type="StyleBox" uid="uid://brbtjoqcqagif" path="res://Assets/Materials/GeneralUI/OptionButton/button_hover.tres" id="6_5b12m"]
+[ext_resource type="StyleBox" uid="uid://cmij04nxcubv8" path="res://Assets/Materials/GeneralUI/LineEdit/hover.tres" id="6_ahioa"]
 [ext_resource type="StyleBox" uid="uid://ds5qk5utji6w" path="res://Assets/Materials/GeneralUI/throttle_foreg.tres" id="6_ifukn"]
 [ext_resource type="StyleBox" uid="uid://cfuo28a102x4u" path="res://Assets/Materials/GeneralUI/throttle_backg.tres" id="6_xkgf2"]
 [ext_resource type="StyleBox" uid="uid://6y80ygj8bqic" path="res://Assets/Materials/GeneralUI/OptionButton/button_normal.tres" id="7_mvnfj"]
+[ext_resource type="StyleBox" uid="uid://blsmoyoofn077" path="res://Assets/Materials/GeneralUI/LineEdit/normal.tres" id="7_x8qab"]
 [ext_resource type="StyleBox" uid="uid://c1rxvmxou4rxx" path="res://Assets/Materials/GeneralUI/OptionButton/button_press.tres" id="8_ahioa"]
 [ext_resource type="StyleBox" uid="uid://ym67sb4x7cs0" path="res://Assets/Materials/GeneralUI/Misc/panel.tres" id="9_5b12m"]
 [ext_resource type="StyleBox" uid="uid://cyqx3jqydk5d0" path="res://Assets/Materials/GeneralUI/marginPanel.tres" id="10_hqfxh"]
@@ -29,6 +31,11 @@ Button/styles/normal = ExtResource("4_27f02")
 Button/styles/pressed = ExtResource("3_hqfxh")
 Label/fonts/font = ExtResource("1_yryix")
 Label/styles/normal = ExtResource("1_mwhhf")
+LineEdit/font_sizes/font_size = 20
+LineEdit/fonts/font = ExtResource("1_yryix")
+LineEdit/styles/focus = ExtResource("6_ahioa")
+LineEdit/styles/normal = ExtResource("7_x8qab")
+LineEdit/styles/read_only = ExtResource("7_x8qab")
 OptionButton/styles/hover = ExtResource("6_5b12m")
 OptionButton/styles/hover_pressed = ExtResource("6_5b12m")
 OptionButton/styles/normal = ExtResource("7_mvnfj")

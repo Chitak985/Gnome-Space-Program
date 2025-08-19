@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://buejer35m8rkv"]
+[gd_scene load_steps=7 format=3 uid="uid://buejer35m8rkv"]
 
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="1_tt5f1"]
 [ext_resource type="Script" uid="uid://bgouhll36gh8m" path="res://Scripts/Utility/SaveSettingsManager.cs" id="2_853f1"]
 [ext_resource type="Script" uid="uid://dhtv4ln78jt1n" path="res://Scripts/UserInterface/SettingSelectorDependency.cs" id="3_df05h"]
 [ext_resource type="PackedScene" uid="uid://djna1rgluoxk2" path="res://Assets/Prefabs/UI/mainmenu_category.tscn" id="4_df05h"]
 [ext_resource type="PackedScene" uid="uid://drw7ifeyyx6ym" path="res://Assets/Prefabs/UI/mainmenu_option.tscn" id="5_8um5k"]
+[ext_resource type="PackedScene" uid="uid://clregntcqf7ix" path="res://Assets/Prefabs/UI/mainmenu_lineedit.tscn" id="8_koqhg"]
 
 [node name="Node3D2" type="Node3D"]
 
@@ -100,6 +101,7 @@ saveParamList = NodePath("ScrollContainer/VBoxContainer")
 settingSelectorDependency = ExtResource("3_df05h")
 categoryPrefab = ExtResource("4_df05h")
 optionPrefab = ExtResource("5_8um5k")
+lineEditPrefab = ExtResource("8_koqhg")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainMenuUI/SaveManager/SaveCreation"]
 layout_mode = 1

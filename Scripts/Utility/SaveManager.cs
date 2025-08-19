@@ -14,9 +14,9 @@ public partial class SaveManager : Control
 
     }
 
-    public static List<PlanetPack> GetPlanetPacks()
+    public static System.Collections.Generic.Dictionary<string, PlanetPack> GetPlanetPacks(string type = null)
     {
-        List<PlanetPack> planetPacks = [];
+        System.Collections.Generic.Dictionary<string, PlanetPack> planetPacks = [];
 
         List<string> metaConfigs = ConfigUtility.GetConfigs(ConfigUtility.GameData, CPackMetaName);
 
@@ -24,11 +24,14 @@ public partial class SaveManager : Control
         {
             Dictionary data = ConfigUtility.ParseConfig(cfgPath);
 
+            string packType = (string)data["packType"];
+            string packName = (string)data["name"];
+
             // ugh
             PlanetPack pack = new PlanetPack
             {
-                type = (string)data["packType"],
-                name = (string)data["name"],
+                type = packType,
+                name = packName,
                 path = (string)data["path"],
             };
 
@@ -37,7 +40,14 @@ public partial class SaveManager : Control
                 pack.displayName = (string)displayData["displayName"];
             }
 
-            planetPacks.Add(pack);
+            // Only add those of specific type or all if type isn't specified
+            // Display name for now, it shouldn't matter much though
+            if (type != null)
+            {
+                if (packType == type) planetPacks.Add(pack.displayName, pack);
+            }else{
+                planetPacks.Add(pack.displayName, pack);
+            }
         }
 
         return planetPacks;
@@ -74,6 +84,26 @@ public partial class SaveManager : Control
                         data = scheme["data"]
                     };
 
+                    // Sadly this has to be hardcoded for now, 
+                    // May add some way for mods to "hook" into this part in the future.
+                    switch ((string)scheme["name"])
+                    {
+                        case "rootSystem":
+                            System.Collections.Generic.Dictionary<string, PlanetPack> rootSystems = 
+                                GetPlanetPacks("rootSystem");
+
+                            Array<string> systemList = new Array<string>();
+                            foreach (KeyValuePair<string, PlanetPack> pack in rootSystems)
+                            {
+                                systemList.Add(pack.Key);
+                            }
+                            saveParam.data = systemList;
+                            break;
+                        default:
+                            break;
+                    }
+
+
                     // We check if it has input information, if not, then inputData remains null.
                     if (ConfigUtility.TryGetDictionary("selector", scheme, out Dictionary inpDict))
                     {
@@ -94,7 +124,7 @@ public partial class SaveManager : Control
                     }
 
                     // Throw it into the dictionary
-                    schemas.Add(saveParam.name, saveParam);
+                    schemas.Add(saveParam.category + "/" + saveParam.name, saveParam);
                 }
             }
         }

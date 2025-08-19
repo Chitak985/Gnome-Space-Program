@@ -14,16 +14,17 @@ I have also started logging the date.. It's been getting hard to keep track of i
 */
 public partial class SaveSettingsManager : Panel
 {
-    public List<PlanetPack> planetPacks;
+    public Dictionary<string, PlanetPack> rootSystems;
     [Export] public VBoxContainer saveParamList;
     [Export] public CSharpScript settingSelectorDependency;
     [Export] public PackedScene categoryPrefab;
     [Export] public PackedScene optionPrefab;
+    [Export] public PackedScene lineEditPrefab;
     public Dictionary<string, SaveParam> saveSchemas;
     public override void _Ready()
     {
-        planetPacks = SaveManager.GetPlanetPacks();
-        GD.Print($"Got Planet Packs! Total: {planetPacks.Count}");
+        rootSystems = SaveManager.GetPlanetPacks("rootSystem");
+        GD.Print($"Got Root Systems! Total: {rootSystems.Count}");
 
         saveSchemas = SaveManager.GetSaveSchemas();
         CreateOptionTree(saveSchemas);
@@ -32,8 +33,6 @@ public partial class SaveSettingsManager : Panel
     // That's riiight! We don't just have "buttons" that we place willy nilly.. We BUILD THEM PROCEDURALLY!
     public void CreateOptionTree(Dictionary<string, SaveParam> saveSchema)
     {
-        GD.Print(saveSchema.ElementAt(0));
-
         Dictionary<string, MainmenuCategory> categories = [];
 
         foreach (KeyValuePair<string, SaveParam> saveParam in saveSchema)
@@ -62,7 +61,7 @@ public partial class SaveSettingsManager : Panel
     public void CreateOptionTreeItem(VBoxContainer cont, SaveParam param)
     {
         HBoxContainer itemCont = new();
-        itemCont.SizeFlagsHorizontal = Control.SizeFlags.Fill;
+        itemCont.SizeFlagsHorizontal = SizeFlags.Fill;
         Label margin = new() {Text = "    "};
         itemCont.AddChild(margin);
 
@@ -71,15 +70,25 @@ public partial class SaveSettingsManager : Panel
         if (data.VariantType != Variant.Type.Array 
         && data.VariantType != Variant.Type.Dictionary)
         {
-            GD.Print("not implement yet sowwy :(");
+            switch (data.VariantType)
+            {
+                case Variant.Type.String:
+                    LineEdit item = (LineEdit)lineEditPrefab.Instantiate();
+                    item.PlaceholderText = param.name;
+                    item.Text = (string)data;
+                    itemCont.AddChild(item);
+                    break;
+                default:
+                    break;
+            }
         }else{
             switch (param.inputData.selectorType)
             {
                 case "optionSingle": // Only a single option can be chosen
                     MainMenuOption item = (MainMenuOption)optionPrefab.Instantiate();
                     item.param = param;
-                    item.AddItem(param.name);
-                    item.AddSeparator();
+                    //item.AddItem(param.name);
+                    //item.AddSeparator();
                     foreach (Variant point in (Godot.Collections.Array)data)
                     {
                         item.AddItem(point.ToString());
