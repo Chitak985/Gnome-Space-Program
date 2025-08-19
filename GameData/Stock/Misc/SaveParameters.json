@@ -7,7 +7,7 @@
 
         "category": "Celestial Bodies",
         "data": [
-          "You're not supposed to see this..",
+          "TEST0", "TEST1",
         ],
 
         "selector": {
@@ -19,7 +19,7 @@
         "name": "testing",
         "resetOnLoad": false,
 
-        "category": "Celestial Bodies",
+        "category": "Awesome settings",
         "data": [
           "ahhh",
         ],
@@ -30,7 +30,7 @@
 
         "dependency": {
           "setting": "rootSystem",
-          "item": ""
+          "item": "TEST1"
         }
     }
   ]

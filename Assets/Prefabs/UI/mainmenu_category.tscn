@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://djna1rgluoxk2"]
+
+[ext_resource type="Script" uid="uid://4olxyykfub3e" path="res://Scripts/UserInterface/MainmenuCategory.cs" id="1_acnf8"]
+[ext_resource type="PackedScene" uid="uid://dp3an2favb7cc" path="res://Assets/Prefabs/UI/dropdown_button.tscn" id="1_df2xf"]
+
+[node name="Category" type="VBoxContainer" node_paths=PackedStringArray("title", "content")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("1_acnf8")
+title = NodePath("CatLabel/Label")
+content = NodePath("Content")
+
+[node name="CatLabel" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TextureButton" parent="CatLabel" node_paths=PackedStringArray("container") instance=ExtResource("1_df2xf")]
+layout_mode = 2
+container = NodePath("../../Content")
+
+[node name="Label" type="Label" parent="CatLabel" groups=["title"]]
+layout_mode = 2
+text = "CATEGORY_TEMPLATE"
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2

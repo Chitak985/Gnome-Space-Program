@@ -103,22 +103,6 @@ public partial class SaveManager : Control
     }
 }
 
-public partial class SettingSelectorDependency : Node
-{
-    public TreeItem treeItem;
-    public string key;
-    public Variant value;
-    public System.Collections.Generic.Dictionary<string, SaveParam> dictToCheck;
-    public override void _Process(double delta)
-    {
-        treeItem.Visible = false;
-        if (dictToCheck[key].inputData.currentSelection.Equals(value))
-        {
-            GD.Print("yippie");
-        }
-    }
-}
-
 public struct PlanetPack
 {
     public string type;
@@ -135,7 +119,7 @@ public struct SaveData
 
 // Data-driven save schema for if modders want to patch in their own savegame parameters.
 // Hopefully it's versatile enough. I started overthinking so I'm just gonna go with whatever this is,
-public struct SaveParam
+public class SaveParam
 {
     public string name;
     public bool resetOnLoad;
@@ -146,13 +130,13 @@ public struct SaveParam
 }
 
 // Struct that tells the save creation UI what to do with regards to user input 
-public struct SaveCreationInput
+public class SaveCreationInput
 {
     public Variant currentSelection;
     public string selectorType; // Non array/dictionary items will be auto determined. Can be "single" or "multiple"
 }
 // Basic struct to tell parsers what the save setting depends on
-public struct SaveDependency
+public class SaveDependency
 {
     public string key;
     public Variant value;

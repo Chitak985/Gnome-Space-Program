@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://drw7ifeyyx6ym"]
+
+[ext_resource type="Script" uid="uid://c6m6twrxl6pwy" path="res://Scripts/UserInterface/MainMenuOption.cs" id="1_jy4y1"]
+
+[node name="MainMenuOption" type="OptionButton"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_jy4y1")
+
+[connection signal="item_selected" from="." to="." method="OnItemSelect"]

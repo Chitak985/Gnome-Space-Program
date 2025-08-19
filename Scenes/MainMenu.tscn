@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://buejer35m8rkv"]
+[gd_scene load_steps=6 format=3 uid="uid://buejer35m8rkv"]
 
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="1_tt5f1"]
 [ext_resource type="Script" uid="uid://bgouhll36gh8m" path="res://Scripts/Utility/SaveSettingsManager.cs" id="2_853f1"]
-[ext_resource type="PackedScene" uid="uid://dp3an2favb7cc" path="res://Assets/Prefabs/UI/dropdown_button.tscn" id="3_8saeu"]
+[ext_resource type="Script" uid="uid://dhtv4ln78jt1n" path="res://Scripts/UserInterface/SettingSelectorDependency.cs" id="3_df05h"]
+[ext_resource type="PackedScene" uid="uid://djna1rgluoxk2" path="res://Assets/Prefabs/UI/mainmenu_category.tscn" id="4_df05h"]
+[ext_resource type="PackedScene" uid="uid://drw7ifeyyx6ym" path="res://Assets/Prefabs/UI/mainmenu_option.tscn" id="5_8um5k"]
 
 [node name="Node3D2" type="Node3D"]
 
@@ -95,7 +97,9 @@ offset_right = 776.0
 offset_bottom = 593.0
 script = ExtResource("2_853f1")
 saveParamList = NodePath("ScrollContainer/VBoxContainer")
-dropdownPrefab = ExtResource("3_8saeu")
+settingSelectorDependency = ExtResource("3_df05h")
+categoryPrefab = ExtResource("4_df05h")
+optionPrefab = ExtResource("5_8um5k")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MainMenuUI/SaveManager/SaveCreation"]
 layout_mode = 1
@@ -106,9 +110,13 @@ offset_left = 17.0
 offset_top = 13.0
 offset_right = -17.0
 offset_bottom = -49.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenuUI/SaveManager/SaveCreation/ScrollContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="CancelButton" type="Button" parent="MainMenuUI/SaveManager/SaveCreation"]
 layout_mode = 1

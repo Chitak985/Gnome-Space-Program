@@ -16,7 +16,9 @@ public partial class SaveSettingsManager : Panel
 {
     public List<PlanetPack> planetPacks;
     [Export] public VBoxContainer saveParamList;
-    [Export] public PackedScene dropdownPrefab;
+    [Export] public CSharpScript settingSelectorDependency;
+    [Export] public PackedScene categoryPrefab;
+    [Export] public PackedScene optionPrefab;
     public Dictionary<string, SaveParam> saveSchemas;
     public override void _Ready()
     {
@@ -32,7 +34,7 @@ public partial class SaveSettingsManager : Panel
     {
         GD.Print(saveSchema.ElementAt(0));
 
-        Dictionary<string, VBoxContainer> categories = [];
+        Dictionary<string, MainmenuCategory> categories = [];
 
         foreach (KeyValuePair<string, SaveParam> saveParam in saveSchema)
         {
@@ -41,33 +43,26 @@ public partial class SaveSettingsManager : Panel
             SaveParam param = saveParam.Value;
             string category = param.category;
 
-            if (categories.TryGetValue(category, out VBoxContainer catItem))
+            if (categories.TryGetValue(category, out MainmenuCategory catItem))
             {
-                CreateOptionTreeItem(catItem, param);
+                CreateOptionTreeItem(catItem.content, param);
             }else{
-                // HOLY SHIT
-                VBoxContainer newCatContItem = new();
-                VBoxContainer newCatItem = new();
-                HBoxContainer dropdown = new();
-                DropdownButton droppy = (DropdownButton)dropdownPrefab.Instantiate();
-                droppy.container = newCatItem;
-                Label catLabel = new() {Text = category};
-                dropdown.AddChild(droppy);
-                dropdown.AddChild(catLabel);
-                newCatContItem.AddChild(dropdown);
-                newCatContItem.AddChild(newCatItem);
-                saveParamList.AddChild(newCatContItem);
+                // Ahh much better
+                MainmenuCategory newCatCont = (MainmenuCategory)categoryPrefab.Instantiate();
+                newCatCont.title.Text = category;
+                saveParamList.AddChild(newCatCont);
 
-                categories.Add(category, newCatItem);
-                CreateOptionTreeItem(newCatItem, param);
+                categories.Add(category, newCatCont);
+                CreateOptionTreeItem(newCatCont.content, param);
             }
         }
     }
 
     // Determine what to do and then do it. Fuck else am I supposed to say?
-    public static void CreateOptionTreeItem(VBoxContainer cont, SaveParam param)
+    public void CreateOptionTreeItem(VBoxContainer cont, SaveParam param)
     {
-        BoxContainer itemCont = new();
+        HBoxContainer itemCont = new();
+        itemCont.SizeFlagsHorizontal = Control.SizeFlags.Fill;
         Label margin = new() {Text = "    "};
         itemCont.AddChild(margin);
 
@@ -81,7 +76,8 @@ public partial class SaveSettingsManager : Panel
             switch (param.inputData.selectorType)
             {
                 case "optionSingle": // Only a single option can be chosen
-                    OptionButton item = new();
+                    MainMenuOption item = (MainMenuOption)optionPrefab.Instantiate();
+                    item.param = param;
                     item.AddItem(param.name);
                     item.AddSeparator();
                     foreach (Variant point in (Godot.Collections.Array)data)
@@ -97,10 +93,19 @@ public partial class SaveSettingsManager : Panel
 
         cont.AddChild(itemCont);
 
-        // Check if dependency key is empty or not
-        if (param.dependency.key != "")
+        // Check if dependency exists
+        if (param.dependency != null)
         {
-            
+            // Godot fucking disposes the object so we have to do this bullshit
+            ulong cuntId = itemCont.GetInstanceId();
+            // Replaces old C# instance with a new one. Old C# instance is disposed.
+            itemCont.SetScript(settingSelectorDependency);
+            // Get the new C# instance
+            SettingSelectorDependency setseldep = (SettingSelectorDependency)InstanceFromId(cuntId);
+            setseldep.key = param.dependency.key;
+            setseldep.value = param.dependency.value;
+            setseldep.dictToCheck = saveSchemas;
+            setseldep.SetProcess(true);
         }
     }
 
