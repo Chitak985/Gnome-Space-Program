@@ -7,50 +7,30 @@
 
         "category": "Celestial Bodies",
         "data": [
-          "THIS_ARRAY_WILL_BE_POPULATED_PROCEDURALLY!",
+          "You're not supposed to see this..",
         ],
 
         "selector": {
+          "dependsOn": "",
           "arraySelectorType": "optionSingle"
         }
     },
     {
-        "name": "same category test",
+        "name": "testing",
         "resetOnLoad": false,
 
         "category": "Celestial Bodies",
         "data": [
-          "THIS_ARRAY_WILL_BE_POPULATED_PROCEDURALLY!",
+          "ahhh",
         ],
 
         "selector": {
           "arraySelectorType": "optionSingle"
-        }
-    },
-    {
-        "name": "other category test",
-        "resetOnLoad": false,
+        },
 
-        "category": "test cat.",
-        "data": [
-          "THIS_ARRAY_WILL_BE_POPULATED_PROCEDURALLY!",
-        ],
-
-        "selector": {
-          "arraySelectorType": "optionSingle"
-        }
-    },
-    {
-        "name": "scrollbar test",
-        "resetOnLoad": false,
-
-        "category": "test cat.",
-        "data": [
-          "THIS_ARRAY_WILL_BE_POPULATED_PROCEDURALLY!",
-        ],
-
-        "selector": {
-          "arraySelectorType": "optionSingle"
+        "dependency": {
+          "setting": "rootSystem",
+          "item": ""
         }
     }
   ]

@@ -15,13 +15,15 @@ I have also started logging the date.. It's been getting hard to keep track of i
 public partial class SaveSettingsManager : Panel
 {
     public List<PlanetPack> planetPacks;
-    [Export] public Tree saveParamTree;
+    [Export] public VBoxContainer saveParamList;
+    [Export] public PackedScene dropdownPrefab;
+    public Dictionary<string, SaveParam> saveSchemas;
     public override void _Ready()
     {
         planetPacks = SaveManager.GetPlanetPacks();
         GD.Print($"Got Planet Packs! Total: {planetPacks.Count}");
 
-        Dictionary<string, SaveParam> saveSchemas = SaveManager.GetSaveSchemas();
+        saveSchemas = SaveManager.GetSaveSchemas();
         CreateOptionTree(saveSchemas);
     }
 
@@ -30,9 +32,7 @@ public partial class SaveSettingsManager : Panel
     {
         GD.Print(saveSchema.ElementAt(0));
 
-        Dictionary<string, TreeItem> categories = [];
-
-        TreeItem root = saveParamTree.CreateItem();
+        Dictionary<string, VBoxContainer> categories = [];
 
         foreach (KeyValuePair<string, SaveParam> saveParam in saveSchema)
         {
@@ -41,23 +41,67 @@ public partial class SaveSettingsManager : Panel
             SaveParam param = saveParam.Value;
             string category = param.category;
 
-            if (categories.TryGetValue(category, out TreeItem catItem))
+            if (categories.TryGetValue(category, out VBoxContainer catItem))
             {
-                CreateOptionTreeItem(saveParamTree, param, catItem);
+                CreateOptionTreeItem(catItem, param);
             }else{
-                TreeItem newCatItem = saveParamTree.CreateItem(root);
-                newCatItem.SetText(0, category);
+                // HOLY SHIT
+                VBoxContainer newCatContItem = new();
+                VBoxContainer newCatItem = new();
+                HBoxContainer dropdown = new();
+                DropdownButton droppy = (DropdownButton)dropdownPrefab.Instantiate();
+                droppy.container = newCatItem;
+                Label catLabel = new() {Text = category};
+                dropdown.AddChild(droppy);
+                dropdown.AddChild(catLabel);
+                newCatContItem.AddChild(dropdown);
+                newCatContItem.AddChild(newCatItem);
+                saveParamList.AddChild(newCatContItem);
+
                 categories.Add(category, newCatItem);
-                CreateOptionTreeItem(saveParamTree, param, newCatItem);
+                CreateOptionTreeItem(newCatItem, param);
             }
         }
     }
 
     // Determine what to do and then do it. Fuck else am I supposed to say?
-    public void CreateOptionTreeItem(Tree tree, SaveParam param, TreeItem parent)
+    public static void CreateOptionTreeItem(VBoxContainer cont, SaveParam param)
     {
-        TreeItem item = tree.CreateItem(parent);
-        item.SetText(0, param.name);
+        BoxContainer itemCont = new();
+        Label margin = new() {Text = "    "};
+        itemCont.AddChild(margin);
+
+        Variant data = param.data;
+
+        if (data.VariantType != Variant.Type.Array 
+        && data.VariantType != Variant.Type.Dictionary)
+        {
+            GD.Print("not implement yet sowwy :(");
+        }else{
+            switch (param.inputData.selectorType)
+            {
+                case "optionSingle": // Only a single option can be chosen
+                    OptionButton item = new();
+                    item.AddItem(param.name);
+                    item.AddSeparator();
+                    foreach (Variant point in (Godot.Collections.Array)data)
+                    {
+                        item.AddItem(point.ToString());
+                    }
+                    itemCont.AddChild(item);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        cont.AddChild(itemCont);
+
+        // Check if dependency key is empty or not
+        if (param.dependency.key != "")
+        {
+            
+        }
     }
 
     //public SaveData CompileSaveData()

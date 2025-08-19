@@ -23,6 +23,9 @@ public partial class PatchedConics : Node
     public static readonly double EarthGravity = 9.80665;
     // Gets body-centered coordinates from orbit parameters
     // Keplerian orbital elements to earth centered whateverthefuck
+    // I believe some portions of this might have been AI generated(?)
+    // However the code is fully understood so no major downside other than using an llm rather than a search engine.. :(
+    // Rest assured anything majorly written by an LLM will be rectified when given the opportunity.
     public static (Double3, Double3) KOEtoECI(Orbit orbit) //, Dr Freeman? Is it really that time again?
     {
         // yeah whatever the fRICK

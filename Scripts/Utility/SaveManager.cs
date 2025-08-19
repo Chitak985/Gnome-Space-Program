@@ -83,6 +83,16 @@ public partial class SaveManager : Control
                         };
                     }
 
+                    // We check if it has input information, if not, then inputData remains null.
+                    if (ConfigUtility.TryGetDictionary("dependency", scheme, out Dictionary depDict))
+                    {
+                        saveParam.dependency = new()
+                        {
+                            key = (string)depDict["setting"],
+                            value = depDict["item"]
+                        };
+                    }
+
                     // Throw it into the dictionary
                     schemas.Add(saveParam.name, saveParam);
                 }
@@ -90,6 +100,22 @@ public partial class SaveManager : Control
         }
 
         return schemas;
+    }
+}
+
+public partial class SettingSelectorDependency : Node
+{
+    public TreeItem treeItem;
+    public string key;
+    public Variant value;
+    public System.Collections.Generic.Dictionary<string, SaveParam> dictToCheck;
+    public override void _Process(double delta)
+    {
+        treeItem.Visible = false;
+        if (dictToCheck[key].inputData.currentSelection.Equals(value))
+        {
+            GD.Print("yippie");
+        }
     }
 }
 
@@ -116,10 +142,18 @@ public struct SaveParam
     public string category;
     public Variant data;
     public SaveCreationInput inputData;
+    public SaveDependency dependency;
 }
 
 // Struct that tells the save creation UI what to do with regards to user input 
 public struct SaveCreationInput
 {
+    public Variant currentSelection;
     public string selectorType; // Non array/dictionary items will be auto determined. Can be "single" or "multiple"
+}
+// Basic struct to tell parsers what the save setting depends on
+public struct SaveDependency
+{
+    public string key;
+    public Variant value;
 }
