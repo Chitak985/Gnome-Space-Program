@@ -4,14 +4,42 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class SaveManager : Control
+public partial class SaveManager : Node
 {
-    public static string CPackMetaName = "cPackMeta";
-    public static string SaveParamName = "saveParameters";
+    public static readonly string classTag = "([color=red]SaveManager[color=white])";
+    public static readonly string CPackMetaName = "cPackMeta";
+    public static readonly string SaveParamName = "saveParameters";
 
-    public void CreateSave(SaveData saveData)
+    public static SaveManager Instance;
+
+    [Export] public PackedScene activeSavePrefab;
+
+    public override void _Ready()
     {
+        Instance = this;
+        GD.PrintRich($"{classTag} SaveManager ready!");
+    }
 
+    public void LoadSave(
+        System.Collections.Generic.Dictionary<string, Variant> creationParams,
+        string saveFile = null)
+    {
+        GD.Print($"{classTag} Clearing currently loaded save..");
+        foreach (Node child in GetChildren())
+        {
+            child.QueueFree();
+        }
+        if (saveFile == null) 
+        {
+            GD.Print($"{classTag} Creating new save!");
+            ActiveSave activeSave = activeSavePrefab.Instantiate<ActiveSave>();
+            activeSave.saveParams = creationParams;
+            AddChild(activeSave);
+        }else{
+            // Load save from file, params will be ignored and instead acquired from the saveFile.
+            // NOT TOO IMPORTANT YET!
+            GD.Print($"{classTag} Loading save from file {saveFile}");
+        }
     }
 
     public static System.Collections.Generic.Dictionary<string, PlanetPack> GetPlanetPacks(string type = null)
@@ -41,7 +69,7 @@ public partial class SaveManager : Control
             }
 
             // Only add those of specific type or all if type isn't specified
-            // Display name for now, it shouldn't matter much though
+            // Use display name for now, it shouldn't matter much though
             if (type != null)
             {
                 if (packType == type) planetPacks.Add(pack.displayName, pack);
@@ -88,7 +116,7 @@ public partial class SaveManager : Control
                     // May add some way for mods to "hook" into this part in the future.
                     switch ((string)scheme["name"])
                     {
-                        case "rootSystem":
+                        case "Root System":
                             System.Collections.Generic.Dictionary<string, PlanetPack> rootSystems = 
                                 GetPlanetPacks("rootSystem");
 
@@ -139,12 +167,6 @@ public struct PlanetPack
     public string name;
     public string displayName;
     public string path;
-}
-
-public struct SaveData
-{
-    // Path to 
-    public string rootPSystem;
 }
 
 // Data-driven save schema for if modders want to patch in their own savegame parameters.

@@ -13,7 +13,7 @@
 [ext_resource type="StyleBox" uid="uid://blsmoyoofn077" path="res://Assets/Materials/GeneralUI/LineEdit/normal.tres" id="7_x8qab"]
 [ext_resource type="StyleBox" uid="uid://c1rxvmxou4rxx" path="res://Assets/Materials/GeneralUI/OptionButton/button_press.tres" id="8_ahioa"]
 [ext_resource type="StyleBox" uid="uid://ym67sb4x7cs0" path="res://Assets/Materials/GeneralUI/Misc/panel.tres" id="9_5b12m"]
-[ext_resource type="StyleBox" uid="uid://cyqx3jqydk5d0" path="res://Assets/Materials/GeneralUI/marginPanel.tres" id="10_hqfxh"]
+[ext_resource type="StyleBox" uid="uid://cyqx3jqydk5d0" path="res://Assets/Materials/GeneralUI/Misc/marginPanel.tres" id="10_hqfxh"]
 [ext_resource type="StyleBox" uid="uid://cvc53i4gpos6m" path="res://Assets/Materials/GeneralUI/Tree/hovered.tres" id="13_mvnfj"]
 [ext_resource type="StyleBox" uid="uid://rx2ylvt10kn" path="res://Assets/Materials/GeneralUI/Tree/selected.tres" id="14_ahioa"]
 

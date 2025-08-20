@@ -2,7 +2,7 @@
   "configType": "saveParameters",
   "parameters": [
     {
-        "name": "saveName",
+        "name": "Save Name",
         "resetOnLoad": false,
 
         "category": "General",
@@ -13,7 +13,7 @@
         }
     },
     {
-        "name": "rootSystem",
+        "name": "Root System",
         "resetOnLoad": false,
 
         "category": "Celestial Bodies",

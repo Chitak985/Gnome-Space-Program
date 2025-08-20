@@ -20,14 +20,30 @@ public partial class SaveSettingsManager : Panel
     [Export] public PackedScene categoryPrefab;
     [Export] public PackedScene optionPrefab;
     [Export] public PackedScene lineEditPrefab;
+
+    public Control mainMenu;
     public Dictionary<string, SaveParam> saveSchemas;
     public override void _Ready()
     {
+        mainMenu = (Control)GetTree().GetFirstNodeInGroup("MainMenu");
+
         rootSystems = SaveManager.GetPlanetPacks("rootSystem");
         GD.Print($"Got Root Systems! Total: {rootSystems.Count}");
 
         saveSchemas = SaveManager.GetSaveSchemas();
         CreateOptionTree(saveSchemas);
+    }
+
+    public void OnCreateButton()
+    {
+        mainMenu.Visible = false;
+        Dictionary<string, Variant> creationParams = [];
+        foreach (KeyValuePair<string, SaveParam> param in saveSchemas)
+        {
+            creationParams.Add(param.Key, param.Value.inputData.currentSelection);
+        }
+        // Create the save
+        SaveManager.Instance.LoadSave(creationParams);
     }
 
     // That's riiight! We don't just have "buttons" that we place willy nilly.. We BUILD THEM PROCEDURALLY!

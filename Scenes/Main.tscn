@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://gh6raekpcthq"]
+
+[ext_resource type="PackedScene" uid="uid://buejer35m8rkv" path="res://Scenes/MainMenu.tscn" id="1_r150o"]
+[ext_resource type="Script" uid="uid://cmbavjdks057k" path="res://Scripts/Utility/SaveManager.cs" id="2_kln2b"]
+[ext_resource type="PackedScene" uid="uid://b08reqxmoktvk" path="res://Scenes/ActiveSave.tscn" id="3_rgh2o"]
+
+[node name="Main" type="Node3D"]
+
+[node name="SaveManager" type="Node" parent="."]
+script = ExtResource("2_kln2b")
+activeSavePrefab = ExtResource("3_rgh2o")
+
+[node name="MainMenu" parent="." groups=["MainMenu"] instance=ExtResource("1_r150o")]

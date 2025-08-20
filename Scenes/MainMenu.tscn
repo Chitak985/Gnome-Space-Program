@@ -1,15 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://buejer35m8rkv"]
+[gd_scene load_steps=8 format=3 uid="uid://buejer35m8rkv"]
 
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="1_tt5f1"]
 [ext_resource type="Script" uid="uid://bgouhll36gh8m" path="res://Scripts/Utility/SaveSettingsManager.cs" id="2_853f1"]
+[ext_resource type="Script" uid="uid://ccw5occpyunc0" path="res://Scripts/UserInterface/UISwitcher.cs" id="2_xim88"]
 [ext_resource type="Script" uid="uid://dhtv4ln78jt1n" path="res://Scripts/UserInterface/SettingSelectorDependency.cs" id="3_df05h"]
 [ext_resource type="PackedScene" uid="uid://djna1rgluoxk2" path="res://Assets/Prefabs/UI/mainmenu_category.tscn" id="4_df05h"]
 [ext_resource type="PackedScene" uid="uid://drw7ifeyyx6ym" path="res://Assets/Prefabs/UI/mainmenu_option.tscn" id="5_8um5k"]
 [ext_resource type="PackedScene" uid="uid://clregntcqf7ix" path="res://Assets/Prefabs/UI/mainmenu_lineedit.tscn" id="8_koqhg"]
 
-[node name="Node3D2" type="Node3D"]
-
-[node name="MainMenuUI" type="Control" parent="."]
+[node name="MainMenuUI" type="Control"]
 z_index = 10
 layout_mode = 3
 anchors_preset = 15
@@ -19,39 +18,50 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_tt5f1")
 
-[node name="MainPanel" type="Panel" parent="MainMenuUI"]
-visible = false
-layout_mode = 0
+[node name="MainPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 384.0
-offset_top = 192.0
-offset_right = 768.0
-offset_bottom = 448.0
+offset_top = 258.0
+offset_right = -384.0
+offset_bottom = -266.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMenuUI/MainPanel"]
-layout_mode = 0
+[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 376.0
-offset_bottom = 248.0
+offset_right = -8.0
+offset_bottom = -8.0
 
-[node name="Button" type="Button" parent="MainMenuUI/MainPanel/VBoxContainer"]
+[node name="Button" type="Button" parent="MainPanel/VBoxContainer" node_paths=PackedStringArray("toClose", "toOpen")]
 layout_mode = 2
 text = "Start"
+script = ExtResource("2_xim88")
+toClose = NodePath("../..")
+toOpen = NodePath("../../../SaveManager/SavePanel")
 
-[node name="Label" type="Label" parent="MainMenuUI/MainPanel"]
-layout_mode = 0
+[node name="Label" type="Label" parent="MainPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
 offset_top = -50.0
-offset_right = 384.0
 offset_bottom = -9.0
 theme_override_font_sizes/font_size = 34
 text = "Gnome Space Program"
 
-[node name="SaveManager" type="Control" parent="MainMenuUI"]
+[node name="SaveManager" type="Control" parent="."]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="SavePanel" type="Panel" parent="MainMenuUI/SaveManager"]
+[node name="SavePanel" type="Panel" parent="SaveManager"]
 visible = false
 layout_mode = 0
 offset_left = 384.0
@@ -59,38 +69,60 @@ offset_top = 192.0
 offset_right = 768.0
 offset_bottom = 448.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMenuUI/SaveManager/SavePanel"]
-layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 376.0
-offset_bottom = 248.0
-
-[node name="Button" type="Button" parent="MainMenuUI/SaveManager/SavePanel/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="SaveManager/SavePanel"]
 layout_mode = 2
-text = "Create New Game"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="MainMenuUI/SaveManager/SavePanel"]
-layout_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 47.0
-offset_right = 376.0
-offset_bottom = 246.0
+offset_top = 10.0
+offset_right = -8.0
+offset_bottom = -50.0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="MainMenuUI/SaveManager/SavePanel/ScrollContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="SaveManager/SavePanel/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="MainMenuUI/SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
 layout_mode = 2
 text = "A funny silly wacky goofy game"
 
-[node name="Button8" type="Button" parent="MainMenuUI/SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button8" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
 layout_mode = 2
 text = "Test Save"
 
-[node name="SaveCreation" type="Panel" parent="MainMenuUI/SaveManager" node_paths=PackedStringArray("saveParamList")]
+[node name="CreateButton" type="Button" parent="SaveManager/SavePanel" node_paths=PackedStringArray("toClose", "toOpen")]
+layout_mode = 2
+anchor_left = 0.979
+anchor_top = 1.0
+anchor_right = 0.979
+anchor_bottom = 1.0
+offset_left = -214.936
+offset_top = -43.0
+offset_right = 0.0639954
+offset_bottom = -11.0
+text = "Create New Game"
+script = ExtResource("2_xim88")
+toClose = NodePath("..")
+toOpen = NodePath("../../SaveCreation")
+
+[node name="CancelButton" type="Button" parent="SaveManager/SavePanel" node_paths=PackedStringArray("toClose", "toOpen")]
+layout_mode = 2
+anchor_left = 0.979
+anchor_top = 1.0
+anchor_right = 0.979
+anchor_bottom = 1.0
+offset_left = -367.936
+offset_top = -43.0
+offset_right = -248.936
+offset_bottom = -11.0
+text = "Back"
+script = ExtResource("2_xim88")
+toClose = NodePath("..")
+toOpen = NodePath("../../../MainPanel")
+
+[node name="SaveCreation" type="Panel" parent="SaveManager" node_paths=PackedStringArray("saveParamList")]
+visible = false
 layout_mode = 0
 offset_left = 376.0
 offset_top = 46.0
@@ -103,7 +135,7 @@ categoryPrefab = ExtResource("4_df05h")
 optionPrefab = ExtResource("5_8um5k")
 lineEditPrefab = ExtResource("8_koqhg")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MainMenuUI/SaveManager/SaveCreation"]
+[node name="ScrollContainer" type="ScrollContainer" parent="SaveManager/SaveCreation"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -115,12 +147,12 @@ offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMenuUI/SaveManager/SaveCreation/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SaveManager/SaveCreation/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="CancelButton" type="Button" parent="MainMenuUI/SaveManager/SaveCreation"]
+[node name="CancelButton" type="Button" parent="SaveManager/SaveCreation" node_paths=PackedStringArray("toClose", "toOpen")]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -131,8 +163,11 @@ offset_right = 139.0
 offset_bottom = -10.0
 grow_vertical = 0
 text = "Cancel"
+script = ExtResource("2_xim88")
+toClose = NodePath("..")
+toOpen = NodePath("../../SavePanel")
 
-[node name="StartButton" type="Button" parent="MainMenuUI/SaveManager/SaveCreation"]
+[node name="StartButton" type="Button" parent="SaveManager/SaveCreation"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -146,3 +181,5 @@ offset_bottom = -10.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "Start"
+
+[connection signal="pressed" from="SaveManager/SaveCreation/StartButton" to="SaveManager/SaveCreation" method="OnCreateButton"]
