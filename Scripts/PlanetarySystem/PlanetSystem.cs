@@ -40,8 +40,16 @@ public partial class PlanetSystem : Node3D
         List<string> planetConfigs = [];
         foreach (string pack in chosenPacks)
 		{
-            planetConfigs.AddRange(GetPlanetConfigs(pack));
+            string fullPath = $"{ConfigPath}/{pack}";
+            planetConfigs.AddRange(GetPlanetConfigs(ConfigPath));
+			GD.PrintRich($"{classTag} Successfully indexed celestial pack '{ConfigPath}'");
         }
+		// Might aswell do this while we're at it
+		localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");
+		localSpacePlanets = (Node3D)localSpace.FindChild("Planets");
+		orbitRenderers = (Control)GetTree().GetFirstNodeInGroup("OrbitRenderers");
+		CreateSystem(planetConfigs);
+		GD.PrintRich($"{classTag} System created successfully!");
 	}
 
 	public void CreateSystem(List<string> configs)

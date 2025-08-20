@@ -1,12 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://b08reqxmoktvk"]
+[gd_scene load_steps=6 format=3 uid="uid://b08reqxmoktvk"]
 
 [ext_resource type="Script" uid="uid://c3i0ynvo54sk1" path="res://Scripts/Utility/ActiveSave.cs" id="1_2c3j4"]
 [ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
 [ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
+[ext_resource type="Script" uid="uid://ccsh3foyy7qd5" path="res://Scripts/Utility/RemoteCam.cs" id="6_0mdm0"]
 [ext_resource type="PackedScene" uid="uid://hlhaljtudxey" path="res://Assets/Prefabs/world_environment.tscn" id="9_2c3j4"]
 
-[node name="ActiveSave" type="Node3D"]
+[node name="ActiveSave" type="Node3D" node_paths=PackedStringArray("planetSystem")]
 script = ExtResource("1_2c3j4")
+planetSystem = NodePath("PlanetSystem")
 
 [node name="PlanetSystem" type="Node3D" parent="."]
 script = ExtResource("1_pocjb")
@@ -79,3 +81,10 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="WorldEnvironment" parent="." instance=ExtResource("9_2c3j4")]
+
+[node name="Camera3D" type="Camera3D" parent="." groups=["Camera"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+cull_mask = 1047553
+current = true
+far = 1e+06
+script = ExtResource("6_0mdm0")

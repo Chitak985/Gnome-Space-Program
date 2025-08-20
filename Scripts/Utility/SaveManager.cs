@@ -12,6 +12,8 @@ public partial class SaveManager : Node
 
     public static SaveManager Instance;
 
+    public ActiveSave currentSave;
+
     [Export] public PackedScene activeSavePrefab;
 
     public override void _Ready()
@@ -33,8 +35,10 @@ public partial class SaveManager : Node
         {
             GD.Print($"{classTag} Creating new save!");
             ActiveSave activeSave = activeSavePrefab.Instantiate<ActiveSave>();
+            currentSave = activeSave;
             activeSave.saveParams = creationParams;
             AddChild(activeSave);
+            activeSave.InitSave();
         }else{
             // Load save from file, params will be ignored and instead acquired from the saveFile.
             // NOT TOO IMPORTANT YET!
