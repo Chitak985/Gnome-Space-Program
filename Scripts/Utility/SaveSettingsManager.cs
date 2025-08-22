@@ -12,7 +12,7 @@ There has been a slight deviation in my plans, I have built what I see as the wo
 I also have a motherfucking HEADACHE from all of this, but BOW DOWN ANYWAYS! 
 I have also started logging the date.. It's been getting hard to keep track of it.
 8/22/25 [Chitak]
-There is some stuff need to be fixed. I might have fixed it for you lol. You're welcome :)
+There is some stuff need to be fixed. I tried fixing some and accidentally fixed the entire game lol. You're welcome :)
 First of all the mainMenu thing that couldn't be found... You used the wrong name "MainMenu" instead of "MainMenuUI" and also that's not how you get the root node.
 I know how to do that in GDScript, but there is no @onready so it doesn't work. Also, JUST EXPORT IT!
 Second, you weren't loading SaveManager, so instead of going through hell of accessing something through scenes I just autoladed it and it worked lmao

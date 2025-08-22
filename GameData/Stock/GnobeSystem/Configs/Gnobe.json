@@ -1,48 +1,49 @@
 {
   "configType": "cBody",
   "properties": {
-    "name": "Gnobe",
-    "geeASL": 1,
-    "radius": 600000
+	"name": "Gnobe",
+	"geeASL": 1,
+	"radius": 600000
   },
   "orbit": {
-    "parent": "Sun",
-    "semiMajorAxis": 149598003,
-    "inclination": 0,
-    "eccentricity": 0.0167086,
-    "argumentOfPeriapsis": 0,
-    "longitudeOfAscendingNode": 0,
-    "trueAnomalyAtEpoch": 0
+	"disable": "false",
+	"parent": "Sun",
+	"semiMajorAxis": 149598003,
+	"inclination": 0,
+	"eccentricity": 0.0167086,
+	"argumentOfPeriapsis": 0,
+	"longitudeOfAscendingNode": 0,
+	"trueAnomalyAtEpoch": 0
   },
   "ocean": {
-    "radius": 600000
+	"radius": 600000
   },
   "pqs": {
-    "pqsMods": [
-      {
-        "mod": "fastNoise3D",
-        "type": "perlin",
-        "seed": 0,
-        "noiseOffset": [0,0,0],
-        "deformity": 12000,
-        "offset": -6000,
-        "frequency": 2810,
-        "fractal": {
-          "type": "pingPong",
-          "octaves": 10,
-          "lacunarity": 2,
-          "gain": 0.5,
-          "weightedStrength": 0,
-          "pingPongParams": {
-            "pingPongStrength": 2
-          }
-        },
-        "cellular": {
-          "distanceFunction": "euclidean",
-          "jitter": 1,
-          "returnType": "distance"
-        }
-      }
-    ]
+	"pqsMods": [
+	  {
+		"mod": "fastNoise3D",
+		"type": "perlin",
+		"seed": 0,
+		"noiseOffset": [0,0,0],
+		"deformity": 12000,
+		"offset": -6000,
+		"frequency": 2810,
+		"fractal": {
+		  "type": "pingPong",
+		  "octaves": 10,
+		  "lacunarity": 2,
+		  "gain": 0.5,
+		  "weightedStrength": 0,
+		  "pingPongParams": {
+			"pingPongStrength": 2
+		  }
+		},
+		"cellular": {
+		  "distanceFunction": "euclidean",
+		  "jitter": 1,
+		  "returnType": "distance"
+		}
+	  }
+	]
   }
 }
