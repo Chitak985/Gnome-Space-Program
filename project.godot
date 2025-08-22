@@ -17,6 +17,10 @@ run/main_scene="uid://buejer35m8rkv"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="uid://ghib0t8cv3ka"
 
+[autoload]
+
+SaveManager="*res://Scripts/Utility/SaveManager.cs"
+
 [display]
 
 window/stretch/mode="canvas_items"
