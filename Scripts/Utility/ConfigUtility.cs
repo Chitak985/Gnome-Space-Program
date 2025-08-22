@@ -44,15 +44,17 @@ public partial class ConfigUtility
 
 					Json jsonFile = new();
 					Error err = jsonFile.Parse(content);
-					Dictionary data = (Dictionary)jsonFile.Data;
-
-                    string configType = (string)data["configType"];
+					
 
                     // Get the config if it matches the type or if the type is null
                     // Also check for errors but that's obviouuss
-                    if (err == Error.Ok && (configType == type || type == null))
+                    if (err == Error.Ok)
 					{
-						files.Add(filePath);
+                        Dictionary data = (Dictionary)jsonFile.Data;
+
+                        string configType = (string)data["configType"];
+
+						if(configType == type || type == null)files.Add(filePath);
 					}
 				}
 				
