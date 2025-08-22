@@ -1,0 +1,6 @@
+This is where part .pck files should all "extract" to.
+
+Content should NOT directly be accessed from here, and things should instead be loaded into this directory
+from external .pck files with JSON metadata dictating what to do with them
+
+CONSULT THE GITHUB WIKI FOR MORE INFORMATION ON MODDING PARTS INTO THE GAME!

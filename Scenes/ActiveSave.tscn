@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://b08reqxmoktvk"]
+[gd_scene load_steps=7 format=3 uid="uid://b08reqxmoktvk"]
 
 [ext_resource type="Script" uid="uid://c3i0ynvo54sk1" path="res://Scripts/Utility/ActiveSave.cs" id="1_2c3j4"]
 [ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
 [ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
-[ext_resource type="Script" uid="uid://ccsh3foyy7qd5" path="res://Scripts/Utility/RemoteCam.cs" id="6_0mdm0"]
+[ext_resource type="Script" uid="uid://ve83kys7a48x" path="res://Scripts/CameraControl/FlightCamera.cs" id="6_0mdm0"]
+[ext_resource type="Script" uid="uid://dn8105q754rdm" path="res://Scripts/CraftAssembly/CraftManager.cs" id="6_ijjgm"]
 [ext_resource type="PackedScene" uid="uid://hlhaljtudxey" path="res://Assets/Prefabs/world_environment.tscn" id="9_2c3j4"]
 
 [node name="ActiveSave" type="Node3D" node_paths=PackedStringArray("planetSystem")]
@@ -41,7 +42,6 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="PlanetSystem/RenderLayers/LocalContainer/LocalView"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 cull_mask = 1047553
 current = true
 far = 1e+06
@@ -68,7 +68,6 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="PlanetSystem/RenderLayers/ScaledContainer/ScaledView"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 near = 10.0
 far = 2e+08
 
@@ -82,9 +81,20 @@ offset_bottom = 40.0
 
 [node name="WorldEnvironment" parent="." instance=ExtResource("9_2c3j4")]
 
-[node name="Camera3D" type="Camera3D" parent="." groups=["Camera"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-cull_mask = 1047553
-current = true
-far = 1e+06
+[node name="CraftManager" type="Node" parent="."]
+script = ExtResource("6_ijjgm")
+
+[node name="Cam_Pos" type="Node3D" parent="." groups=["CamPivot"]]
 script = ExtResource("6_0mdm0")
+
+[node name="Cam_Rot_Y" type="Node3D" parent="Cam_Pos"]
+
+[node name="Cam_Rot_X" type="Node3D" parent="Cam_Pos/Cam_Rot_Y"]
+
+[node name="RemoteCams" type="Node3D" parent="Cam_Pos/Cam_Rot_Y/Cam_Rot_X"]
+
+[node name="Local" type="RemoteTransform3D" parent="Cam_Pos/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
+remote_path = NodePath("../../../../../PlanetSystem/RenderLayers/LocalContainer/LocalView/Camera3D")
+
+[node name="Scaled" type="RemoteTransform3D" parent="Cam_Pos/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
+remote_path = NodePath("../../../../../PlanetSystem/RenderLayers/ScaledContainer/ScaledView/Camera3D")

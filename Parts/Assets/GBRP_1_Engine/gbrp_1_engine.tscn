@@ -1,13 +1,9 @@
-[gd_scene load_steps=23 format=3 uid="uid://drmdivxomqm0s"]
+[gd_scene load_steps=19 format=3 uid="uid://drmdivxomqm0s"]
 
-[ext_resource type="Script" uid="uid://btpp6j4bi7rfx" path="res://Scripts/PartDefinition.cs" id="1_jdvnx"]
-[ext_resource type="Texture2D" uid="uid://cme6pqqht1o5u" path="res://Assets/Textures/category_engines.png" id="2_w72t0"]
-[ext_resource type="ArrayMesh" uid="uid://c01ww655lqk6s" path="res://Assets/Prefabs/Parts/GBRP_1_Engine/GBRP_1_Engine.obj" id="3_gjx41"]
-[ext_resource type="Texture2D" uid="uid://ci5ruh18atty1" path="res://Assets/Prefabs/Parts/GBRP_1_Engine/Color.png" id="3_w72t0"]
-[ext_resource type="Texture2D" uid="uid://dqa43c2uqx1nu" path="res://Assets/Prefabs/Parts/GBRP_1_Engine/Normal.png" id="4_heq1f"]
+[ext_resource type="ArrayMesh" uid="uid://c01ww655lqk6s" path="res://Parts/Assets/GBRP_1_Engine/GBRP_1_Engine.obj" id="3_gjx41"]
+[ext_resource type="Texture2D" uid="uid://ci5ruh18atty1" path="res://Parts/Assets/GBRP_1_Engine/Color.png" id="3_w72t0"]
+[ext_resource type="Texture2D" uid="uid://dqa43c2uqx1nu" path="res://Parts/Assets/GBRP_1_Engine/Normal.png" id="4_heq1f"]
 [ext_resource type="Script" uid="uid://bju7ped2nl5sy" path="res://Scripts/CraftAssembly/AttachNode.cs" id="6_heq1f"]
-[ext_resource type="PackedScene" uid="uid://2u1df81enha5" path="res://Assets/Prefabs/PartModules/Gravity.tscn" id="7_fy4nm"]
-[ext_resource type="PackedScene" uid="uid://e48at2cr02s6" path="res://Assets/Prefabs/PartModules/Engine.tscn" id="8_g14cd"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7trfy"]
 albedo_texture = ExtResource("3_w72t0")
@@ -84,12 +80,6 @@ material = SubResource("StandardMaterial3D_nmdee")
 [node name="GBRP_1_Engine" type="RigidBody3D"]
 mass = 500.0
 gravity_scale = 0.0
-script = ExtResource("1_jdvnx")
-cameraRot = Vector3(-24.5, 90, 0)
-cameraPos = Vector3(2, 0.9, 0)
-cameraSize = 3.75
-categoryName = "Engines"
-categoryIcon = ExtResource("2_w72t0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.932452, 0, 0, 0, 0.932452, 0, 0, 0, 0.932452, 0, 0, 0)
@@ -105,10 +95,30 @@ shape = SubResource("ConvexPolygonShape3D_w72t0")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
 script = ExtResource("6_heq1f")
 
-[node name="Gravity" parent="." instance=ExtResource("7_fy4nm")]
+[node name="Gravity" parent="."]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
+script = null
 
-[node name="Engine" parent="." instance=ExtResource("8_g14cd")]
+[node name="Engine" parent="."]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
 thrust = 3000.0
+script = null
 
 [node name="Plume" type="GPUParticles3D" parent="Engine"]
 transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, 0)
