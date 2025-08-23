@@ -5,4 +5,3 @@ extends PartModule
 class_name VehicleAssembly
 
 var craft_manager
-
