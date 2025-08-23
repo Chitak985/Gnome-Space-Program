@@ -6,7 +6,6 @@
 	"radius": 600000
   },
   "orbit": {
-	"disable": "false",
 	"parent": "Sun",
 	"semiMajorAxis": 149598003,
 	"inclination": 0,

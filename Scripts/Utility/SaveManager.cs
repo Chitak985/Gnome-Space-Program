@@ -19,7 +19,7 @@ public partial class SaveManager : Node
 	public override void _Ready()
 	{
 		Instance = this;
-        GD.PrintRich($"{classTag} SaveManager ready!");
+		GD.PrintRich($"{classTag} SaveManager ready!");
 	}
 
 	public void LoadSave(

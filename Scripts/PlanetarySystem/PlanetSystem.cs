@@ -40,10 +40,10 @@ public partial class PlanetSystem : Node3D
 		List<string> planetConfigs = [];
 		foreach (string pack in chosenPacks)
 		{
-            string fullPath = $"{ConfigUtility.GameData}/{pack}";
-            planetConfigs.AddRange(GetPlanetConfigs(fullPath));
+			string fullPath = $"{ConfigUtility.GameData}/{pack}";
+			planetConfigs.AddRange(GetPlanetConfigs(fullPath));
 			GD.PrintRich($"{classTag} Successfully indexed celestial pack '{fullPath}'");
-        }
+		}
 		// Might aswell do this while we're at it
 		localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");
 		localSpacePlanets = (Node3D)localSpace.FindChild("Planets");
