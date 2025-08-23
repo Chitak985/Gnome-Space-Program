@@ -124,7 +124,7 @@ script = ExtResource("2_xim88")
 toClose = NodePath("..")
 toOpen = NodePath("../../../MainPanel")
 
-[node name="SaveCreation" type="Panel" parent="SaveManager" node_paths=PackedStringArray("saveParamList")]
+[node name="SaveCreation" type="Panel" parent="SaveManager" node_paths=PackedStringArray("saveParamList", "rootNode")]
 visible = false
 layout_mode = 0
 offset_left = 376.0
@@ -137,6 +137,7 @@ settingSelectorDependency = ExtResource("3_df05h")
 categoryPrefab = ExtResource("4_df05h")
 optionPrefab = ExtResource("5_8um5k")
 lineEditPrefab = ExtResource("8_koqhg")
+rootNode = NodePath("../..")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="SaveManager/SaveCreation"]
 layout_mode = 1
