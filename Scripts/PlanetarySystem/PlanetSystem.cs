@@ -41,8 +41,8 @@ public partial class PlanetSystem : Node3D
         foreach (string pack in chosenPacks)
 		{
             string fullPath = $"{ConfigPath}/{pack}";
-            planetConfigs.AddRange(GetPlanetConfigs(ConfigPath));
-			GD.PrintRich($"{classTag} Successfully indexed celestial pack '{ConfigPath}'");
+            planetConfigs.AddRange(GetPlanetConfigs(fullPath));
+			GD.PrintRich($"{classTag} Successfully indexed celestial pack '{fullPath}'");
         }
 		// Might aswell do this while we're at it
 		localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");

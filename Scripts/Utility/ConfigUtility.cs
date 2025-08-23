@@ -3,7 +3,7 @@ using Godot;
 using Godot.Collections;
 
 // Helper class for parsing JSON configs
-public partial class ConfigUtility
+public partial class ConfigUtility : Node
 {
     public static readonly string GameData = "res://GameData";
 

@@ -21,7 +21,7 @@ panorama = SubResource("NoiseTexture2D_m06uv")
 sky_material = SubResource("PanoramaSkyMaterial_i4vn6")
 
 [sub_resource type="Environment" id="Environment_7jmkp"]
-background_mode = 1
+background_mode = 2
 background_energy_multiplier = 0.2
 sky = SubResource("Sky_0kuwm")
 tonemap_mode = 2
