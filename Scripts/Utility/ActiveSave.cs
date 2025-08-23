@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public partial class ActiveSave : Node3D
 {
-	public static readonly string classTag = "([color=orange]PlanetSystem[color=white])";
+	public static readonly string classTag = "([color=orange]ActiveSave[color=white])";
 	public static ActiveSave Instance;
 	[Export] public PlanetSystem planetSystem;
 

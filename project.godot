@@ -20,6 +20,7 @@ config/icon="uid://ghib0t8cv3ka"
 [autoload]
 
 SaveManager="*res://Scripts/Utility/SaveManager.cs"
+ConfigUtility="*res://Scripts/Utility/ConfigUtility.cs"
 
 [display]
 

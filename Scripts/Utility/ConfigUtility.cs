@@ -5,7 +5,26 @@ using Godot.Collections;
 // Helper class for parsing JSON configs
 public partial class ConfigUtility : Node
 {
-	public static readonly string GameData = "res://GameData";
+    public static readonly string classTag = "([color=aaccff]ConfigUtility[color=white])";
+    // GameData fallback if the game is being run in the editor
+    public static readonly string GameDataFolder = "GameData";
+    public static readonly string EditorGameData = "res://GameData";
+    public static string GameData {get; private set;}
+
+    public override void _EnterTree()
+    {
+        bool inEditor = OS.HasFeature("editor");
+        
+        if (inEditor)
+        {
+            GameData = EditorGameData;
+            GD.PrintRich($"{classTag} Game running in editor! Using {EditorGameData}");
+        }else{
+            string dataDir = $"{OS.GetExecutablePath().GetBaseDir()}/{GameDataFolder}";
+            GameData = dataDir;
+            GD.PrintRich($"{classTag} Game running in executable! Using {dataDir}");
+        }
+    }
 
 	public static Dictionary ParseConfig(string path)
 	{

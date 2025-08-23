@@ -6,9 +6,6 @@
 	"mass": 1.7565459e28,
 	"radius": 69570000
   },
-  "orbit": {
-	"disable": "true"
-  },
   "pqs": {
 	"pqsMods": [
 	  {

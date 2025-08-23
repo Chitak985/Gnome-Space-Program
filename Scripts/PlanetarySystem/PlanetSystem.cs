@@ -40,7 +40,7 @@ public partial class PlanetSystem : Node3D
 		List<string> planetConfigs = [];
 		foreach (string pack in chosenPacks)
 		{
-            string fullPath = $"{ConfigPath}/{pack}";
+            string fullPath = $"{ConfigUtility.GameData}/{pack}";
             planetConfigs.AddRange(GetPlanetConfigs(fullPath));
 			GD.PrintRich($"{classTag} Successfully indexed celestial pack '{fullPath}'");
         }
@@ -157,18 +157,7 @@ public partial class PlanetSystem : Node3D
 
 	public static CelestialBody ParseConfig(string path)
 	{
-		FileAccess file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-		string content = file.GetAsText();
-
-		Json jsonFile = new();
-		Error err = jsonFile.Parse(content);
-		Dictionary data = (Dictionary)jsonFile.Data;
-
-		if (err != Error.Ok)
-		{
-			GD.PushWarning($"Config file {path} could not be loaded.");
-			return null;
-		}
+		Dictionary data = ConfigUtility.ParseConfig(path);
 
 		CelestialBody cBody = new();
 
@@ -198,33 +187,21 @@ public partial class PlanetSystem : Node3D
 		}
 
 		// The "parent" parameter is set in a different function because the parent might be parsed after this one
-		string disabledOrbit = "false";  // [Chitak] I wasn't sure how to get booleans out of the configs so I just used strings
+		// Chitak I appreciate you trying to improve the game but the disabled parameter is redundant.
+		// - Sincerely, and with no ill intent, Sushut.
 		if (ConfigUtility.TryGetDictionary("orbit", data, out Dictionary orbit))
 		{
-			if (orbit.TryGetValue("disable", out var tmp))
-			{
-				disabledOrbit = (string) tmp;  // [Chitak] I keep getting an error so I just did it the dirty way. Works though!
-				if (disabledOrbit == "true")
-				{
-					GD.PrintRich($"{classTag} CBody {cBody.name}'s orbit was disabled. If this is not intended, check its configs.");
-				}
-			}else{
-				GD.PrintRich($"{classTag} CBody {cBody.name}'s orbit does not have the disabled parameter. Defaulting to not disabling orbit.");
-			}
-			if (disabledOrbit == "false")
-			{
-				cBody.parentName = orbit.TryGetValue("parent", out var pnm) ? (string)pnm : null;
-				cBody.orbit = new Orbit{
-					semiMajorAxis = orbit.TryGetValue("semiMajorAxis", out var sma) ? (double)sma : MissingNum(path, "orbit/semiMajorAxis"),
-					inclination = orbit.TryGetValue("inclination", out var inc) ? (double)inc + Math.PI : MissingNum(path, "orbit/inclination"),
-					eccentricity = orbit.TryGetValue("eccentricity", out var ecc) ? (double)ecc : MissingNum(path, "orbit/eccentricity"),
-					argumentOfPeriapsis = orbit.TryGetValue("argumentOfPeriapsis", out var arp) ? (double)arp : MissingNum(path, "orbit/argumentOfPeriapsis"),
-					longitudeOfAscendingNode = orbit.TryGetValue("longitudeOfAscendingNode", out var lon) ? (double)lon : MissingNum(path, "orbit/longitudeOfAscendingNode"),
-					trueAnomaly = orbit.TryGetValue("trueAnomaly", out var tra) ? (double)tra : 0,
-					trueAnomalyAtEpoch = orbit.TryGetValue("trueAnomalyAtEpoch", out var tre) ? (double)tre : MissingNum(path, "orbit/trueAnomalyAtEpoch"),
-					sphereOfInfluence = orbit.TryGetValue("sphereOfInfluence", out var soi) ? (double)soi : -1,
-				};
-			}
+			cBody.parentName = orbit.TryGetValue("parent", out var pnm) ? (string)pnm : null;
+			cBody.orbit = new Orbit{
+				semiMajorAxis = orbit.TryGetValue("semiMajorAxis", out var sma) ? (double)sma : MissingNum(path, "orbit/semiMajorAxis"),
+				inclination = orbit.TryGetValue("inclination", out var inc) ? (double)inc + Math.PI : MissingNum(path, "orbit/inclination"),
+				eccentricity = orbit.TryGetValue("eccentricity", out var ecc) ? (double)ecc : MissingNum(path, "orbit/eccentricity"),
+				argumentOfPeriapsis = orbit.TryGetValue("argumentOfPeriapsis", out var arp) ? (double)arp : MissingNum(path, "orbit/argumentOfPeriapsis"),
+				longitudeOfAscendingNode = orbit.TryGetValue("longitudeOfAscendingNode", out var lon) ? (double)lon : MissingNum(path, "orbit/longitudeOfAscendingNode"),
+				trueAnomaly = orbit.TryGetValue("trueAnomaly", out var tra) ? (double)tra : 0,
+				trueAnomalyAtEpoch = orbit.TryGetValue("trueAnomalyAtEpoch", out var tre) ? (double)tre : MissingNum(path, "orbit/trueAnomalyAtEpoch"),
+				sphereOfInfluence = orbit.TryGetValue("sphereOfInfluence", out var soi) ? (double)soi : -1,
+			};
 		}else{
 			GD.PrintRich($"{classTag} CBody {cBody.name} is missing its orbit! If this is intended, then disregard this message.");
 		}

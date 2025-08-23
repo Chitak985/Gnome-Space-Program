@@ -17,6 +17,11 @@ First of all the mainMenu thing that couldn't be found... You used the wrong nam
 I know how to do that in GDScript, but there is no @onready so it doesn't work. Also, JUST EXPORT IT!
 Second, you weren't loading SaveManager, so instead of going through hell of accessing something through scenes I just autoladed it and it worked lmao
 */
+
+/* [Sushut] 
+	The game was working fine? I'm not sure what caused it to break for you but I guess having
+	SaveManager as an autoload is fine..?
+*/
 public partial class SaveSettingsManager : Panel
 {
 	public Dictionary<string, PlanetPack> rootSystems;
