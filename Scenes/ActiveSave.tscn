@@ -66,6 +66,7 @@ localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 [node name="RealityTangler" type="Node" parent="."]
 process_priority = 100
 script = ExtResource("13_sfn14")
+originResetThreshold = 10000000.0
 
 [node name="RenderLayers" type="Control" parent="."]
 z_index = -5
