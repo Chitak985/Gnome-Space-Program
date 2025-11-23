@@ -3,7 +3,7 @@
 shader_type spatial;
 render_mode unshaded;
 
-uniform bool renderAlpha = true;
+uniform bool DEBUG_renderAlpha = true;
 uniform sampler2D gradient;
 uniform float thickness;
 
@@ -48,8 +48,9 @@ vec2 renderOrbit(vec2 uv, mat4 projectionMatrix, mat4 viewMatrix) {
 
 		// 0,0,0 will be excluded which is a bit shiit but realistically it shouldn't ever show up
 		if (points[i+1] != vec3(0,0,0) && pointZ0 < 0.0 && pointZ1 < 0.0) {
-			res += drawLine(point0, point1, uv);
-			clr += drawLine(point0, point1, uv) * (float(i) / float(arrayLength));
+			float line = drawLine(point0, point1, uv);
+			res += line;
+			clr += line * (float(i) / float(arrayLength));
 		}
 	}
 
@@ -59,20 +60,14 @@ vec2 renderOrbit(vec2 uv, mat4 projectionMatrix, mat4 viewMatrix) {
 void fragment() {
 	// Called for every pixel the material is visible on.
 
-	vec2 res = renderOrbit(SCREEN_UV, PROJECTION_MATRIX, VIEW_MATRIX);
-	vec2 resNrm = normalize(res);
+	vec2 res = normalize(renderOrbit(SCREEN_UV, PROJECTION_MATRIX, VIEW_MATRIX));
 
-	ALBEDO = texture(gradient, vec2(resNrm.y)).rgb;
-	if (renderAlpha)
+	ALBEDO = texture(gradient, vec2(res.y)).rgb;
+	if (DEBUG_renderAlpha)
 	{
-		ALPHA = clamp(resNrm.x, 0.0, 1.0);
+		ALPHA = clamp(res.x, 0.0, 1.0);
 	}
 
 	// Uncomment to test lines
 	//ALPHA = clamp(drawLine(vec2(0.25,0.25), vec2(0.75,0.75), SCREEN_UV) + drawLine(vec2(0.25,0.75), vec2(0.75,0.25), SCREEN_UV), 0.0, 1.0);
 }
-
-//void light() {
-//	// Called for every pixel for every light affecting the material.
-//	// Uncomment to replace the default light processing function with this one.
-//}
