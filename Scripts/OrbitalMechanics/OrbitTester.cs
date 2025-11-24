@@ -52,7 +52,7 @@ public partial class OrbitTester : Node3D
         anotherBody.cartesianData.position = orbitPos;
         anotherBody.cartesianData.velocity = orbitVel;
         cBodyList.Add(anotherBody);
-        testBodyRenderer.cBody = anotherBody;
+        //testBodyRenderer.cBody = anotherBody;
         orbitDisplay.cBody = anotherBody;
         
         foreach (CelestialBody cBody in cBodyList)
@@ -110,9 +110,9 @@ public partial class OrbitTester : Node3D
             {
                 if (useVelocity)
                 {
-                    Orbit orbit = PatchedConics.ECItoKOE(cBody.cartesianData);
+                    Orbit orbit = Conics.CartToElem(cBody.cartesianData);
 
-                    (Vector3 position, _) = PatchedConics.KOEtoECI(orbit);
+                    CartesianData data = Conics.ElemToCart(orbit);
                     //GD.Print(position.X + " " + position.Y + " " + position.Z);
                     cBody.orbit = orbit;
                     //cBody.cartesianData.position = position;
@@ -126,20 +126,20 @@ public partial class OrbitTester : Node3D
 
                     //Vector3 position = cBody.cartesianData.position;
 
-                    cBody.debugOrb.GlobalPosition = position;
+                    cBody.debugOrb.GlobalPosition = data.position;
                 }else{
                     orbitPos = anotherBody.cartesianData.position;
                     orbitVel = anotherBody.cartesianData.velocity;
 
-                    cBody.orbit.trueAnomaly = PatchedConics.TimeToTrueAnomaly(cBody.orbit, ActiveSave.Instance.saveTime, 0);
+                    cBody.orbit.trueAnomaly = Conics.TimeToTrueAnomaly(cBody.orbit, ActiveSave.Instance.saveTime, 0);
                     GD.Print(cBody.orbit.period);
 
-                    (Vector3 position, Vector3 velocity) = PatchedConics.KOEtoECI(cBody.orbit);//Time.GetUnixTimeFromSystem()*timeSpeed, 0);
+                    CartesianData data = Conics.ElemToCart(cBody.orbit);//Time.GetUnixTimeFromSystem()*timeSpeed, 0);
 
-                    cBody.cartesianData.position = position;
-                    cBody.cartesianData.velocity = velocity;
+                    cBody.cartesianData.position = data.position;
+                    cBody.cartesianData.velocity = data.velocity;
 
-                    Vector3 finalPos = position + cBody.orbit.parent.cartesianData.position;
+                    Vector3 finalPos = data.position + cBody.orbit.parent.cartesianData.position;
                     
                     cBody.debugOrb.GlobalPosition = finalPos;
                 }

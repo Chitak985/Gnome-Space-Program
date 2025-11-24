@@ -63,6 +63,8 @@ public partial class RealityTangler : Node
         EmitSignal(SignalName.ScaledProcess);
         EmitSignal(SignalName.OrbitProcess);
 
+        OrbitRendererManager.Instance.UpdateOrbitRenderers();
+
         //foreach (CelestialBody cBody in PlanetSystem.Instance.celestialBodies)
         //{
             // Force many things to update because I don't know

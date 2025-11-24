@@ -88,6 +88,8 @@ public partial class FlightCamera : Node3D
         // Leave if we can't do this
         if (toggle && !canEnterMap) return;
 
+        OrbitRendererManager.Instance.ToggleRenderers(toggle);
+
         MapUI.Instance.Visible = toggle;
 
         Logger.Print($"{classTag} Map view: {toggle}");

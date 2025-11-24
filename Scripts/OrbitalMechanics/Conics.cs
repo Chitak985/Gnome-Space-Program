@@ -18,8 +18,9 @@ list of orbital gobbledygook:
 https://www.bogan.ca/orbits/kepler/orbteqtn.html
 */
 
-public partial class PatchedConics : Node
+public partial class Conics : Node
 {
+    // Buncha constants
     public static readonly double GravConstant = 6.674e-11;
     public static readonly double EarthGravity = 9.80665;
     
@@ -30,82 +31,52 @@ public partial class PatchedConics : Node
         return new Vector3(inputVector.X,inputVector.Z,inputVector.Y);
     }
     
-    // Gets body-centered coordinates from orbit parameters
-    // Keplerian orbital elements to earth centered whateverthefuck
-    // I believe some portions of this might have been AI generated(?)
-    // However the code is fully understood so no major downside other than using an llm rather than a search engine.. :(
-    // Rest assured anything majorly written by an LLM will be rectified when given the opportunity.
-    public static (Vector3, Vector3) KOEtoECI(Orbit orbit) //, Dr Freeman? Is it really that time again?
+    // Orbital Elements to Cartesian (relative to parent)
+    public static CartesianData ElemToCart(Orbit orbit)
     {
-        // yeah whatever the fRICK
-        double MU = orbit.ComputeMU();//GravConstant * parent.mass;
+        double MU = orbit.ComputeMU(); //GravConstant * parent.mass;
 
         // Compile our favourite Keplerian orbit elements
+        double semiMajorAxis = orbit.semiMajorAxis;
+        double eccentricity = orbit.eccentricity;
+        double inclination = orbit.inclination;
+        double argumentOfPeriapsis = orbit.argumentOfPeriapsis;
+        double longitudeOfAscendingNode = orbit.longitudeOfAscendingNode;
+        double trueAnomaly = orbit.trueAnomaly;
 
-        double a = orbit.semiMajorAxis;
-        double e = orbit.eccentricity;
-        double i = orbit.inclination;
-        double omega = orbit.argumentOfPeriapsis;
-        double Omega = orbit.longitudeOfAscendingNode;
-        double truAN = orbit.trueAnomaly;
-
-        double p = e != 1.0 ? a * (1 - e * e) : 2 * a;
-        double r = p / (1 + e * Math.Cos(truAN));
-        double h = Math.Sqrt(MU * p); // Specific angular momentum
+        double semiLatusRectum = eccentricity != 1.0 ? semiMajorAxis * (1 - eccentricity * eccentricity) : 2 * semiMajorAxis;
+        double radius = semiLatusRectum / (1 + eccentricity * Math.Cos(trueAnomaly));
+        //double specificAngularMomemtum = Math.Sqrt(MU * semiLatusRectum);
 
         Vector3 rPQW = new(
-            r * Math.Cos(truAN),
-            r * Math.Sin(truAN),
-            0
+            radius * Math.Sin(trueAnomaly),
+            0,
+            radius * Math.Cos(trueAnomaly)
         );
 
         Vector3 vPQW = new(
-            -Math.Sqrt(MU / p) * Math.Sin(truAN),
-            Math.Sqrt(MU / p) * (e + Math.Cos(truAN)),
-            0
+            -Math.Sqrt(MU / semiLatusRectum) * Math.Sin(trueAnomaly),
+            0,
+            Math.Sqrt(MU / semiLatusRectum) * (eccentricity + Math.Cos(trueAnomaly))
         );
 
-        // Step 2: Rotation matrices to transform to inertial frame
-        double cosO = Math.Cos(Omega);
-        double sinO = Math.Sin(Omega);
-        double cosi = Math.Cos(i);
-        double sini = Math.Sin(i);
-        double cosw = Math.Cos(omega);
-        double sinw = Math.Sin(omega);
+        Basis R =
+            new Basis(Vector3.Up, (float)longitudeOfAscendingNode) * // Rotate around global Z
+            new Basis(Vector3.Right, (float)inclination) *           // Rotate by inclination
+            new Basis(Vector3.Up, (float)argumentOfPeriapsis);       // Rotate by argument of periapsis
 
-        // Rotation matrix: Perifocal to ECI
-        double[,] R = new double[3, 3];
-        R[0, 0] = cosO * cosw - sinO * sinw * cosi;
-        R[0, 1] = -cosO * sinw - sinO * cosw * cosi;
-        R[0, 2] = sinO * sini;
+        CartesianData data = new()
+        {
+            position = R * rPQW,
+            velocity = R * vPQW
+        };
 
-        R[1, 0] = sinO * cosw + cosO * sinw * cosi;
-        R[1, 1] = -sinO * sinw + cosO * cosw * cosi;
-        R[1, 2] = -cosO * sini;
-
-        R[2, 0] = sinw * sini;
-        R[2, 1] = cosw * sini;
-        R[2, 2] = cosi;
-
-        // Rotate position and velocity vectors
-        Vector3 position = new(
-            R[0, 0] * rPQW.X + R[0, 1] * rPQW.Y + R[0, 2] * rPQW.Z,
-            R[1, 0] * rPQW.X + R[1, 1] * rPQW.Y + R[1, 2] * rPQW.Z,
-            R[2, 0] * rPQW.X + R[2, 1] * rPQW.Y + R[2, 2] * rPQW.Z
-        );
-
-        Vector3 velocity = new(
-            R[0, 0] * vPQW.X + R[0, 1] * vPQW.Y + R[0, 2] * vPQW.Z,
-            R[1, 0] * vPQW.X + R[1, 1] * vPQW.Y + R[1, 2] * vPQW.Z,
-            R[2, 0] * vPQW.X + R[2, 1] * vPQW.Y + R[2, 2] * vPQW.Z
-        );
-
-        return (position, velocity);
+        return data;
     }
 
     // Converts position and velocity to classical Keplerian orbital elements.
     // Formulas taken from Basilisk https://hanspeterschaub.info/basilisk/_modules/orbitalMotion.html#rv2elem
-    public static Orbit ECItoKOE(CartesianData data)
+    public static Orbit CartToElem(CartesianData data)
     {
         // define mu, vectors, and epsilon
         double mu = GravConstant * data.parent.mass;
@@ -225,22 +196,6 @@ public partial class PatchedConics : Node
         return newOrbit;
     }
 
-    // Gets orbital elements at a point and then updates the cartesian parameters to match
-    public static Orbit AccelerateOrbit(Orbit orbit, double time, Vector3 accel)
-    {
-        orbit.trueAnomaly = TimeToTrueAnomaly(orbit, time, 0);
-        (Vector3 position, Vector3 velocity) = KOEtoECI(orbit);
-        velocity += accel;
-        CartesianData newCart = new()
-        {
-            position = position,
-            velocity = velocity,
-            parent = orbit.parent
-        };
-        Orbit newOrbit = ECItoKOE(newCart);
-        return newOrbit;
-    }
-
     // Name is a bit confusing but all this does is convert time (t) to true anomaly (v)
     public static double TimeToTrueAnomaly(Orbit orbit, double t, double T)
     {
@@ -352,58 +307,4 @@ public partial class PatchedConics : Node
             return (null, new Vector3(double.NaN, double.NaN, double.NaN));
         }
     }
-}
-
-// Orbit
-public class Orbit
-{
-    public CelestialBody parent;
-    public double MU;
-
-    public double semiMajorAxis;
-    public double eccentricity;
-    public double inclination;
-    public double argumentOfPeriapsis;
-    public double longitudeOfAscendingNode;
-    public double trueAnomaly;
-    public double trueAnomalyAtEpoch;
-    public double sphereOfInfluence;
-
-    public double period;
-
-    public double ComputeMU()
-    {
-        MU = PatchedConics.GravConstant * parent.mass;
-        return MU;
-    }
-
-    public double ComputePeriod()
-    {
-        period = 2 * Math.PI * Math.Sqrt(semiMajorAxis * semiMajorAxis * semiMajorAxis / MU); //Orbital period
-        return period;
-    }
-
-    // Dump all orbit parameters to the console
-    public void DumpOrbitParams()
-    {
-        GD.Print("------ Orbit parameter dump ------");
-        GD.Print("Semimajor-axis: " + semiMajorAxis);
-        GD.Print("Eccentricity: " + eccentricity);
-        GD.Print("Inclination: " + inclination);
-        GD.Print("Argument Of Periapsis: " + argumentOfPeriapsis);
-        GD.Print("Longitude of Ascending Node: " + longitudeOfAscendingNode);
-        GD.Print("True Anomaly: " + trueAnomaly);
-        GD.Print("Period: " + period);
-        GD.Print("MU: " + MU);
-        GD.Print("----------------------------------");
-    }
-}
-
-// Cartesian data
-public class CartesianData
-{
-    public CelestialBody parent;
-
-    public Vector3 position;
-    public Vector3 velocity;
 }

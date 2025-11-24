@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://b08reqxmoktvk"]
+[gd_scene load_steps=47 format=3 uid="uid://b08reqxmoktvk"]
 
 [ext_resource type="Script" uid="uid://c3i0ynvo54sk1" path="res://Scripts/Utility/ActiveSave.cs" id="1_2c3j4"]
 [ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
@@ -17,8 +17,10 @@
 [ext_resource type="Script" uid="uid://byojjoj3wpnpd" path="res://Scripts/UserInterface/MapUI.cs" id="14_23wpb"]
 [ext_resource type="Script" uid="uid://cyombaxie5vkw" path="res://Scripts/Utility/BuildingManager.cs" id="14_uc177"]
 [ext_resource type="Script" uid="uid://b2koecyr2n2mv" path="res://Scripts/UserInterface/ContextMenus/PartMenuHandler.cs" id="15_cbqy2"]
+[ext_resource type="Script" uid="uid://dwh7ro6ua2sfc" path="res://Scripts/OrbitalMechanics/OrbitRendererManager.cs" id="15_h7vhn"]
 [ext_resource type="Script" uid="uid://b0otr6yt3ikn2" path="res://Scripts/UserInterface/ContextMenus/ColonyMenu.cs" id="15_p543u"]
 [ext_resource type="Script" uid="uid://bc0vnn6dhlhug" path="res://Scripts/UserInterface/ContextMenus/ContextMenus.cs" id="15_ue2ba"]
+[ext_resource type="PackedScene" uid="uid://0l4exascpcks" path="res://Assets/Prefabs/orbit_renderer_enclosure.tscn" id="16_np084"]
 [ext_resource type="PackedScene" uid="uid://c8odi3kjvqxhl" path="res://Assets/Prefabs/UI/part_menu.tscn" id="17_2vujl"]
 [ext_resource type="PackedScene" uid="uid://dam6vsicmpefq" path="res://Assets/Meshes/Gizmo/gizmo.glb" id="17_h3s5b"]
 [ext_resource type="Script" uid="uid://nutgi3n1uf8j" path="res://Scripts/UserInterface/ContextMenus/PlanetMenu.cs" id="17_ue2ba"]
@@ -101,7 +103,7 @@ render_target_update_mode = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 cull_mask = 1047556
 fov = 90.0
-far = 100000.0
+far = 100000000000000.02
 
 [node name="Background" type="Node3D" parent="RenderLayers/BackgroundContainer/BackgView"]
 
@@ -133,8 +135,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 cull_mask = 1047554
 attributes = ExtResource("2_cbqy2")
 fov = 90.0
-near = 0.51
-far = 10000000.0
+near = 0.5
+far = 1e+15
 
 [node name="ScaledSpace" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" node_paths=PackedStringArray("flightCamera")]
 script = ExtResource("5_yxkbd")
@@ -171,12 +173,7 @@ far = 1000000.0
 
 [node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace"]
 
-[node name="OrbitRenderers" type="Control" parent="RenderLayers"]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="PlanetSystem" type="Node3D" parent="." node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace", "orbitRenderers")]
+[node name="PlanetSystem" type="Node3D" parent="." node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace")]
 script = ExtResource("1_pocjb")
 orbitRendererPrefab = ExtResource("3_212tm")
 planetIconPrefab = ExtResource("4_yxkbd")
@@ -184,7 +181,6 @@ planetIcons = NodePath("../UI/MapUI/PlanetIcons")
 localCamera = NodePath("../RenderLayers/LocalContainer/LocalView/Camera3D")
 localSpace = NodePath("../RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("../RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
-orbitRenderers = NodePath("../RenderLayers/OrbitRenderers")
 DEBUG_GizmoPrefab = ExtResource("17_h3s5b")
 
 [node name="PartManager" type="Node" parent="."]
@@ -209,6 +205,10 @@ verboseLogging = true
 [node name="EditorParts" type="Node3D" parent="BuildingManager"]
 
 [node name="FloatingParts" type="Node3D" parent="BuildingManager"]
+
+[node name="OrbitRendererManager" type="Node" parent="."]
+script = ExtResource("15_h7vhn")
+rendererPrefab = ExtResource("16_np084")
 
 [node name="FlightCamera" type="Node3D" parent="." node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "camNode")]
 script = ExtResource("6_0mdm0")

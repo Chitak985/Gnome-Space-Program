@@ -31,13 +31,6 @@ public partial class CelestialBody : Node3D
     // DEBUG
     public MeshInstance3D debugOrb;
 
-    // Functions to get points with Y as up rather than Z
-    // To Be Eliminated
-    private static Vector3 GetPosYUp(Vector3 inputVector)
-    {
-        return new Vector3(inputVector.X,inputVector.Z,inputVector.Y);
-    }
-
     public void CreateDebugOrb(Node3D parent)
     {
         debugOrb = new MeshInstance3D();
@@ -59,22 +52,22 @@ public partial class CelestialBody : Node3D
     {
         if (orbit != null)
         {
-            orbit.trueAnomaly = PatchedConics.TimeToTrueAnomaly(orbit, ActiveSave.Instance.saveTime, 0) + orbit.trueAnomalyAtEpoch;
-            (Vector3 position, Vector3 velocity) = PatchedConics.KOEtoECI(orbit);
-            cartesianData.position = position + orbit.parent.cartesianData.position;
-            cartesianData.velocity = velocity;
+            orbit.trueAnomaly = Conics.TimeToTrueAnomaly(orbit, ActiveSave.Instance.saveTime, 0) + orbit.trueAnomalyAtEpoch;
+            CartesianData data = Conics.ElemToCart(orbit);
+            cartesianData.position = data.position + orbit.parent.cartesianData.position;
+            cartesianData.velocity = data.position;
             //GD.Print(SaveManager.Instance.saveTime);
             //GD.Print($"{cartesianData.position.X}, {cartesianData.position.Y}, {cartesianData.position.Z}");
         }
 
         // Uh
-        originPos = cartesianData.position + GetPosYUp(RealityTangler.Instance.originOffset);
+        originPos = cartesianData.position + RealityTangler.Instance.originOffset;
 
         // Modify originPos such that the active planet is at at a the world origin
         if (ActiveSave.Instance.activePlanet != null)
             originPos -= ActiveSave.Instance.activePlanet.cartesianData.position;
 
-        Position = GetPosYUp(originPos);
+        Position = originPos;
 
         scaledSphere.truePosition = GlobalPosition; //cBody.cartesianData.position.GetPosYUp();
         scaledSphere.ForceUpdate();

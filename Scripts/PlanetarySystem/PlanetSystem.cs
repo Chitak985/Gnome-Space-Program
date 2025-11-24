@@ -90,7 +90,6 @@ public partial class PlanetSystem : Node3D
         Logger.Print($"{classTag} System created successfully!");
 
         // Debug pass
-
         if (DEBUG_startWithGizmo) ToggleGizmo(true);
     }
 
@@ -162,16 +161,6 @@ public partial class PlanetSystem : Node3D
     {
         foreach (CelestialBody cBody in celestialBodies)
         {
-            CelestialBody parent = FindCBodyByName(cBody.parentName);
-            if (parent != null)
-            {
-                cBody.orbit.parent = parent;
-                if (cBody.orbit.sphereOfInfluence <= 0) // 14959800320 * ((5.289772250524424*10^22) / (1.7565459*10^28))^(2/5)
-                    cBody.orbit.sphereOfInfluence = cBody.orbit.semiMajorAxis * Math.Pow(5.289772250524424e22 / 1.7565459e28, 2f/5f);
-                cBody.cartesianData.parent = parent;
-                parent.childPlanets.Add(cBody);
-            }
-
             localSpacePlanets.AddChild(cBody);
             cBody.Name = cBody.name;
 
@@ -192,6 +181,26 @@ public partial class PlanetSystem : Node3D
             }
 
             if (cBody.focusOnload) focusOnLoadBody = cBody;
+
+            CelestialBody parent = FindCBodyByName(cBody.parentName);
+            if (parent != null)
+            {
+                cBody.orbit.parent = parent;
+                cBody.orbit.cBody = cBody;
+                if (cBody.orbit.sphereOfInfluence <= 0) // 14959800320 * ((5.289772250524424*10^22) / (1.7565459*10^28))^(2/5)
+                    cBody.orbit.sphereOfInfluence = cBody.orbit.semiMajorAxis * Math.Pow(5.289772250524424e22 / 1.7565459e28, 2f/5f);
+                cBody.cartesianData.parent = parent;
+                cBody.cartesianData.cBody = cBody;
+                parent.childPlanets.Add(cBody);
+
+                // Create orbit renderer
+                OrbitRendererManager rendererManager = OrbitRendererManager.Instance;
+                OrbitRenderer renderer = (OrbitRenderer)rendererManager.rendererPrefab.Instantiate();
+                rendererManager.orbitRenderers.Add(renderer);
+                renderer.orbit = cBody.orbit;
+                cBody.orbit.parent.scaledSphere.AddChild(renderer);
+                renderer.enabled = true;
+            }
 
             // Assign orbital process to RealityTangler
             RealityTangler.Instance.OrbitProcess += cBody.ProcessOrbitalPosition;
@@ -241,12 +250,12 @@ public partial class PlanetSystem : Node3D
             if (cBody.mass < 0)
             {
                 if (cBody.geeASL < 0) MissingNum(path, "geeASL");
-                cBody.mass = cBody.geeASL * PatchedConics.EarthGravity * Mathf.Pow(cBody.radius, 2f) / PatchedConics.GravConstant;
+                cBody.mass = cBody.geeASL * Conics.EarthGravity * Mathf.Pow(cBody.radius, 2f) / Conics.GravConstant;
             }
             if (cBody.geeASL < 0)
             {
                 if (cBody.mass < 0) MissingNum(path, "mass");
-                cBody.geeASL = cBody.mass * PatchedConics.GravConstant / Mathf.Pow(cBody.radius, 2f) / PatchedConics.EarthGravity;
+                cBody.geeASL = cBody.mass * Conics.GravConstant / Mathf.Pow(cBody.radius, 2f) / Conics.EarthGravity;
             }
         }else{
             Logger.Print($"Properties dictionary does not exist in planet config {path}");

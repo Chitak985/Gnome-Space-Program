@@ -1,7 +1,11 @@
 // Terrible shader for rendering orbits by Sushut
+// REPLACE THIS WITH SOMETHING BETTER BECAUSE IT RUNS LIKE ASS
 
 shader_type spatial;
 render_mode unshaded;
+
+uniform float nodeSize;
+uniform vec3 nodePosition;
 
 uniform bool DEBUG_renderAlpha = true;
 uniform sampler2D gradient;
@@ -40,14 +44,17 @@ vec2 renderOrbit(vec2 uv, mat4 projectionMatrix, mat4 viewMatrix) {
 	float clr = 0.0;
 
 	for (int i = 0; i < arrayLength - 1; i++) {
-		vec2 point0 = worldCoordsToUV(points[i], projectionMatrix, viewMatrix);
-		vec2 point1 = worldCoordsToUV(points[i+1], projectionMatrix, viewMatrix);
+		vec3 pos0 = (points[i] * (nodeSize) + nodePosition);
+		vec3 pos1 = (points[i+1] * (nodeSize) + nodePosition);
 
-		float pointZ0 = (viewMatrix * vec4(points[i], 1.0)).z;
-		float pointZ1 = (viewMatrix * vec4(points[i+1], 1.0)).z;
+		vec2 point0 = worldCoordsToUV(pos0, projectionMatrix, viewMatrix);
+		vec2 point1 = worldCoordsToUV(pos1, projectionMatrix, viewMatrix);
+
+		float pointZ0 = (viewMatrix * vec4(pos0, 1.0)).z;
+		float pointZ1 = (viewMatrix * vec4(pos1, 1.0)).z;
 
 		// 0,0,0 will be excluded which is a bit shiit but realistically it shouldn't ever show up
-		if (points[i+1] != vec3(0,0,0) && pointZ0 < 0.0 && pointZ1 < 0.0) {
+		if (pos1 != vec3(0,0,0) && pointZ0 < 0.0 && pointZ1 < 0.0) {
 			float line = drawLine(point0, point1, uv);
 			res += line;
 			clr += line * (float(i) / float(arrayLength));
