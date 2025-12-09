@@ -34,7 +34,7 @@ public partial class Colony : Node3D
             // ... Now we need to make a part manager.....
             // ... Okay now that we made a part manager.....
 
-            Part part = data.template.Instantiate(this);
+            Part part = data.template.Instantiate(this, anchored:true);
             allParts.Add(part);
             //part.Freeze = true;
             //part.LockRotation = true;

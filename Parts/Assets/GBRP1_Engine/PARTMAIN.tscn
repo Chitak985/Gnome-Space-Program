@@ -384,7 +384,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_dmeqv")
 
-[node name="GBRP_1_Engine" type="Area3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+[node name="GBRP_1_Engine" type="RigidBody3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
 script = ExtResource("1_3lrrq")
 glowMat = ExtResource("2_20msv")
 glowMesh = NodePath("GBRP1_Engine_Ver1/Nozzle")

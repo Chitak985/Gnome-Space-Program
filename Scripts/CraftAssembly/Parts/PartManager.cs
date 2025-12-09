@@ -173,7 +173,6 @@ public partial class PartManager : Node
 
                 if (colliderResult is Part part && part.IsVisibleInTree())
                 {
-                    // Add logic for craft later too
                     if (IsPartSelectable(part))
                     {
                         hoveredPart = part;

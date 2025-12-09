@@ -143,7 +143,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_7cmij")
 
-[node name="MG1Pod" type="Area3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+[node name="MG1Pod" type="RigidBody3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
 script = ExtResource("1_fdmar")
 glowMat = ExtResource("2_xqvd7")
 glowMesh = NodePath("MG1_Pod_Ver5/Capsule_001")

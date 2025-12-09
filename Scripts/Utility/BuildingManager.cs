@@ -30,7 +30,7 @@ public partial class BuildingManager : Node
     // Guess what, it's the part being dragged!
     public Part draggingPart;
     public (AttachNode, AttachNode) snappedNodes;
-    public List<Part> partsList;
+    public List<Part> partsList = [];
     // We orient around this one
     public Part centralPart;
 
@@ -57,10 +57,13 @@ public partial class BuildingManager : Node
 
             (AttachNode, AttachNode) attachNodeBuffer = (null, null);
 
+            // Reset parent part in case we really don't want it
+            draggingPart.parentPart = null;
+
             // Part Snappy
             foreach (Part part in partsList)
             {
-                if (part != draggingPart) // Redundant but who tf cares
+                if (!draggingPart.descendantParts.Contains(part))
                 {
                     foreach (AttachNode attachNode0 in part.attachNodes)
                     {
@@ -88,6 +91,8 @@ public partial class BuildingManager : Node
                                     projectedPosition = attachNode0.GlobalPosition - (attachNode1.GlobalPosition - draggingPart.GlobalPosition);
                                     // We remember those two nodes if we ever want to place the part again
                                     attachNodeBuffer = (attachNode0, attachNode1);
+                                    // Track which part we attach to
+                                    draggingPart.parentPart = attachNode0.part;
                                     break; // Exit the loop
                                 }
                             }
@@ -102,6 +107,7 @@ public partial class BuildingManager : Node
             snappedNodes = attachNodeBuffer;
         }
 
+        /*
         Godot.Collections.Array<Node> parts = editorPartContainer.GetChildren();
 
         // There's no concrete reason for a buffer but it makes some of this more manageable maybe?? uhhm uhh err :3
@@ -114,14 +120,27 @@ public partial class BuildingManager : Node
             }
         }
         partsList = partListBuffer;
-
+        
+        */
         // Just pick one if it's null (the user will take control, otherwise)
-        if (partListBuffer.Count > 0 && centralPart == null)
+        if (partsList.Count > 0 && centralPart == null)
         {
-            centralPart = partListBuffer[0];
+            centralPart = partsList[0];
             Logger.Print($"{classTag} Auto assigned central part to: {centralPart.Name}");
             centralPart.Position = new Vector3(0, 0, 0);
         }
+        
+    }
+
+    public void InsertPart(CachedPart partRef)
+    {
+        Random RNG = new();
+
+        Part part = partRef.Instantiate(floatingPartContainer, true, true);
+
+        part.cachedPart = partRef;
+        part.id = RNG.NextInt64();
+        draggingPart = part;
     }
 
     // Don't use
@@ -207,6 +226,16 @@ public partial class BuildingManager : Node
         }
     }
 
+    // Updates the hierarchy for each part
+    public void UpdatePartHierarchy()
+    {
+        Logger.Print($"{classTag} Updated part hierarchies");
+        foreach (Part part in partsList)
+        {
+            part.UpdateChildParts();
+        }
+    }
+
     // Inputs !!!
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -258,13 +287,24 @@ public partial class BuildingManager : Node
                     }
 
                     Logger.Print($"{classTag} Selected part {draggingPart.Name}");
+                    partsList.Remove(draggingPart);
+                    UpdatePartHierarchy();
                 }else if (draggingPart != null) {
-                    draggingPart.Reparent(editorPartContainer);
+                    if (draggingPart.parentPart != null)
+                    {
+                        // Parent to the parent part cuz we attach yay!!
+                        draggingPart.Reparent(draggingPart.parentPart);
+                        if (snappedNodes.Item1 != null && snappedNodes.Item2 != null)
+                            snappedNodes.Item1.Attach(snappedNodes.Item2);
 
-                    if (snappedNodes.Item1 != null && snappedNodes.Item2 != null)
-                        snappedNodes.Item1.Attach(snappedNodes.Item2);
+                        UpdatePartHierarchy();
+                    }else{
+                        // Parent to the part container cuz we didn't attach :(
+                        draggingPart.Reparent(editorPartContainer);
+                    }
 
                     Logger.Print($"{classTag} Unselected part {draggingPart.Name}");
+                    partsList.Add(draggingPart);
                     draggingPart = null;
                 }
             }

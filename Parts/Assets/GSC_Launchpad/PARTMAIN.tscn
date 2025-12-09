@@ -72,7 +72,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_kkslg")
 
-[node name="GscVab" type="Area3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+[node name="GscVab" type="RigidBody3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
 script = ExtResource("1_7hc1n")
 glowMat = ExtResource("2_jfuk2")
 glowMesh = NodePath("GSC_Launchpad/Base")

@@ -74,7 +74,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_sakwe")
 
-[node name="1X2_FuelTank" type="Area3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+[node name="1X2_FuelTank" type="RigidBody3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
 script = ExtResource("1_ebewe")
 glowMat = ExtResource("2_b55kr")
 glowMesh = NodePath("1x2_FuelTank_Ver1/Tank")

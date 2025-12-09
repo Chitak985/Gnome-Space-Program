@@ -7,7 +7,7 @@ using System.Collections.Generic;
 Technically this class encompasses both colony AND ship parts, as I intend for them to be used interchangeably.
 Why? Because I want players to have the freedom to get up to any sort of shenanigans with these systems.
 */
-public partial class Part : Area3D
+public partial class Part : RigidBody3D
 {
     [Export] public bool enabled = false;
     [Export] public Material glowMat;
@@ -35,12 +35,50 @@ public partial class Part : Area3D
 
     public PartMenu contextMenu;
 
+    // What this part is attached to
+    public Part parentPart;
+    // Parts that are attached to this part
+    public List<Part> childParts = [];
+    // ALL parts that descend from this part
+    public List<Part> descendantParts = [];
+
+    public bool overrideHover = false;
+
     public override void _Process(double delta)
     {
-        if (PartMenuHandler.Instance != null)
+        if (PartMenuHandler.Instance != null && !overrideHover)
         {
-            Highlight(PartManager.Instance.hoveredPart == this); 
+            Highlight(PartManager.Instance.hoveredPart == this, true); 
         }
+    }
+
+    public void UpdateChildParts()
+    {
+        childParts = GetChildParts(false);
+        descendantParts = GetChildParts(true);
+    }
+
+    // Get every part that descends from this one
+    public List<Part> GetChildParts(bool recursive)
+    {
+        List<Part> result = [];
+
+        foreach (Node node in GetChildren())
+        {
+            if (node is Part part)
+            {
+                result.Add(part); // Add the immediate part
+
+                // We go all the way down the hierarchy if we want I guess (and pray that we don't end up in a loop)
+                if (recursive)
+                {
+                    List<Part> childResults = part.GetChildParts(recursive);
+                    result.AddRange(childResults); // Add all of its children too
+                }
+            }
+        }
+
+        return result;
     }
 
     public void InitPart()
@@ -83,7 +121,7 @@ public partial class Part : Area3D
     public void ReadData(Dictionary data)
     {
         Position = (Vector3)data["position"];
-        RotationDegrees = (Vector3)data["rotation"];
+        RotationDegrees = (Vector3)data["rotation"]; // relative to parent attachment
         id = (int)data["partID"];
 
         Dictionary attachmentData = (Dictionary)data["attachments"];
@@ -130,7 +168,7 @@ public partial class Part : Area3D
         return data;
     }
 
-    public void Highlight(bool toggle)
+    public void Highlight(bool toggle, bool includeChildren = false)
     {
         if (glowMesh != null)
         {
@@ -141,6 +179,24 @@ public partial class Part : Area3D
                 glowMesh.MaterialOverlay = null;
             }
         }
+
+        // Make child parts glow too
+        if (includeChildren || !toggle)
+        {
+            foreach (Part part in descendantParts)
+            {
+                part.overrideHover = toggle;
+                part.Highlight(toggle);
+            }
+        }
+    }
+
+    // Toggle to make this part have physics or not i guess
+    public void Anchor(bool toggle)
+    {
+        Freeze = toggle;
+        LockRotation = toggle;
+        TopLevel = !toggle;
     }
 
     // Recursive function to get all meshes

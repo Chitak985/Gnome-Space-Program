@@ -46,16 +46,18 @@ public partial class CachedPart
         
     }
 
-    public Part Instantiate(Node parent, bool inEditor = false, bool copyColliders = false)
+    public Part Instantiate(Node parent, bool inEditor = false, bool anchored = false)
     {
         Logger.Print($"(Cached {name}) Instantiating...");
         Part part = (Part)partScene.Instantiate();
         part.inEditor = inEditor;
-        //part.Freeze = true;
+        part.Anchor(anchored); // Anchor if we need to
         part.Name = $"{name}_{part.GetInstanceId()}";
         parent.AddChild(part);
 
         // Copy this to the parent
+        // No longer used! Keep it here in case we need it again though
+        /* 
         if (copyColliders)
         {
             foreach (CollisionShape3D collider in part.colliders)
@@ -64,6 +66,7 @@ public partial class CachedPart
                 parent.AddChild(newCollider);
             }
         }
+        */
 
         return part;
     }

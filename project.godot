@@ -138,8 +138,7 @@ modifier_2={
 
 3d/physics_engine="Jolt Physics"
 jolt_physics_3d/limits/max_linear_velocity=1e+24
-3d/default_gravity=0.0
-3d/default_gravity_vector=Vector3(0, 0, 0)
+3d/default_gravity_vector=Vector3(0, 1, 0)
 3d/default_linear_damp=0.0
 3d/default_angular_damp=0.0
 
