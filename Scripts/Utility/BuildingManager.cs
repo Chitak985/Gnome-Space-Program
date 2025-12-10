@@ -122,6 +122,7 @@ public partial class BuildingManager : Node
         partsList = partListBuffer;
         
         */
+        
         // Just pick one if it's null (the user will take control, otherwise)
         if (partsList.Count > 0 && centralPart == null)
         {
@@ -129,7 +130,6 @@ public partial class BuildingManager : Node
             Logger.Print($"{classTag} Auto assigned central part to: {centralPart.Name}");
             centralPart.Position = new Vector3(0, 0, 0);
         }
-        
     }
 
     public void InsertPart(CachedPart partRef)
@@ -236,6 +236,18 @@ public partial class BuildingManager : Node
         }
     }
 
+    // Function to delete parts in the editor context
+    public void DeletePart(Part part)
+    {
+        Logger.Print($"{classTag} Deleting part {part.Name}");
+        partsList.Remove(part);
+        part.QueueFree();
+        // Clear the current dragging part if we're throwing that out
+        if (part == draggingPart) draggingPart = null;
+        // Clear the central part if we're throwing that out too
+        if (part == centralPart) centralPart = null;
+    }
+
     // Inputs !!!
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -246,27 +258,27 @@ public partial class BuildingManager : Node
             {
                 if (draggingPart != null)
                 {
-                    partsList.Remove(draggingPart);
-                    Logger.Print("try this");
-                    Logger.Print("draggingPart id, after removing:" + draggingPart.id);
-                    Logger.Print("that worked");
-                    // If picking up the central part, we need to reassign this
-                    // (to prevent having a null central part)
-                    if (centralPart == draggingPart)
+                    foreach (Part part in draggingPart.descendantParts)
                     {
-                        if (partsList.Count != 0)
+                        DeletePart(part);
+                    }
+
+                    DeletePart(draggingPart);
+
+                    if (verboseLogging)
+                    {
+                        Logger.Print($"{classTag} Part list:");
+
+                        if (partsList.Count > 0)
                         {
-                            // For now, just choose the first part?
-                            // Probably figure out a better method to choose
-                            // central part.
-                            centralPart = partsList[0];
-                        } else {
-                            // We've deleted the last part in this case
-                            centralPart = null;
+                            foreach (Part part in partsList)
+                            {
+                                Logger.Print(part.Name);
+                            }
+                        }else{
+                            Logger.Print("EMPTY");
                         }
                     }
-                    draggingPart.QueueFree();
-                    draggingPart = null;
                 }
             }
         }

@@ -1,6 +1,6 @@
 // Terrible shader for rendering orbits by Sushut
 // REPLACE THIS WITH SOMETHING BETTER BECAUSE IT RUNS LIKE ASS
-// LOOK!! LOOK!!! GOOD CODE!!!!! https://github.com/Ryan-Mirch/Line-and-Sphere-Drawing/blob/main/Draw3D.gd
+// Potential solution? idk lol https://github.com/Ryan-Mirch/Line-and-Sphere-Drawing/blob/main/Draw3D.gd
 
 shader_type spatial;
 render_mode unshaded;
