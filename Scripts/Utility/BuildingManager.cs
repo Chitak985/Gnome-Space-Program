@@ -143,21 +143,6 @@ public partial class BuildingManager : Node
         draggingPart = part;
     }
 
-    // Don't use
-    public void LaunchCraft()
-    {
-        Dictionary partData = PartManager.CompilePartData(partsList);
-
-        if (verboseLogging)
-            Logger.Print(partData);
-
-        Craft craft = new();
-        ActiveSave.Instance.localSpace.AddChild(craft);
-        craft.Instantiate(partData);
-
-        craft.GlobalPosition = editorPartContainer.GlobalPosition;
-    }
-
     public void ClearParts()
     {
         foreach (Part part in partsList)
