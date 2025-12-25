@@ -37,6 +37,10 @@ public partial class Part : RigidBody3D
 
     // What this part is attached to
     public Part parentPart;
+    // Attached node (parent)
+    public AttachNode parentNode;
+    // Attached node (current)
+    public AttachNode usedNode;
     // Parts that are attached to this part
     public List<Part> childParts = [];
     // ALL parts that descend from this part
@@ -118,50 +122,47 @@ public partial class Part : RigidBody3D
         return modules;
     }
 
-    public void ReadData(Dictionary data)
-    {
-        Position = (Vector3)data["position"];
-        RotationDegrees = (Vector3)data["rotation"]; // relative to parent attachment
-        id = (int)data["partID"];
-
-        Dictionary attachmentData = (Dictionary)data["attachments"];
-        foreach (KeyValuePair<Variant, Variant> node in attachmentData)
-        {
-            // IMplement lateor
-        }
-    }
-
+    // recursive function that returns a tree descending from this part
+    // reconstruction isn't handled by individual parts so look into Craft.cs or Colony.cs for methods that do that
     public Dictionary GetData()
     {
         Dictionary data = [];
 
         // Throw basic info into here
-        data.Add("position", Position);
+        data.Add("name", cachedPart.name);
+        data.Add("position", Position); // should be relative to attach node
         data.Add("rotation", RotationDegrees);
         data.Add("partID", id);
-
-        // Index - Index of attachment node HERE
-        // Key - ID of the other part
-        // Value - Index of the OTHER attachment node
-        Dictionary attachmentData = [];
-        foreach (AttachNode node in attachNodes)
+    
+        // This will be -1 for the topmost part so be careful
+        // Index of parent's attach node
+        if (parentPart != null)
         {
-            if (node.connectedNode != null)
-            {
-                attachmentData.Add(node.connectedNode.part.id, node.connectedNode.part.attachNodes.IndexOf(node.connectedNode));
-            }
+            data.Add("parentNode", parentPart.attachNodes.IndexOf(parentNode));
+            data.Add("usedNode", attachNodes.IndexOf(usedNode));
+        } else {
+            data.Add("parentNode", -1);
+            data.Add("usedNode", -1);
         }
 
-        data.Add("attachments", attachmentData);
+        Godot.Collections.Array childPartData = [];
+        foreach (Part part in childParts)
+        {
+            // Index of the attachment node, part data
+            childPartData.Add(part.GetData());
+        }
+        data.Add("attachedParts", childPartData);
 
         // Fetch data from every part module
-        // IMPLEMENT C# TOO SOMEDAY pppwwweeaaaaaseeeeeee 
-        Dictionary moduleDataContainer = [];
-        //foreach (Node module in partModules)
-        //{
-        //    Dictionary moduleData = (Dictionary)module.Call("getData");
-        //    moduleDataContainer.Add(module.GetScript(), moduleData);
-        //}
+        Godot.Collections.Array moduleDataContainer = [];
+        foreach (PartModule module in partModules)
+        {
+            Dictionary moduleData = module.FetchData();
+            if (moduleData != null)
+            {
+                moduleDataContainer.Add(moduleData);
+            }
+        }
 
         data.Add("modules", moduleDataContainer);
 

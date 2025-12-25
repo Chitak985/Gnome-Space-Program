@@ -10,4 +10,6 @@ public partial class PartModule
 
     // Called when a part is "started" i guess
     public virtual void PartInit() {}
+
+    public virtual Dictionary FetchData() { return null; }
 }

@@ -1,11 +1,12 @@
 using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 /*
     This object is a little bit baffling so here's my best attempt at explaining it:
 
-    
+    🤷
 */
 public partial class Craft : Node3D
 {
@@ -19,41 +20,50 @@ public partial class Craft : Node3D
         Instantiate(partData);
     }
 
-    // I don't wants parts to be individually simulated so we mangle the shit out of this physics engine
-    // Just kidding !
     public void Instantiate(Dictionary partData)
     {
         RealityTangler.Instance.OriginReset += ResetOrigin;
         this.partData = partData;
-        foreach (KeyValuePair<Variant, Variant> data in partData)
+        AddPartFromData(partData, parentObject: this);
+    }
+
+    // Recursive function to reconstruct a bunch of parts from given part data
+    public void AddPartFromData(Dictionary data, Node3D parentObject = null, Part parentPart = null)
+    {
+        // Assign parent object to the part if it's null
+        parentObject ??= parentPart;
+
+        // Instantiate from name
+        string partName = (string)data["name"];
+        CachedPart cachedPart = PartManager.Instance.partCache[partName];
+        Part part = cachedPart.Instantiate(parentObject);
+        part.Anchor(true); // Anchor it for now
+        
+        if (parentPart != null)
         {
-            // we realize what we're looking at is a part ID (at least we hope)
-            if (data.Key.VariantType == Variant.Type.Int)
+            // Handle attachments (pray that nothing goes wrong at this step)
+            int parentNodeIndex = (int)data["parentNode"];
+            part.parentNode = parentPart.attachNodes[parentNodeIndex];
+            int usedNodeIndex = (int)data["usedNode"];
+            part.usedNode = part.attachNodes[usedNodeIndex];
+
+            // Adjust transform to be relative to attachment (NO ROTATION TRANSFORM - PLEASE IMPLEMENT ASAP)
+            if (part.parentNode != null)
             {
-                string partName = (string)((Dictionary)data.Value)["name"];
-                Dictionary theActualEffingData = (Dictionary)((Dictionary)data.Value)["data"];
-
-                CachedPart cachedPart = PartManager.Instance.partCache[partName];
-
-                Part part = cachedPart.Instantiate(this, false);
-                part.ReadData(theActualEffingData);
-                part.TopLevel = true;
-                loadedParts.Add(part);
+                part.Position = part.parentNode.Position - part.usedNode.Position;
             }
         }
-    }
-
-    public void SetPartPosition()
-    {
-        SetPartPosition(GlobalPosition);
-    }
-
-    public void SetPartPosition(Vector3 position)
-    {
         
-        foreach (Part part in loadedParts)
+        // ADD HANDLING FOR MODULES
+
+        // Add the part to the list before moving on to its attachments
+        loadedParts.Add(part);
+
+        Array attachedParts = (Array)data["attachedParts"];
+        // loop over attached parts
+        foreach (Dictionary childData in attachedParts.Select(v => (Dictionary)v))
         {
-            
+            AddPartFromData(childData, parentPart: part);
         }
     }
 

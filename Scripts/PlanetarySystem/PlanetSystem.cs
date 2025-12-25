@@ -270,7 +270,7 @@ public partial class PlanetSystem : Node3D
             cBody.parentName = orbit.TryGetValue("parent", out var pnm) ? (string)pnm : null;
             cBody.orbit = new Orbit{
                 semiMajorAxis = orbit.TryGetValue("semiMajorAxis", out var sma) ? (double)sma : MissingNum(path, "orbit/semiMajorAxis"),
-                inclination = orbit.TryGetValue("inclination", out var inc) ? (double)inc + Math.PI : MissingNum(path, "orbit/inclination"),
+                inclination = orbit.TryGetValue("inclination", out var inc) ? (double)inc : MissingNum(path, "orbit/inclination"),
                 eccentricity = orbit.TryGetValue("eccentricity", out var ecc) ? (double)ecc : MissingNum(path, "orbit/eccentricity"),
                 argumentOfPeriapsis = orbit.TryGetValue("argumentOfPeriapsis", out var arp) ? (double)arp : MissingNum(path, "orbit/argumentOfPeriapsis"),
                 longitudeOfAscendingNode = orbit.TryGetValue("longitudeOfAscendingNode", out var lon) ? (double)lon : MissingNum(path, "orbit/longitudeOfAscendingNode"),

@@ -43,7 +43,7 @@
 [ext_resource type="Script" uid="uid://dsqu0fmvb11d6" path="res://Scripts/UserInterface/ButtonHandlers/BuildModeExit.cs" id="38_a66g2"]
 [ext_resource type="Texture2D" uid="uid://3e0eh5stlfej" path="res://Assets/Textures/UserInterface/Buttons/exitIcon.svg" id="38_byrdn"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_h3s5b"]
+[sub_resource type="SphereMesh" id="SphereMesh_h4qns"]
 material = ExtResource("3_sfn14")
 flip_faces = true
 
@@ -110,7 +110,7 @@ far = 100000000000000.02
 [node name="Sky" type="MeshInstance3D" parent="RenderLayers/BackgroundContainer/BackgView/Background"]
 transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, 0, 1)
 layers = 4
-mesh = SubResource("BoxMesh_h3s5b")
+mesh = SubResource("SphereMesh_h4qns")
 skeleton = NodePath("../../../../../Miscellaneous/gizmo")
 
 [node name="ScaledContainer" type="SubViewportContainer" parent="RenderLayers"]
@@ -200,7 +200,6 @@ editorPartContainer = NodePath("EditorParts")
 floatingPartContainer = NodePath("FloatingParts")
 buildUI = NodePath("../UI/BuildUI")
 partMoveSpeed = 42.0
-verboseLogging = true
 
 [node name="EditorParts" type="Node3D" parent="BuildingManager"]
 

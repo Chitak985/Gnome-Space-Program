@@ -91,8 +91,10 @@ public partial class BuildingManager : Node
                                     projectedPosition = attachNode0.GlobalPosition - (attachNode1.GlobalPosition - draggingPart.GlobalPosition);
                                     // We remember those two nodes if we ever want to place the part again
                                     attachNodeBuffer = (attachNode0, attachNode1);
-                                    // Track which part we attach to
+                                    // Track which part and node we attach to
                                     draggingPart.parentPart = attachNode0.part;
+                                    draggingPart.parentNode = attachNode0;
+                                    draggingPart.usedNode = attachNode1;
                                     break; // Exit the loop
                                 }
                             }
