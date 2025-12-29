@@ -14,6 +14,14 @@ public partial class Craft : Node3D
     public Part centralPart; // The absolute root of the craft, what we orient around
     public List<Part> loadedParts = [];
 
+    public void Anchor(bool toggle)
+    {
+        foreach (Part part in loadedParts)
+        {
+            part.Anchor(toggle);
+        }
+    }
+
     // Hiujjj??
     public void Instantiate()
     {
@@ -25,6 +33,8 @@ public partial class Craft : Node3D
         RealityTangler.Instance.OriginReset += ResetOrigin;
         this.partData = partData;
         AddPartFromData(partData, parentObject: this);
+
+        centralPart = loadedParts[0];
     }
 
     // Recursive function to reconstruct a bunch of parts from given part data
@@ -47,7 +57,7 @@ public partial class Craft : Node3D
             int usedNodeIndex = (int)data["usedNode"];
             part.usedNode = part.attachNodes[usedNodeIndex];
 
-            // Adjust transform to be relative to attachment (NO ROTATION TRANSFORM - PLEASE IMPLEMENT ASAP)
+            // Adjust transform to be relative to attachment (NO ROTATION TRANSFORM - PLEASE IMPLEMENT SOON AND MAKE IT NOT ASS)
             if (part.parentNode != null)
             {
                 part.Position = part.parentNode.Position - part.usedNode.Position;

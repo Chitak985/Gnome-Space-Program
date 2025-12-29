@@ -43,6 +43,9 @@ public partial class LaunchSite : PartModule
             craft.SnatchFocus();
         }
 
+        // Unleash physics and let it do its thing
+        craft.Anchor(false);
+
         return craft;
     }
 }

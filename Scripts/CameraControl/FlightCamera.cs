@@ -184,7 +184,7 @@ public partial class FlightCamera : Node3D
     // Target CRAFT
     public void TargetObject(Craft craft)
     {
-        localTarget = craft;
+        localTarget = craft.centralPart;
         localZoomLimits = (1,10000000,250);
         //mapTarget = craft.scaledObject;
         mapZoomLimits = (5,10000000,2);
