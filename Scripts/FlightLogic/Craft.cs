@@ -14,6 +14,25 @@ public partial class Craft : Node3D
     public Part centralPart; // The absolute root of the craft, what we orient around
     public List<Part> loadedParts = [];
 
+    public override void _PhysicsProcess(double delta)
+    {
+        // Loop over every part and apply a force towards the planet
+        foreach (Part part in loadedParts)
+        {
+            CelestialBody currentCBody = ActiveSave.Instance.activePlanet; // Replace this later PLEAAASEEE AHHH
+
+            Vector3 center = currentCBody.GlobalPosition;
+            Vector3 direction = part.GlobalPosition.DirectionTo(center);
+
+            double distance = (center - part.GlobalPosition).Length();
+            double planetMass = currentCBody.mass;
+
+            double force = Conics.GravConstant * (planetMass * part.Mass / Mathf.Pow(distance, 2));
+
+            part.ApplyCentralForce(force*direction);
+        }
+    }
+
     public void Anchor(bool toggle)
     {
         foreach (Part part in loadedParts)
@@ -61,6 +80,8 @@ public partial class Craft : Node3D
             if (part.parentNode != null)
             {
                 part.Position = part.parentNode.Position - part.usedNode.Position;
+
+                part.CreateAttachJoints(part.usedNode, part.parentNode);
             }
         }
         

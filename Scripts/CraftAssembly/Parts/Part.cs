@@ -45,6 +45,8 @@ public partial class Part : RigidBody3D
     public List<Part> childParts = [];
     // ALL parts that descend from this part
     public List<Part> descendantParts = [];
+    // Container for the 3D joints that attach the part (null if not connected)
+    public Node3D attachmentJointContainer;
 
     public bool overrideHover = false;
 
@@ -222,6 +224,40 @@ public partial class Part : RigidBody3D
         }
 
         return meshList;
+    }
+
+    // Node0 = this node Node1 = other node
+    public void CreateAttachJoints(AttachNode node0, AttachNode node1)
+    {
+        if (attachmentJointContainer == null)
+        {
+            Node3D container = new();
+            AddChild(container);
+            container.Name = "JointContainer";
+            container.Position = node0.Position;
+
+            // Piece of shit
+
+            Generic6DofJoint3D joint0 = new()
+            {
+                NodeA = GetPath(),
+                NodeB = node1.part.GetPath(),
+            };
+            container.AddChild(joint0);
+
+        }else{
+            Logger.Print($"({cachedPart.name}) Joints already present! Cannot create!");
+        }
+    }
+
+    public void DestroyAttachJoints()
+    {
+        if (attachmentJointContainer != null)
+        {
+            attachmentJointContainer.QueueFree();
+        }else{
+            Logger.Print($"({cachedPart.name}) Joints already present! Cannot destroy!");
+        }
     }
 
     public Aabb GetAABB()
