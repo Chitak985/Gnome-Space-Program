@@ -1,8 +1,9 @@
-[gd_scene load_steps=47 format=3 uid="uid://b08reqxmoktvk"]
+[gd_scene load_steps=48 format=3 uid="uid://b08reqxmoktvk"]
 
 [ext_resource type="Script" uid="uid://c3i0ynvo54sk1" path="res://Scripts/Utility/ActiveSave.cs" id="1_2c3j4"]
 [ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
 [ext_resource type="CameraAttributesPractical" uid="uid://cyf8gikvidq0w" path="res://Assets/Misc/CamAttributes.tres" id="2_cbqy2"]
+[ext_resource type="Script" uid="uid://dcgkvx650oopr" path="res://Scripts/Utility/StateManager.cs" id="2_wsyj0"]
 [ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
 [ext_resource type="Material" uid="uid://bgcp3j11mrprb" path="res://Assets/Materials/Background.tres" id="3_sfn14"]
 [ext_resource type="PackedScene" uid="uid://dt3jn2nr8pm3l" path="res://Assets/Prefabs/UI/planet_icon.tscn" id="4_yxkbd"]
@@ -65,10 +66,45 @@ flightCam = NodePath("FlightCamera")
 localCamera = NodePath("RenderLayers/LocalContainer/LocalView/Camera3D")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 
+[node name="StateManager" type="Node" parent="."]
+script = ExtResource("2_wsyj0")
+
 [node name="RealityTangler" type="Node" parent="."]
 process_priority = 100
 script = ExtResource("13_sfn14")
 originResetThreshold = 10000000.0
+
+[node name="FlightCamera" type="Node3D" parent="." node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "camNode")]
+script = ExtResource("6_0mdm0")
+multiplyScroll = true
+lerpSpeed = 10.0
+rotationAmnt = 0.5
+rotNode_Y = NodePath("Cam_Rot_Y")
+rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
+camNode = NodePath("Cam_Rot_Y/Cam_Rot_X/RemoteCams")
+zoomAmnt = 1.1
+zoom = 2.0
+
+[node name="Cam_Rot_Y" type="Node3D" parent="FlightCamera"]
+
+[node name="Cam_Rot_X" type="Node3D" parent="FlightCamera/Cam_Rot_Y"]
+
+[node name="RemoteCams" type="Node3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="Local" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
+remote_path = NodePath("../../../../../RenderLayers/LocalContainer/LocalView/Camera3D")
+
+[node name="Scaled" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
+remote_path = NodePath("../../../../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
+
+[node name="Background" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
+remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Camera3D")
+
+[node name="Skybox" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
+remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Background/Sky")
+update_rotation = false
+update_scale = false
 
 [node name="RenderLayers" type="Control" parent="."]
 z_index = -5
@@ -210,43 +246,10 @@ partMoveSpeed = 42.0
 script = ExtResource("15_h7vhn")
 rendererPrefab = ExtResource("16_np084")
 
-[node name="FlightCamera" type="Node3D" parent="." node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "camNode")]
-script = ExtResource("6_0mdm0")
-multiplyScroll = true
-lerpSpeed = 10.0
-rotationAmnt = 0.5
-rotNode_Y = NodePath("Cam_Rot_Y")
-rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
-camNode = NodePath("Cam_Rot_Y/Cam_Rot_X/RemoteCams")
-zoomAmnt = 1.1
-zoom = 2.0
-
-[node name="Cam_Rot_Y" type="Node3D" parent="FlightCamera"]
-
-[node name="Cam_Rot_X" type="Node3D" parent="FlightCamera/Cam_Rot_Y"]
-
-[node name="RemoteCams" type="Node3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
-
-[node name="Local" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
-remote_path = NodePath("../../../../../RenderLayers/LocalContainer/LocalView/Camera3D")
-
-[node name="Scaled" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
-remote_path = NodePath("../../../../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
-
-[node name="Background" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
-remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Camera3D")
-
-[node name="Skybox" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
-remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Background/Sky")
-update_rotation = false
-update_scale = false
-
 [node name="Miscellaneous" type="Node" parent="."]
 
 [node name="gizmo" parent="Miscellaneous" instance=ExtResource("17_h3s5b")]
 transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
-visible = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Miscellaneous"]
 environment = SubResource("Environment_h3s5b")

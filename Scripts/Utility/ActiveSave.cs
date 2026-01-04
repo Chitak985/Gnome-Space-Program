@@ -17,16 +17,8 @@ public partial class ActiveSave : Node3D
     // Spaces
     [Export] public Node3D localSpace;
 
-    // The current active thing (craft or colony or NOT ANY)
-    // Also planet (copy this to OrbitManager later)
-    public Node3D activeThing;
-	public CelestialBody activePlanet;
-
     // Every surface base/colony
     public List<Colony> colonies = [];
-
-    // Disable this when in map view
-    public bool hideLocal = false;
 
 	// The great dictionary
 	public Dictionary<string, Variant> saveParams;

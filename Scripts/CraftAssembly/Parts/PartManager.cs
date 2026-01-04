@@ -163,6 +163,7 @@ public partial class PartManager : Node
         }
     }
 
+    // WHAT THE HELL>????
     public bool IsPartSelectable(Part part)
     {
         BuildingManager.EditorMode editorMode = BuildingManager.Instance.editorMode;
@@ -175,8 +176,8 @@ public partial class PartManager : Node
                 if (part.inEditor) selectionStatus = true;
                 break;
             default: // Selection logic for if we're not editing
-                if (ActiveSave.Instance.activeThing is Colony colony && part.parentThing == colony) selectionStatus = true;
-                if (ActiveSave.Instance.activeThing is Craft && part.parentThing is not Colony) selectionStatus = true;
+                //if (ActiveSave.Instance.activeThing is Colony colony && part.parentThing == colony) selectionStatus = true;
+                //if (ActiveSave.Instance.activeThing is Craft && part.parentThing is not Colony) selectionStatus = true;
                 break;
         }
 

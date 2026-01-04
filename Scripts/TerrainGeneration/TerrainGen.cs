@@ -65,7 +65,19 @@ public partial class TerrainGen : Node3D
 
     public override void _Process(double delta)
     {
-        player = ActiveSave.Instance.activeThing;
+        switch (StateManager.Instance.gameState)
+        {
+            case StateManager.GameState.Flight:
+                player = StateManager.Instance.flightState.activeCraft;
+                break;
+            case StateManager.GameState.Colony:
+                player = StateManager.Instance.colonyState.activeColony;
+                break;
+            default:
+                playerPos = Vector3.Zero; // We panic and make the player's position 0
+                break;
+        }
+        
         if (player != null) playerPos = player.GlobalPosition;
 
         planetCenter = GlobalPosition;

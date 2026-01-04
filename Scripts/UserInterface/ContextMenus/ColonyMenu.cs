@@ -22,8 +22,7 @@ public partial class ColonyMenu : ContextMenu
         FlightCamera.Instance.TargetObject(colonyInQuestion);
         FlightCamera.Instance.ToggleMapView(false);
 
-        ActiveSave.Instance.activeThing = colonyInQuestion;
-        ActiveSave.Instance.activePlanet = colonyInQuestion.parentBody;
+        StateManager.Instance.colonyState.activeColony = colonyInQuestion;
         FlightCamera.Instance.facingDownObject = colonyInQuestion.parentBody;
 
         Visible = false;

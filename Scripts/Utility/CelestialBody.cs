@@ -63,9 +63,9 @@ public partial class CelestialBody : Node3D
         // Uh
         originPos = cartesianData.position + RealityTangler.Instance.originOffset;
 
-        // Modify originPos such that the active planet is at at a the world origin
-        if (ActiveSave.Instance.activePlanet != null)
-            originPos -= ActiveSave.Instance.activePlanet.cartesianData.position;
+        // Modify originPos such that the active planet is at the world origin
+        //if (ActiveSave.Instance.activePlanet != null)
+        //    originPos -= ActiveSave.Instance.activePlanet.cartesianData.position;
 
         Position = originPos;
 

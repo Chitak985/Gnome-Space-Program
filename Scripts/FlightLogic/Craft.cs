@@ -14,12 +14,17 @@ public partial class Craft : Node3D
     public Part centralPart; // The absolute root of the craft, what we orient around
     public List<Part> loadedParts = [];
 
+    public Orbit orbit;
+    public CartesianData cartesianData;
+
+    public bool Anchored { get; private set; }
+
     public override void _PhysicsProcess(double delta)
     {
         // Loop over every part and apply a force towards the planet
         foreach (Part part in loadedParts)
         {
-            CelestialBody currentCBody = ActiveSave.Instance.activePlanet; // Replace this later PLEAAASEEE AHHH
+            CelestialBody currentCBody = orbit.cBody; // Replace this later PLEAAASEEE AHHH
 
             Vector3 center = currentCBody.GlobalPosition;
             Vector3 direction = part.GlobalPosition.DirectionTo(center);
@@ -35,10 +40,18 @@ public partial class Craft : Node3D
 
     public void Anchor(bool toggle)
     {
+        Anchored = toggle;
         foreach (Part part in loadedParts)
         {
             part.Anchor(toggle);
         }
+    }
+
+    // Creates stuff like the orbit and whatnot
+    public void Initialize()
+    {
+        orbit = new();
+        cartesianData = new();
     }
 
     // Hiujjj??
@@ -101,13 +114,13 @@ public partial class Craft : Node3D
     // Middle-man function in case we want something special to happen
     public void SnatchFocus()
     {
-        ActiveSave.Instance.activeThing = this;
+        StateManager.Instance.flightState.activeCraft = this;
         FlightCamera.Instance.TargetObject(this);
     }
 
     public void ResetOrigin()
     {
-        if (ActiveSave.Instance.activeThing == this)
+        if (StateManager.Instance.flightState.activeCraft == this)
         {
             Logger.Print("RESET");
             GlobalPosition = Vector3.Zero;

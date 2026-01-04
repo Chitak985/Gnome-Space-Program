@@ -30,18 +30,6 @@ public partial class RealityTangler : Node
     {
         // Orbits uhh
         Process();
-
-        Node3D activeThing = ActiveSave.Instance.activeThing;
-        if (activeThing != null)
-        {
-            // We don't need the square root of this anyways
-            double originDistance = activeThing.GlobalPosition.DistanceSquaredTo(Vector3.Zero);
-
-            if (originDistance > originResetThreshold * originResetThreshold)
-            {
-                ResetOrigin(activeThing);
-            }
-        }
     }
 
     // Resets origin. Duh.
@@ -60,8 +48,43 @@ public partial class RealityTangler : Node
     // Eaten from OrbitManager.cs because we need all the syncing we can get
     public void Process()
     {
-        EmitSignal(SignalName.ScaledProcess);
         EmitSignal(SignalName.OrbitProcess);
+
+        switch (StateManager.Instance.gameState)
+        {
+            case StateManager.GameState.Flight:
+                Craft activeCraft = StateManager.Instance.flightState.activeCraft;
+                if (activeCraft != null)
+                {
+                    // We don't need the square root of this anyways
+                    double originDistance = activeCraft.GlobalPosition.DistanceSquaredTo(Vector3.Zero);
+
+                    if (originDistance > originResetThreshold * originResetThreshold)
+                    {
+                        ResetOrigin(activeCraft);
+                    }
+                }
+                break;
+            case StateManager.GameState.Colony:
+                // Just recenter based off the colony's parent position
+                if (StateManager.Instance.colonyState.activeColony != null)
+                {
+                    Colony colony = StateManager.Instance.colonyState.activeColony;
+                    CelestialBody cBody = colony.parentBody;
+
+                    Vector3 addedPosition = cBody.cartesianData.position + colony.position;
+
+                    originOffset = -addedPosition;
+                    EmitSignal(SignalName.OrbitProcess);
+                }
+                break;
+            default:
+                originOffset = Vector3.Zero; // We once again panic because what the hell
+                break;
+        }
+
+        //FlightCamera.Instance.Update();
+        EmitSignal(SignalName.ScaledProcess);
 
         OrbitRendererManager.Instance.UpdateOrbitRenderers();
 
