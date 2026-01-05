@@ -37,12 +37,12 @@ public partial class StateManager : Node
 
     public struct MapState 
     {
-        public CelestialBody focusedCBody;
+        public Node3D focusedObject;
         // ... add more as needed
     }
 
-    public override void _Ready()
-	{
+    public void Initialize()
+    {
         Instance = this;
 
         // Initialize states (to prevent nullref errors mostly)

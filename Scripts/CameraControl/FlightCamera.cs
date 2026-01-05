@@ -8,7 +8,7 @@ public partial class FlightCamera : Node3D
     public static readonly string classTag = "([color=MEDIUM_SPRING_GREEN]FlightCamera[color=white])";
     public static FlightCamera Instance { get; private set; }
 
-    [Export] public bool inMap = true;
+    [Export] public bool inMap = false;
     [Export] public bool canEnterMap = true;
     [Export] public Key mapKey = Key.M;
     [Export] public Node3D target;
@@ -72,6 +72,22 @@ public partial class FlightCamera : Node3D
         camNode.Position = camNode.Position.Lerp(new Vector3(0,0,zoom), lerpy);
 
         if (target != null) Position = target.GlobalPosition;
+
+        StateManager.GameState gameState = StateManager.Instance.gameState;
+
+        switch (gameState)
+        {
+            case StateManager.GameState.Flight:
+                facingDownObject = StateManager.Instance.flightState.activeCraft.orbit.parent;
+                break;
+            case StateManager.GameState.Colony:
+                Colony colony = StateManager.Instance.colonyState.activeColony;
+                // Check if colony is null to prevent nullrefs
+                facingDownObject = colony?.parentBody;
+                break;
+            default:
+                break;
+        }
 
         if (facingDownObject != null && !inMap)
         {

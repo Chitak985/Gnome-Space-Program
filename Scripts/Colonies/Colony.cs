@@ -16,6 +16,8 @@ public partial class Colony : Node3D
     public Vector3 position;
     public Vector3 rotation;
 
+    public bool initialBase = false;
+
     public Dictionary<string, UnloadedPart> savedRootParts = []; // Only lists the saved root parts
     public Dictionary<string, UnloadedPart> savedParts = [];
 

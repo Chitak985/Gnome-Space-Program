@@ -10,6 +10,8 @@ public partial class ColonyManager : Node
     public static ColonyManager Instance { get; private set; }
     [Export] public PackedScene iconPrefab;
     [Export] public Control iconParent;
+    
+    public List<Colony> colonies = [];
 
     public override void _Ready()
     {
@@ -17,10 +19,19 @@ public partial class ColonyManager : Node
         Logger.Print($"{classTag} ColonyManager Ready!");
     }
 
+    public void Initialize(System.Collections.Generic.Dictionary<string, PlanetPack> planetPacks)
+    {
+        // Handle Colonies (blueprints)
+		foreach (KeyValuePair<string, PlanetPack> pack in planetPacks)
+		{
+			colonies.AddRange(ParseColonies(pack.Value.path, true));
+		}
+    }
+
     public List<Colony> ParseColonies(string path, bool blueprint = false)
     {
         Logger.Print($"{classTag} Parsing path: {path}");
-        List<Colony> colonies = [];
+        List<Colony> packColonies = [];
         List<string> configs = ConfigUtility.GetConfigs($"{ConfigUtility.GameData}/{path}", "Base");
         Logger.Print($"{classTag} {configs.Count}");
         foreach (string cfg in configs)
@@ -28,11 +39,11 @@ public partial class ColonyManager : Node
             Colony colony = ParseColony(cfg, blueprint);
             if (colony != null)
             {
-                colonies.Add(colony);
+                packColonies.Add(colony);
             }
         }
 
-        return colonies;
+        return packColonies;
     }
     public Colony ParseColony(string configPath, bool blueprint = false)
     {
@@ -73,6 +84,9 @@ public partial class ColonyManager : Node
         colony.Position = colony.position;
         colony.RotationDegrees = colony.rotation;
 
+        // Initial base is whatever the user loads into when opening a save
+        colony.initialBase = data.TryGetValue("initialBase", out var initialBase) && (bool)initialBase;
+
         // Add to the planet and also add a map icon
         CelestialBody parent = PlanetSystem.Instance.FindCBodyByName((string)data["parent"]);
         colony.parentBody = parent;
@@ -99,7 +113,7 @@ public partial class ColonyManager : Node
         // Load it here for now.. We can change this later.
         colony.Load();
 
-        return null;
+        return colony;
     }
 
     // Parse parts from config

@@ -12,13 +12,11 @@ public partial class ActiveSave : Node3D
 	[Export] public PartManager partManager;
 	[Export] public ColonyManager colonyManager;
 	[Export] public FlightCamera flightCam;
+	[Export] public StateManager stateManager;
 	[Export] public Camera3D localCamera;
 
     // Spaces
     [Export] public Node3D localSpace;
-
-    // Every surface base/colony
-    public List<Colony> colonies = [];
 
 	// The great dictionary
 	public Dictionary<string, Variant> saveParams;
@@ -54,15 +52,16 @@ public partial class ActiveSave : Node3D
 		Logger.Print($"{classTag} Starting PlanetSystem");
 		Dictionary<string, PlanetPack> planetPacks = SaveManager.GetPlanetPacks();
 		string chosenRootSystem = (string)saveParams["Celestial Bodies/Root System"];
+
 		// !!! ADD EXTRA SYSTEMS IMPLEMENTATION WHEN RELEVANT !!!
 		List<string> planetPackPaths = [];
 		planetPackPaths.Add(planetPacks[chosenRootSystem].path);
 		planetSystem.InitSystem(planetPackPaths);
-		InitCamera();
 
 		// Handle part packs
 		Dictionary<string, PartPack> partPacks = SaveManager.GetPartPacks();
         List<PartPack> pPacksToLoad = [];
+
         // Yes hello welcome to hell.
         foreach (KeyValuePair<string, PartPack> partPack in partPacks)
 		{
@@ -80,33 +79,26 @@ public partial class ActiveSave : Node3D
         partManager.LoadPartPacks(pPacksToLoad);
 
 		Logger.Print($"{classTag} Starting ColonyManager");
-        // Handle Colonies (blueprints)
-		foreach (KeyValuePair<string, PlanetPack> pack in planetPacks)
+        colonyManager.Initialize(planetPacks);
+
+        // Initialize game state
+        stateManager.Initialize();
+
+        // Loop over all the sweet new colonies we just got
+        foreach (Colony colony in colonyManager.colonies)
 		{
-			colonies.AddRange(colonyManager.ParseColonies(pack.Value.path, true));
+            Logger.Print($"{colony.name}, {colony.initialBase}");
+            // Spawn at the colony marked as "initial"
+            if (colony.initialBase)
+			{
+                Logger.Print($"{classTag} Loading into default colony '{colony.name}'");
+                stateManager.colonyState.activeColony = colony;
+                FlightCamera.Instance.TargetObject(colony);
+                FlightCamera.Instance.ToggleMapView(false); // Camera refactor incoming; fix this spaghetti as soon as you can
+                break;
+            }
 		}
     }
-
-	public void InitCamera()
-	{
-		// Fall back to root body if no focus on load body has been set
-		CelestialBody focusBody;
-		if (planetSystem.focusOnLoadBody != null)
-		{
-			focusBody = planetSystem.focusOnLoadBody;
-		}else{
-			focusBody = planetSystem.rootBody;
-		}
-
-		flightCam.TargetObject(focusBody);
-
-		// Default context menu
-		Godot.Collections.Dictionary info = new()
-        {
-            { "planet", focusBody }
-        };
-        MapUI.Instance.contextMenus.OpenMenu("PlanetMenu", info, true);
-	}
 
 	public override void _Process(double delta)
 	{

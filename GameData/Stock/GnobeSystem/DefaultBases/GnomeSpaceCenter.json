@@ -2,6 +2,7 @@
     "configType": "Base",
     "parent": "Gnobe",
     "blueprint": true,
+    "initialBase": true,
     "name": "Gnome Space Center",
 
     "position": [-100,-50,596546.0],

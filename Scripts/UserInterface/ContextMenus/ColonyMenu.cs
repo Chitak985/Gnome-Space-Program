@@ -23,7 +23,7 @@ public partial class ColonyMenu : ContextMenu
         FlightCamera.Instance.ToggleMapView(false);
 
         StateManager.Instance.colonyState.activeColony = colonyInQuestion;
-        FlightCamera.Instance.facingDownObject = colonyInQuestion.parentBody;
+        //FlightCamera.Instance.facingDownObject = colonyInQuestion.parentBody;
 
         Visible = false;
     }
