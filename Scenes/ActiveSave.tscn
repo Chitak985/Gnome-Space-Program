@@ -57,7 +57,7 @@ ssao_intensity = 16.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
 
-[node name="ActiveSave" type="Node3D" node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "stateManager", "localCamera", "localSpace")]
+[node name="ActiveSave" type="Node3D" node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "stateManager", "localCamera", "localSpace", "localVP")]
 script = ExtResource("1_2c3j4")
 planetSystem = NodePath("PlanetSystem")
 partManager = NodePath("PartManager")
@@ -66,6 +66,7 @@ flightCam = NodePath("FlightCamera")
 stateManager = NodePath("StateManager")
 localCamera = NodePath("RenderLayers/LocalContainer/LocalView/Camera3D")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
+localVP = NodePath("RenderLayers/LocalContainer/LocalView")
 
 [node name="StateManager" type="Node" parent="."]
 script = ExtResource("2_wsyj0")
@@ -194,7 +195,7 @@ transparent_bg = true
 handle_input_locally = false
 msaa_3d = 2
 screen_space_aa = 1
-oversampling = false
+physics_object_picking = true
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
@@ -262,7 +263,6 @@ transform = Transform3D(0.9396926, -0.2620026, 0.21984634, 0, 0.6427876, 0.76604
 layers = 3
 shadow_enabled = true
 shadow_bias = 0.075
-shadow_blur = 0.5
 directional_shadow_split_1 = 0.02
 directional_shadow_split_2 = 0.05
 directional_shadow_split_3 = 0.4

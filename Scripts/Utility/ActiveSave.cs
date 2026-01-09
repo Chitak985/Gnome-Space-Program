@@ -17,9 +17,10 @@ public partial class ActiveSave : Node3D
 
     // Spaces
     [Export] public Node3D localSpace;
+    [Export] public SubViewport localVP;
 
-	// The great dictionary
-	public Dictionary<string, Variant> saveParams;
+    // The great dictionary
+    public Dictionary<string, Variant> saveParams;
 
 	// This should always be 1.0 upon loading!
 	[Export] public double timeSpeed = 1;
@@ -93,11 +94,16 @@ public partial class ActiveSave : Node3D
 			{
                 Logger.Print($"{classTag} Loading into default colony '{colony.name}'");
                 stateManager.colonyState.activeColony = colony;
+				// Camera refactor incoming; fix this spaghetti asap
                 FlightCamera.Instance.TargetObject(colony);
-                FlightCamera.Instance.ToggleMapView(false); // Camera refactor incoming; fix this spaghetti as soon as you can
+                FlightCamera.Instance.ToggleMapView(false);
                 break;
             }
 		}
+
+		// Activate local input after the game starts because it doesn't take effect if enabled by default in the editor for some reason
+        localVP.HandleInputLocally = false;
+        localVP.HandleInputLocally = true;
     }
 
 	public override void _Process(double delta)

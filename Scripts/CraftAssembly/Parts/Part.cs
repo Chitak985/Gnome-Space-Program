@@ -50,12 +50,40 @@ public partial class Part : RigidBody3D
 
     public bool overrideHover = false;
 
+    public override void _Ready()
+    {
+        InputEvent += OnInputEvent;
+        MouseEntered += OnMouseEnter;
+        MouseExited += OnMouseExit;
+    }
+
     public override void _Process(double delta)
     {
-        if (PartMenuHandler.Instance != null && !overrideHover)
+        //if (PartMenuHandler.Instance != null && !overrideHover)
+        //{
+        //    Highlight(PartManager.Instance.hoveredPart == this, true); 
+        //}
+    }
+
+    private void OnInputEvent(Node camera, InputEvent @event, Vector3 eventPosition, Vector3 normal, long shapeIdx)
+    {
+        if (@event is InputEventMouseButton mouseButton)
         {
-            Highlight(PartManager.Instance.hoveredPart == this, true); 
+            if (mouseButton.ButtonIndex == MouseButton.Right && mouseButton.Pressed)
+            {
+                PartMenuHandler.Instance.ToggleMenu(this);
+            }
         }
+    }
+
+    private void OnMouseEnter()
+    {
+        Highlight(true, true); 
+    }
+
+    private void OnMouseExit()
+    {
+        Highlight(false, true); 
     }
 
     public void UpdateChildParts()

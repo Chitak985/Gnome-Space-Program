@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+// This sucks
 public partial class PartManager : Node
 {
     [Export] public PartMenuHandler partMenus;
@@ -128,6 +129,7 @@ public partial class PartManager : Node
     }
 
     // We shoot a ray occasionally to get the current hovered part. Can be used for all sorts of part selection shenanigans.
+    // P.S this turbo sucks, as for some reason parts don't emit a "mouse entered" signal and I can't fucking fathom why.
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event is InputEventMouseMotion mouseMotion)

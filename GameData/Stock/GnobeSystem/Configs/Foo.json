@@ -23,9 +23,9 @@
 		"type": "cellular",
 		"seed": 0,
 		"noiseOffset": [0,0,0],
-		"deformity": 20000,
+		"deformity": 6000,
 		"offset": 0,
-		"frequency": 2810,
+		"frequency": 4000,
 		"fractal": {
 		  "type": "fbm",
 		  "octaves": 10,
