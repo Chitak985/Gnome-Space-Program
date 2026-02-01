@@ -83,7 +83,10 @@ public partial class CelestialBody : Node3D
 
         Position = originPos;
 
+        //Logger.Print($"{name} {Position}");
+
         scaledSphere.truePosition = GlobalPosition; //cBody.cartesianData.position.GetPosYUp();
+        scaledSphere.altPosition = Position;
         scaledSphere.ForceUpdate();
 
         // Update rotation
@@ -99,11 +102,25 @@ public partial class CelestialBody : Node3D
         {
             gimbal.Transform = trans;
         }else{
-            gimbal.GlobalRotation = Vector3.Zero;
+            gimbal.GlobalRotation = Vector3.Zero;           
         }
 
         // Update cached trash
         cachedTransform.Basis = pivot.Transform.Basis * trans.Basis;
+
+        // Update scaled mesh rotation because we'll only be seeing celestial bodies rotate anyways (though maybe change this in the future?)
+        if (RealityTangler.Instance.activeReferenceFrame != this)
+        {
+            scaledSphere.Rotation = cachedTransform.Basis.GetEuler();
+        }else{
+            // Rotate the active body only if we're looking at it in the map view
+            if (FlightCamera.Instance.inMap)
+            {
+                scaledSphere.Rotation = cachedTransform.Basis.GetEuler();
+            }else{
+                scaledSphere.Rotation = Vector3.Zero;
+            }
+        }
     }
 
     public void InitializeSelf()

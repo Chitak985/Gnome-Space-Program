@@ -9,7 +9,7 @@
   },
   "rotation": {
 	"initial": 0,
-	"period": 5,
+	"period": 36000,
 	"tilt": [0, 0, 45],
   },
   "orbit": {
@@ -17,7 +17,7 @@
 	"semiMajorAxis": 14959800320,
 	"inclination": 0,
 	"eccentricity": 0.0167086,
-	"argumentOfPeriapsis": 0,
+	"argumentOfPeriapsis": 325,
 	"longitudeOfAscendingNode": 0,
 	"trueAnomalyAtEpoch": 0
   },

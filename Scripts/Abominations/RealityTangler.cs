@@ -146,7 +146,7 @@ public partial class RealityTangler : Node
             localPlanets.GlobalTransform = trans;
 
             // Just set the position after doing all that transform stuff, because I can.
-            //localPlanets.GlobalPosition = activeReferenceFrame.GlobalPosition;
+            localPlanets.GlobalPosition = activeReferenceFrame.GlobalPosition;
         }else{
             // Keep all the planets at 0,0,0 (and rotated to 0,0,0)
             PlanetSystem.Instance.localSpacePlanets.Position = Vector3.Zero;

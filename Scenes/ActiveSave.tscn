@@ -67,6 +67,7 @@ stateManager = NodePath("StateManager")
 localCamera = NodePath("RenderLayers/LocalContainer/LocalView/Camera3D")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 localVP = NodePath("RenderLayers/LocalContainer/LocalView")
+timeSpeed = 1000.0
 
 [node name="StateManager" type="Node" parent="." unique_id=2074004250]
 script = ExtResource("2_wsyj0")
