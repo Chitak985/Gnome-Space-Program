@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://f7wawn8a6hti"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://f7wawn8a6hti"]
 
 [ext_resource type="Shader" uid="uid://b8rpkjsp7e3pr" path="res://Assets/Shaders/OrbitRenderer.gdshader" id="1_vsxe2"]
 

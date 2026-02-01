@@ -203,7 +203,7 @@ public partial class PlanetSystem : Node3D
             }
 
             // Assign orbital process to RealityTangler
-            RealityTangler.Instance.OrbitProcess += cBody.ProcessOrbitalPosition;
+            RealityTangler.Instance.OrbitProcess += cBody.ProcessTransform;
             RealityTangler.Instance.OriginReset += cBody.ResetOrigin;
         }
     }
@@ -221,13 +221,8 @@ public partial class PlanetSystem : Node3D
             //orbitRenderers.AddChild(renderer);
         }
         if (cBody.isRoot) rootBody = cBody;
-        cBody.pqsSphere = new TerrainGen
-        {
-            cBody = cBody,
-            runInSeparateThread = false,
-            radius = (float)cBody.radius
-        };
-        cBody.AddChild(cBody.pqsSphere);
+
+        cBody.InitializeSelf();
     }
 
     public static CelestialBody ParseConfig(string path)
@@ -262,9 +257,20 @@ public partial class PlanetSystem : Node3D
             return null;
         }
 
+        // Handle rotation data
+        if (ConfigUtility.TryGetDictionary("rotation", data, out Dictionary rotation))
+        {
+            cBody.initialRot = rotation.TryGetValue("initial", out var iRot) ? (double)iRot : MissingNum(path, "orbit/initial");
+            cBody.rotPeriod = rotation.TryGetValue("period", out var rot) ? (double)rot : MissingNum(path, "orbit/period");
+            if (ConfigUtility.TryGetArray("tilt", rotation, out Godot.Collections.Array tilt))
+            {
+                cBody.tilt = new Vector3((float)tilt[0],(float)tilt[1],(float)tilt[2]);
+            }
+        }else{
+            Logger.Print($"{classTag} CBody {cBody.name} is missing its rotation!");
+        }
+
         // The "parent" parameter is set in a different function because the parent might be parsed after this one
-        // Chitak I appreciate you trying to improve the game but the disabled parameter is redundant.
-        // - Sincerely, and with no ill intent, Sushut.
         if (ConfigUtility.TryGetDictionary("orbit", data, out Dictionary orbit))
         {
             cBody.parentName = orbit.TryGetValue("parent", out var pnm) ? (string)pnm : null;

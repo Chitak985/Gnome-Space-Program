@@ -7,6 +7,11 @@
 	"radius": 69570000,
 	"inverseRotAltitude": 100000
   },
+  "rotation": {
+	"initial": 0,
+	"period": 10000,
+	"tilt": [0, 0, 0],
+  },
   "pqs": {
 	"pqsMods": [
 	  {

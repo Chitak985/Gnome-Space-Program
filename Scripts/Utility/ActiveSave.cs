@@ -24,7 +24,7 @@ public partial class ActiveSave : Node3D
 
 	// This should always be 1.0 upon loading!
 	[Export] public double timeSpeed = 1;
-	// In milliseconds
+	// In seconds
 	public double saveTime;
 
 	public void ReportSelf()
@@ -94,7 +94,11 @@ public partial class ActiveSave : Node3D
 			{
                 Logger.Print($"{classTag} Loading into default colony '{colony.name}'");
                 stateManager.colonyState.activeColony = colony;
-				// Camera refactor incoming; fix this spaghetti asap
+
+                // Activate rotating reference frame (maybe not here..??)
+                RealityTangler.Instance.SwitchReferenceFrame(colony.parentBody);
+
+                // Camera refactor incoming; fix this spaghetti asap
                 FlightCamera.Instance.TargetObject(colony);
                 FlightCamera.Instance.ToggleMapView(false);
                 break;

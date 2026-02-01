@@ -8,13 +8,17 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="GnomeSpaceProgram"
 config/description="A spaceflight simulation game involving gnomes."
 config/tags=PackedStringArray("3d", "physics")
 run/main_scene="uid://gh6raekpcthq"
-config/features=PackedStringArray("4.5", "C#", "Double Precision", "Forward Plus")
+config/features=PackedStringArray("4.6", "C#", "Double Precision", "Forward Plus")
 config/icon="uid://bg3l0onjljdr4"
 
 [autoload]

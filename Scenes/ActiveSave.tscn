@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://b08reqxmoktvk"]
+[gd_scene format=3 uid="uid://b08reqxmoktvk"]
 
 [ext_resource type="Script" uid="uid://c3i0ynvo54sk1" path="res://Scripts/Utility/ActiveSave.cs" id="1_2c3j4"]
 [ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
@@ -57,7 +57,7 @@ ssao_intensity = 16.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
 
-[node name="ActiveSave" type="Node3D" node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "stateManager", "localCamera", "localSpace", "localVP")]
+[node name="ActiveSave" type="Node3D" unique_id=1641581012 node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "stateManager", "localCamera", "localSpace", "localVP")]
 script = ExtResource("1_2c3j4")
 planetSystem = NodePath("PlanetSystem")
 partManager = NodePath("PartManager")
@@ -68,15 +68,15 @@ localCamera = NodePath("RenderLayers/LocalContainer/LocalView/Camera3D")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 localVP = NodePath("RenderLayers/LocalContainer/LocalView")
 
-[node name="StateManager" type="Node" parent="."]
+[node name="StateManager" type="Node" parent="." unique_id=2074004250]
 script = ExtResource("2_wsyj0")
 
-[node name="RealityTangler" type="Node" parent="."]
+[node name="RealityTangler" type="Node" parent="." unique_id=1762014724]
 process_priority = 100
 script = ExtResource("13_sfn14")
 originResetThreshold = 10000000.0
 
-[node name="FlightCamera" type="Node3D" parent="." node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "camNode")]
+[node name="FlightCamera" type="Node3D" parent="." unique_id=1009889495 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "camNode")]
 script = ExtResource("6_0mdm0")
 multiplyScroll = true
 lerpSpeed = 10.0
@@ -87,28 +87,28 @@ camNode = NodePath("Cam_Rot_Y/Cam_Rot_X/RemoteCams")
 zoomAmnt = 1.1
 zoom = 2.0
 
-[node name="Cam_Rot_Y" type="Node3D" parent="FlightCamera"]
+[node name="Cam_Rot_Y" type="Node3D" parent="FlightCamera" unique_id=1913721891]
 
-[node name="Cam_Rot_X" type="Node3D" parent="FlightCamera/Cam_Rot_Y"]
+[node name="Cam_Rot_X" type="Node3D" parent="FlightCamera/Cam_Rot_Y" unique_id=1323953864]
 
-[node name="RemoteCams" type="Node3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X"]
+[node name="RemoteCams" type="Node3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X" unique_id=1743440393]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 
-[node name="Local" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
+[node name="Local" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=708775881]
 remote_path = NodePath("../../../../../RenderLayers/LocalContainer/LocalView/Camera3D")
 
-[node name="Scaled" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
+[node name="Scaled" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=1061326743]
 remote_path = NodePath("../../../../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
 
-[node name="Background" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
+[node name="Background" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=1245192473]
 remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Camera3D")
 
-[node name="Skybox" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
+[node name="Skybox" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=177117427]
 remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Background/Sky")
 update_rotation = false
 update_scale = false
 
-[node name="RenderLayers" type="Control" parent="."]
+[node name="RenderLayers" type="Control" parent="." unique_id=980932977]
 z_index = -5
 texture_filter = 1
 layout_mode = 3
@@ -119,7 +119,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="BackgroundContainer" type="SubViewportContainer" parent="RenderLayers"]
+[node name="BackgroundContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=845648237]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -129,7 +129,7 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="BackgView" type="SubViewport" parent="RenderLayers/BackgroundContainer"]
+[node name="BackgView" type="SubViewport" parent="RenderLayers/BackgroundContainer" unique_id=131666149]
 transparent_bg = true
 handle_input_locally = false
 msaa_3d = 2
@@ -137,21 +137,21 @@ screen_space_aa = 1
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="Camera3D" type="Camera3D" parent="RenderLayers/BackgroundContainer/BackgView"]
+[node name="Camera3D" type="Camera3D" parent="RenderLayers/BackgroundContainer/BackgView" unique_id=1463558889]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 cull_mask = 1047556
 fov = 90.0
 far = 100000000000000.02
 
-[node name="Background" type="Node3D" parent="RenderLayers/BackgroundContainer/BackgView"]
+[node name="Background" type="Node3D" parent="RenderLayers/BackgroundContainer/BackgView" unique_id=1513898732]
 
-[node name="Sky" type="MeshInstance3D" parent="RenderLayers/BackgroundContainer/BackgView/Background"]
+[node name="Sky" type="MeshInstance3D" parent="RenderLayers/BackgroundContainer/BackgView/Background" unique_id=470665602]
 transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, 0, 1)
 layers = 4
 mesh = SubResource("SphereMesh_h4qns")
 skeleton = NodePath("../../../../../Miscellaneous/gizmo")
 
-[node name="ScaledContainer" type="SubViewportContainer" parent="RenderLayers"]
+[node name="ScaledContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=672276359]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -160,7 +160,7 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="ScaledView" type="SubViewport" parent="RenderLayers/ScaledContainer"]
+[node name="ScaledView" type="SubViewport" parent="RenderLayers/ScaledContainer" unique_id=787600989]
 transparent_bg = true
 handle_input_locally = false
 msaa_3d = 2
@@ -168,7 +168,7 @@ screen_space_aa = 1
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="Camera3D" type="Camera3D" parent="RenderLayers/ScaledContainer/ScaledView"]
+[node name="Camera3D" type="Camera3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=39155709]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 cull_mask = 1047554
 attributes = ExtResource("2_cbqy2")
@@ -176,11 +176,11 @@ fov = 90.0
 near = 0.5
 far = 1e+15
 
-[node name="ScaledSpace" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" node_paths=PackedStringArray("flightCamera")]
+[node name="ScaledSpace" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=1784030288 node_paths=PackedStringArray("flightCamera")]
 script = ExtResource("5_yxkbd")
 flightCamera = NodePath("../../../../FlightCamera")
 
-[node name="LocalContainer" type="SubViewportContainer" parent="RenderLayers"]
+[node name="LocalContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=1335764156]
 z_index = 1
 layout_mode = 1
 anchors_preset = 15
@@ -190,7 +190,7 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="LocalView" type="SubViewport" parent="RenderLayers/LocalContainer"]
+[node name="LocalView" type="SubViewport" parent="RenderLayers/LocalContainer" unique_id=483114518]
 transparent_bg = true
 handle_input_locally = false
 msaa_3d = 2
@@ -199,7 +199,7 @@ physics_object_picking = true
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="Camera3D" type="Camera3D" parent="RenderLayers/LocalContainer/LocalView"]
+[node name="Camera3D" type="Camera3D" parent="RenderLayers/LocalContainer/LocalView" unique_id=1187591863]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 cull_mask = 1047553
 attributes = ExtResource("2_cbqy2")
@@ -207,11 +207,16 @@ current = true
 fov = 90.0
 far = 1000000.0
 
-[node name="LocalSpace" type="Node3D" parent="RenderLayers/LocalContainer/LocalView"]
+[node name="LocalSpace" type="Node3D" parent="RenderLayers/LocalContainer/LocalView" unique_id=1184150835]
 
-[node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace"]
+[node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace" unique_id=643920472]
 
-[node name="PlanetSystem" type="Node3D" parent="." node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace")]
+[node name="BackgroundRotate" type="RemoteTransform3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Planets" unique_id=516088706]
+remote_path = NodePath("../../../../../BackgroundContainer/BackgView/Background")
+update_position = false
+update_scale = false
+
+[node name="PlanetSystem" type="Node3D" parent="." unique_id=13215807 node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace")]
 script = ExtResource("1_pocjb")
 orbitRendererPrefab = ExtResource("3_212tm")
 planetIconPrefab = ExtResource("4_yxkbd")
@@ -221,44 +226,44 @@ localSpace = NodePath("../RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("../RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
 DEBUG_GizmoPrefab = ExtResource("17_h3s5b")
 
-[node name="PartManager" type="Node" parent="."]
+[node name="PartManager" type="Node" parent="." unique_id=1645644584]
 process_priority = 3290
 script = ExtResource("6_2c3j4")
 
-[node name="CraftManager" type="Node" parent="."]
+[node name="CraftManager" type="Node" parent="." unique_id=837445787]
 script = ExtResource("6_ijjgm")
 
-[node name="ColonyManager" type="Node" parent="." node_paths=PackedStringArray("iconParent")]
+[node name="ColonyManager" type="Node" parent="." unique_id=639718792 node_paths=PackedStringArray("iconParent")]
 script = ExtResource("8_gxrxs")
 iconPrefab = ExtResource("9_gusxr")
 iconParent = NodePath("../UI/MapUI/ColonyIcons")
 
-[node name="BuildingManager" type="Node" parent="." node_paths=PackedStringArray("editorPartContainer", "floatingPartContainer", "buildUI")]
+[node name="BuildingManager" type="Node" parent="." unique_id=811713000 node_paths=PackedStringArray("editorPartContainer", "floatingPartContainer", "buildUI")]
 script = ExtResource("14_uc177")
 editorPartContainer = NodePath("EditorParts")
 floatingPartContainer = NodePath("FloatingParts")
 buildUI = NodePath("../UI/BuildUI")
 partMoveSpeed = 42.0
 
-[node name="EditorParts" type="Node3D" parent="BuildingManager"]
+[node name="EditorParts" type="Node3D" parent="BuildingManager" unique_id=923514272]
 
-[node name="FloatingParts" type="Node3D" parent="BuildingManager"]
+[node name="FloatingParts" type="Node3D" parent="BuildingManager" unique_id=1573556491]
 
-[node name="OrbitRendererManager" type="Node" parent="."]
+[node name="OrbitRendererManager" type="Node" parent="." unique_id=1421214884]
 script = ExtResource("15_h7vhn")
 rendererPrefab = ExtResource("16_np084")
 
-[node name="Miscellaneous" type="Node" parent="."]
+[node name="Miscellaneous" type="Node" parent="." unique_id=763652581]
 
-[node name="gizmo" parent="Miscellaneous" instance=ExtResource("17_h3s5b")]
+[node name="gizmo" parent="Miscellaneous" unique_id=904981576 instance=ExtResource("17_h3s5b")]
 transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Miscellaneous"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Miscellaneous" unique_id=1060175846]
 environment = SubResource("Environment_h3s5b")
 
-[node name="Lights" type="Node" parent="."]
+[node name="Lights" type="Node" parent="." unique_id=390825035]
 
-[node name="TestLight" type="DirectionalLight3D" parent="Lights"]
+[node name="TestLight" type="DirectionalLight3D" parent="Lights" unique_id=1622771519]
 transform = Transform3D(0.9396926, -0.2620026, 0.21984634, 0, 0.6427876, 0.76604456, -0.34202012, -0.71984625, 0.60402286, 0, 0, 0)
 layers = 3
 shadow_enabled = true
@@ -268,7 +273,7 @@ directional_shadow_split_2 = 0.05
 directional_shadow_split_3 = 0.4
 directional_shadow_max_distance = 8192.0
 
-[node name="UI" type="Control" parent="."]
+[node name="UI" type="Control" parent="." unique_id=6163037]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -278,7 +283,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("7_yxkbd")
 
-[node name="PartMenuHandler" type="Control" parent="UI" node_paths=PackedStringArray("contextMenus")]
+[node name="PartMenuHandler" type="Control" parent="UI" unique_id=1100265305 node_paths=PackedStringArray("contextMenus")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -291,7 +296,7 @@ contextMenus = NodePath("ContextMenus")
 menuPrefab = ExtResource("17_2vujl")
 buttonPrefab = ExtResource("19_cuu2x")
 
-[node name="ContextMenus" type="Control" parent="UI/PartMenuHandler" node_paths=PackedStringArray("menus")]
+[node name="ContextMenus" type="Control" parent="UI/PartMenuHandler" unique_id=302155286 node_paths=PackedStringArray("menus")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -302,7 +307,7 @@ mouse_filter = 2
 script = ExtResource("15_ue2ba")
 menus = []
 
-[node name="MapUI" type="Control" parent="UI" node_paths=PackedStringArray("contextMenus")]
+[node name="MapUI" type="Control" parent="UI" unique_id=327474485 node_paths=PackedStringArray("contextMenus")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -314,19 +319,19 @@ theme = ExtResource("7_yxkbd")
 script = ExtResource("14_23wpb")
 contextMenus = NodePath("ContextMenus")
 
-[node name="PlanetIcons" type="Control" parent="UI/MapUI"]
+[node name="PlanetIcons" type="Control" parent="UI/MapUI" unique_id=7508125]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="ColonyIcons" type="Control" parent="UI/MapUI"]
+[node name="ColonyIcons" type="Control" parent="UI/MapUI" unique_id=74573277]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="ContextMenus" type="Control" parent="UI/MapUI" node_paths=PackedStringArray("menus")]
+[node name="ContextMenus" type="Control" parent="UI/MapUI" unique_id=634416631 node_paths=PackedStringArray("menus")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -337,7 +342,7 @@ mouse_filter = 2
 script = ExtResource("15_ue2ba")
 menus = [NodePath("ColonyMenu"), NodePath("PlanetMenu")]
 
-[node name="ColonyMenu" type="Panel" parent="UI/MapUI/ContextMenus" node_paths=PackedStringArray("title")]
+[node name="ColonyMenu" type="Panel" parent="UI/MapUI/ContextMenus" unique_id=1209619276 node_paths=PackedStringArray("title")]
 visible = false
 layout_mode = 0
 offset_left = 1670.0
@@ -347,7 +352,7 @@ offset_bottom = 1057.0
 script = ExtResource("15_p543u")
 title = NodePath("VBoxContainer/Title")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/MapUI/ContextMenus/ColonyMenu"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/MapUI/ContextMenus/ColonyMenu" unique_id=744676155]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -359,31 +364,31 @@ offset_bottom = -45.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Title" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Title" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=570385702]
 layout_mode = 2
 text = "COLONY NAME"
 
-[node name="Label2" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Label2" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=1739743777]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="Label3" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Label3" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=2062304356]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="Label4" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Label4" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=1311950702]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="Label5" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Label5" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=420589065]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="Label6" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Label6" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=679138661]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="EnterButton" type="Button" parent="UI/MapUI/ContextMenus/ColonyMenu"]
+[node name="EnterButton" type="Button" parent="UI/MapUI/ContextMenus/ColonyMenu" unique_id=1731887427]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -395,7 +400,7 @@ offset_bottom = -8.0
 grow_vertical = 0
 text = "Enter"
 
-[node name="PlanetMenu" type="Panel" parent="UI/MapUI/ContextMenus" node_paths=PackedStringArray("title", "radius", "mass", "gravity")]
+[node name="PlanetMenu" type="Panel" parent="UI/MapUI/ContextMenus" unique_id=6665928 node_paths=PackedStringArray("title", "radius", "mass", "gravity")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -413,7 +418,7 @@ radius = NodePath("VBoxContainer/Radius")
 mass = NodePath("VBoxContainer/Mass")
 gravity = NodePath("VBoxContainer/Gravity")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/MapUI/ContextMenus/PlanetMenu"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/MapUI/ContextMenus/PlanetMenu" unique_id=764233715]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -425,31 +430,31 @@ offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Title" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Title" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=80387065]
 layout_mode = 2
 text = "PLANET NAME"
 
-[node name="Radius" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Radius" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1164703744]
 layout_mode = 2
 text = "RADIUS"
 
-[node name="Mass" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Mass" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=600804206]
 layout_mode = 2
 text = "MASS"
 
-[node name="Gravity" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Gravity" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1458144534]
 layout_mode = 2
 text = "GRAVITY"
 
-[node name="Label5" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Label5" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=401718634]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="Label6" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Label6" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1902628798]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="BuildUI" type="Control" parent="UI" node_paths=PackedStringArray("partListContainer", "partList")]
+[node name="BuildUI" type="Control" parent="UI" unique_id=1081851632 node_paths=PackedStringArray("partListContainer", "partList")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -462,7 +467,7 @@ script = ExtResource("23_hx2xn")
 partListContainer = NodePath("Selector")
 partList = NodePath("Selector/PartSelector/SelectMenu")
 
-[node name="Selector" type="Control" parent="UI/BuildUI"]
+[node name="Selector" type="Control" parent="UI/BuildUI" unique_id=1973749377]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -471,7 +476,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="PartSelector" type="Control" parent="UI/BuildUI/Selector"]
+[node name="PartSelector" type="Control" parent="UI/BuildUI/Selector" unique_id=686071424]
 custom_minimum_size = Vector2(288, 0)
 layout_mode = 1
 anchors_preset = 9
@@ -482,7 +487,7 @@ offset_right = 394.225
 offset_bottom = -45.0
 grow_vertical = 2
 
-[node name="SelectMenu" type="Panel" parent="UI/BuildUI/Selector/PartSelector" node_paths=PackedStringArray("categoryList", "partPreviewContainer", "allButton")]
+[node name="SelectMenu" type="Panel" parent="UI/BuildUI/Selector/PartSelector" unique_id=24945644 node_paths=PackedStringArray("categoryList", "partPreviewContainer", "allButton")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -498,7 +503,7 @@ categoryList = NodePath("../../PartCategories/ScrollContainer/CatList")
 partPreviewContainer = NodePath("../../PreviewContainer")
 allButton = NodePath("../../AllButton")
 
-[node name="PartModifiers" type="Panel" parent="UI/BuildUI/Selector/PartSelector"]
+[node name="PartModifiers" type="Panel" parent="UI/BuildUI/Selector/PartSelector" unique_id=1956750359]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -508,7 +513,7 @@ offset_top = -149.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ResizeHandles" type="Control" parent="UI/BuildUI/Selector/PartSelector"]
+[node name="ResizeHandles" type="Control" parent="UI/BuildUI/Selector/PartSelector" unique_id=1937592047]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -517,7 +522,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="R" type="Button" parent="UI/BuildUI/Selector/PartSelector/ResizeHandles"]
+[node name="R" type="Button" parent="UI/BuildUI/Selector/PartSelector/ResizeHandles" unique_id=334656615]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -533,7 +538,7 @@ theme_override_styles/pressed = ExtResource("24_vd1dx")
 theme_override_styles/hover = ExtResource("25_hx2xn")
 script = ExtResource("26_287u4")
 
-[node name="PartCategories" type="Panel" parent="UI/BuildUI/Selector"]
+[node name="PartCategories" type="Panel" parent="UI/BuildUI/Selector" unique_id=1585859983]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -543,7 +548,7 @@ offset_right = 103.0
 offset_bottom = -45.0
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/Selector/PartCategories"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/Selector/PartCategories" unique_id=19543851]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -551,10 +556,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CatList" type="VBoxContainer" parent="UI/BuildUI/Selector/PartCategories/ScrollContainer"]
+[node name="CatList" type="VBoxContainer" parent="UI/BuildUI/Selector/PartCategories/ScrollContainer" unique_id=1865035668]
 layout_mode = 2
 
-[node name="PreviewContainer" type="Control" parent="UI/BuildUI/Selector"]
+[node name="PreviewContainer" type="Control" parent="UI/BuildUI/Selector" unique_id=739324967]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -563,7 +568,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="AllButton" type="Button" parent="UI/BuildUI/Selector"]
+[node name="AllButton" type="Button" parent="UI/BuildUI/Selector" unique_id=1341906821]
 custom_minimum_size = Vector2(58, 58)
 layout_mode = 0
 offset_left = 45.0
@@ -571,7 +576,7 @@ offset_top = 44.0
 offset_right = 103.0
 offset_bottom = 102.0
 
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Selector/AllButton"]
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Selector/AllButton" unique_id=1529589169]
 texture_filter = 4
 layout_mode = 1
 anchors_preset = 15
@@ -583,7 +588,7 @@ texture = ExtResource("32_nej1p")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Misc" type="Control" parent="UI/BuildUI"]
+[node name="Misc" type="Control" parent="UI/BuildUI" unique_id=388528411]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -592,7 +597,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="SideButtons" type="Panel" parent="UI/BuildUI/Misc"]
+[node name="SideButtons" type="Panel" parent="UI/BuildUI/Misc" unique_id=1590814448]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
@@ -605,7 +610,7 @@ offset_bottom = -45.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildUI/Misc/SideButtons"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildUI/Misc/SideButtons" unique_id=711521208]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -617,13 +622,13 @@ offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LaunchButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer" node_paths=PackedStringArray("contextMenus")]
+[node name="LaunchButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer" unique_id=1297648159 node_paths=PackedStringArray("contextMenus")]
 custom_minimum_size = Vector2(58, 58)
 layout_mode = 2
 script = ExtResource("33_yged2")
 contextMenus = NodePath("../../../../ContextMenus")
 
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/LaunchButton"]
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/LaunchButton" unique_id=787550104]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -634,12 +639,12 @@ texture = ExtResource("33_8ed1a")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClearButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer"]
+[node name="ClearButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer" unique_id=262158221]
 custom_minimum_size = Vector2(58, 58)
 layout_mode = 2
 script = ExtResource("35_p24xc")
 
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/ClearButton"]
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/ClearButton" unique_id=1452579439]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -650,12 +655,12 @@ texture = ExtResource("36_7j3xb")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ExitButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer"]
+[node name="ExitButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer" unique_id=244411074]
 custom_minimum_size = Vector2(58, 58)
 layout_mode = 2
 script = ExtResource("38_a66g2")
 
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/ExitButton"]
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/ExitButton" unique_id=216336462]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -666,7 +671,7 @@ texture = ExtResource("38_byrdn")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ContextMenus" type="Control" parent="UI/BuildUI" node_paths=PackedStringArray("menus")]
+[node name="ContextMenus" type="Control" parent="UI/BuildUI" unique_id=226681809 node_paths=PackedStringArray("menus")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -677,7 +682,7 @@ mouse_filter = 2
 script = ExtResource("15_ue2ba")
 menus = [NodePath("SiteSelector")]
 
-[node name="SiteSelector" type="Panel" parent="UI/BuildUI/ContextMenus" node_paths=PackedStringArray("buttonContainer")]
+[node name="SiteSelector" type="Panel" parent="UI/BuildUI/ContextMenus" unique_id=1796948748 node_paths=PackedStringArray("buttonContainer")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -692,7 +697,7 @@ grow_vertical = 2
 script = ExtResource("37_7j3xb")
 buttonContainer = NodePath("ScrollContainer/VBoxContainer")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/ContextMenus/SiteSelector"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/ContextMenus/SiteSelector" unique_id=611963978]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -706,57 +711,57 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_p24xc")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7j3xb")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer" unique_id=936868582]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=641567149]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button2" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button2" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=223723964]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button3" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button3" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1264546627]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button4" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button4" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1743771517]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button5" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button5" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=798699098]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button6" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button6" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=796925157]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button7" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button7" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1687754573]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button8" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button8" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1312778502]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button9" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button9" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1191022006]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button10" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button10" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=639683005]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"

@@ -7,6 +7,11 @@
 	"radius": 173750,
 	"inverseRotAltitude": 100000
   },
+  "rotation": {
+	"initial": 0,
+	"period": 1000,
+	"tilt": [0, 0, 2],
+  },
   "orbit": {
 	"parent": "Gnobe",
 	"semiMajorAxis": 38439900,

@@ -12,6 +12,18 @@ public partial class CelestialBody : Node3D
     public double radius;
     public Vector3 originPos;
 
+    // Rotation info
+    public double initialRot;
+    public double rot;
+    public double rotPeriod;
+    public Vector3 tilt;
+    // Really just stores the rotation but okay I guess
+    public Transform3D cachedTransform;
+
+    // Axial tilt nodes
+    public Node3D pivot;
+    public Node3D gimbal;
+
     // Orbital info
     public string parentName;
     public Orbit orbit;
@@ -39,16 +51,18 @@ public partial class CelestialBody : Node3D
     }
 
     public override void _Process(double delta)
-    {   
+    {
         // Propagate the cBody's orbit
 
         //ProcessOrbitalPosition();
 
         //scaledSphere.truePosition = GetPosYUp(cartesianData.position);
+
+        //pivot.Rotation += new Vector3(0, 0.01, 0);
     }
 
     // Process the cBody orbital positioning calculations. Used by RealityTangler to "force" repositioning to avoid jitter.
-    public void ProcessOrbitalPosition()
+    public void ProcessTransform()
     {
         if (orbit != null)
         {
@@ -71,12 +85,53 @@ public partial class CelestialBody : Node3D
 
         scaledSphere.truePosition = GlobalPosition; //cBody.cartesianData.position.GetPosYUp();
         scaledSphere.ForceUpdate();
+
+        // Update rotation
+        rot = Math.Tau * (ActiveSave.Instance.saveTime / rotPeriod); //ActiveSave.Instance.saveTime * rotPeriod;
+
+        Transform3D trans = new()
+        {
+            Basis = Basis.FromEuler(new Vector3(0, rot, 0))
+        };
+
+        // Don't rotate if we're the active reference frame
+        if (RealityTangler.Instance.activeReferenceFrame != this)
+        {
+            gimbal.Transform = trans;
+        }else{
+            gimbal.GlobalRotation = Vector3.Zero;
+        }
+
+        // Update cached trash
+        cachedTransform.Basis = pivot.Transform.Basis * trans.Basis;
+    }
+
+    public void InitializeSelf()
+    {
+        // Create gimbals and pivots for axial tilt and all that other jazz
+        pivot = new();
+        AddChild(pivot);
+        pivot.RotationDegrees = tilt;
+        pivot.Name = "Pivot";
+
+        gimbal = new();
+        pivot.AddChild(gimbal);
+        gimbal.Name = "Gimbal";
+
+        pqsSphere = new TerrainGen
+        {
+            cBody = this,
+            runInSeparateThread = false,
+            radius = (float)radius,
+            Name = "PQS"
+        };
+        gimbal.AddChild(pqsSphere);
     }
 
     public void ResetOrigin()
     {
         // Just to prevent jitter
-        ProcessOrbitalPosition();
+        ProcessTransform();
     }
 
     public override string ToString()

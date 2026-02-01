@@ -7,6 +7,11 @@
 	"radius": 600000,
 	"inverseRotAltitude": 100000
   },
+  "rotation": {
+	"initial": 0,
+	"period": 5,
+	"tilt": [0, 0, 45],
+  },
   "orbit": {
 	"parent": "Sun",
 	"semiMajorAxis": 14959800320,

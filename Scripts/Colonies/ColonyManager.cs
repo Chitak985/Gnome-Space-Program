@@ -90,7 +90,7 @@ public partial class ColonyManager : Node
         // Add to the planet and also add a map icon
         CelestialBody parent = PlanetSystem.Instance.FindCBodyByName((string)data["parent"]);
         colony.parentBody = parent;
-        parent.AddChild(colony);
+        parent.gimbal.AddChild(colony);
 
         ScaledObject scaledObject = new() {Name = $"{colony.name} Scaled"};
         PlanetSystem.Instance.scaledSpace.AddChild(scaledObject);
