@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://dn8105q754rdm" path="res://Scripts/CraftAssembly/CraftManager.cs" id="6_ijjgm"]
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="7_yxkbd"]
 [ext_resource type="Script" uid="uid://yt1hbw2t4y8b" path="res://Scripts/Colonies/ColonyManager.cs" id="8_gxrxs"]
+[ext_resource type="Script" uid="uid://crssbseia2fkb" path="res://Scripts/PlanetarySystem/MapView.cs" id="8_h4qns"]
 [ext_resource type="PackedScene" uid="uid://bw23jl4jvv55y" path="res://Assets/Prefabs/UI/colony_icon.tscn" id="9_gusxr"]
 [ext_resource type="Script" uid="uid://djpke18bqs2nu" path="res://Scripts/Abominations/RealityTangler.cs" id="13_sfn14"]
 [ext_resource type="Script" uid="uid://byojjoj3wpnpd" path="res://Scripts/UserInterface/MapUI.cs" id="14_23wpb"]
@@ -57,7 +58,7 @@ ssao_intensity = 16.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
 
-[node name="ActiveSave" type="Node3D" unique_id=1641581012 node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "stateManager", "localCamera", "localSpace", "localVP")]
+[node name="ActiveSave" type="Node3D" unique_id=1641581012 node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "stateManager", "localCamera", "localSpace", "scaledSpace", "mapSpace", "localVP")]
 script = ExtResource("1_2c3j4")
 planetSystem = NodePath("PlanetSystem")
 partManager = NodePath("PartManager")
@@ -66,6 +67,8 @@ flightCam = NodePath("FlightCamera")
 stateManager = NodePath("StateManager")
 localCamera = NodePath("RenderLayers/LocalContainer/LocalView/Camera3D")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
+scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
+mapSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/MapView")
 localVP = NodePath("RenderLayers/LocalContainer/LocalView")
 timeSpeed = 1000.0
 
@@ -180,6 +183,9 @@ far = 1e+15
 [node name="ScaledSpace" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=1784030288 node_paths=PackedStringArray("flightCamera")]
 script = ExtResource("5_yxkbd")
 flightCamera = NodePath("../../../../FlightCamera")
+
+[node name="MapView" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=1218422952]
+script = ExtResource("8_h4qns")
 
 [node name="LocalContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=1335764156]
 z_index = 1

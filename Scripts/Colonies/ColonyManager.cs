@@ -92,15 +92,16 @@ public partial class ColonyManager : Node
         colony.parentBody = parent;
         parent.gimbal.AddChild(colony);
 
-        ScaledObject scaledObject = new() {Name = $"{colony.name} Scaled"};
-        PlanetSystem.Instance.scaledSpace.AddChild(scaledObject);
-        scaledObject.counterpart = colony;
-        colony.scaledObject = scaledObject;
+        colony.mapObject = new() {Name = $"{colony.name} Map"};
+        //MapView.Instance.AddChild(colony.mapObject);
+        parent.mapObject.AddChild(colony.mapObject);
+        colony.mapObject.Position = colony.position;
+        colony.mapObject.counterpart = colony;
 
         // HHhhhhmmmmmmmmmm....
         ColonyIcon icon = (ColonyIcon)iconPrefab.Instantiate();
         iconParent.AddChild(icon);
-        icon.thing = scaledObject;
+        icon.thing = colony.mapObject;
         icon.camera = ActiveSave.Instance.localCamera;
 
         icon.colony = colony;

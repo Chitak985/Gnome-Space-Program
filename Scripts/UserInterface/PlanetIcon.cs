@@ -7,7 +7,7 @@ public partial class PlanetIcon : MapIcon
 
     public override void _Ready()
     {
-        thing = planet.scaledSphere;
+        thing = planet.mapObject;
     }
 
     public override void _Pressed()

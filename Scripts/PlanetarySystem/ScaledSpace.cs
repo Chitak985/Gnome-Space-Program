@@ -38,28 +38,13 @@ public partial class ScaledSpace : Node3D
         {
             if (node is ScaledObject scaledObject)
             {
-                // Handle ScaledSpace differently if in map view
-                if (!flightCamera.inMap)
-                {
-                    Vector3 objPos = scaledObject.truePosition;
-                    Vector3 camDir = objPos.DirectionTo(flightCamera.camNode.GlobalPosition);
+                Vector3 objPos = scaledObject.truePosition;
+                Vector3 camDir = objPos.DirectionTo(flightCamera.camNode.GlobalPosition);
 
-                    double magnitude = (objPos - flightCamera.camNode.GlobalPosition).Length();
+                double magnitude = (objPos - flightCamera.camNode.GlobalPosition).Length();
 
-                    scaledObject.GlobalPosition = objPos + camDir * (magnitude/(1+(moveForward/1000f)));// + offsetPosition;
-                    scaledObject.Scale = scaledObject.originalScale / scaleFactor;
-                }else{
-                    Node3D camObject = flightCamera.target;
-                    Vector3 focusObjectPos = Vector3.Zero;
-                    // Check if the camera is focusing on either a ScaledObject or another thing that isn't implemented yet
-                    if (camObject is ScaledObject scaledCamObj)
-                    {
-                        focusObjectPos = scaledCamObj.altPosition; // "alternate" position is an insane hackjob.
-                    }
-                
-                    scaledObject.GlobalPosition = scaledObject.altPosition / scaleFactor - (focusObjectPos / scaleFactor);
-                    scaledObject.Scale = scaledObject.originalScale / scaleFactor;
-                }
+                scaledObject.GlobalPosition = objPos + camDir * (magnitude/(1+(moveForward/1000f)));// + offsetPosition;
+                scaledObject.Scale = scaledObject.originalScale / scaleFactor;
             }
         }
     }

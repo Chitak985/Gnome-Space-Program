@@ -20,6 +20,7 @@ public partial class TerrainGen : Node3D
     [Export] public int maxLevel = 12;
     [Export] public int minRenderLevel = 0;
     [Export] public int minColliderLevel = 10;
+    [Export] public int mapQuadDetail = 4;
     [Export] public Node3D player;
     
     //[Export] public Material material;
@@ -234,6 +235,7 @@ public partial class TerrainGen : Node3D
                 {
                     planetQuad.rendered = true;
                     CallDeferred(nameof(RenderQuad), planetQuad, planetQuad.mesh);
+                    CallDeferred(nameof(RenderMapQuad), planetQuad, planetQuad.mesh);
                 }
             }
 
@@ -341,6 +343,30 @@ public partial class TerrainGen : Node3D
         quad.children = null;
     }
 
+    // Megahack: Renders a set quality quad to map view. The terrain system is to be replaced however so don't dwell on it.
+    // NOTE: THESE ARE PERMANENT!
+    private void RenderMapQuad(Quad quad, Mesh mesh)
+    {
+        if (quad.detailLevel == mapQuadDetail && IsInstanceValid(mesh) && quad.mapRenderedMesh == null)
+        {
+            StaticBody3D meshBody = new();
+            MeshInstance3D meshObject = new();
+
+            meshObject.Mesh = mesh;
+            meshObject.Position = quad.position;
+            meshObject.Scale = quad.scale;
+
+            quad.mapRenderedMesh = meshBody;
+
+            meshBody.AddChild(meshObject);
+
+            cBody.mapObject.AddChild(meshBody);
+
+            meshObject.SetLayerMaskValue(1, false);
+            meshObject.SetLayerMaskValue(2, true);
+        }
+    }
+
     private void RenderQuad(Quad quad, Mesh mesh)
     {
         StaticBody3D localMeshBody = new();
@@ -348,6 +374,7 @@ public partial class TerrainGen : Node3D
 
         StaticBody3D scaledMeshBody = new();
         MeshInstance3D scaledMeshObject = new();
+        
         if (IsInstanceValid(mesh))
         {
             localMeshObject.Mesh = mesh;
@@ -365,7 +392,7 @@ public partial class TerrainGen : Node3D
             scaledMeshBody.AddChild(scaledMeshObject);
 
             AddChild(localMeshBody);
-            cBody.scaledSphere.AddChild(scaledMeshBody);
+            cBody.scaledObject.AddChild(scaledMeshBody);
 
             scaledMeshObject.SetLayerMaskValue(1, false);
             scaledMeshObject.SetLayerMaskValue(2, true);
@@ -388,6 +415,7 @@ public partial class TerrainGen : Node3D
             quad.localRenderedMesh = null;
             quad.scaledRenderedMesh.QueueFree(); 
             quad.scaledRenderedMesh = null;
+            
             quad.rendered = false;
         }
     }

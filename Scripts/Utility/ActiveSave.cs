@@ -17,6 +17,8 @@ public partial class ActiveSave : Node3D
 
     // Spaces
     [Export] public Node3D localSpace;
+	[Export] public ScaledSpace scaledSpace;
+	[Export] public MapView mapSpace;
     [Export] public SubViewport localVP;
 
     // The great dictionary

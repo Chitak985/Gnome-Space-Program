@@ -51,7 +51,7 @@ public partial class PlanetSystem : Node3D
                     }
                 }
 
-                celestialBody.scaledSphere.AddChild(gizmo);
+                celestialBody.scaledObject.AddChild(gizmo);
             }else{
                 gizmo = (Node3D)celestialBody.FindChild("gizmo");
             }
@@ -164,14 +164,6 @@ public partial class PlanetSystem : Node3D
             localSpacePlanets.AddChild(cBody);
             cBody.Name = cBody.name;
 
-            ScaledObject scaledBody = new() { Name = $"{cBody.name}_Scaled" };
-            scaledSpace.AddChild(scaledBody);
-            //scaledBody.Scale = new Vector3(
-            //	(float)(1.0 / scaledSpace.scaleFactor),
-            //    (float)(1.0 / scaledSpace.scaleFactor),
-            //    (float)(1.0 / scaledSpace.scaleFactor));
-            cBody.scaledSphere = scaledBody;
-
             if (planetIconPrefab != null && planetIcons != null)
             {
                 PlanetIcon icon = (PlanetIcon)planetIconPrefab.Instantiate();
@@ -193,12 +185,12 @@ public partial class PlanetSystem : Node3D
                 cBody.cartesianData.cBody = cBody;
                 parent.childPlanets.Add(cBody);
 
-                // Create orbit renderer
+                // Create orbit renderer (AAHHHH)
                 OrbitRendererManager rendererManager = OrbitRendererManager.Instance;
                 OrbitRenderer renderer = (OrbitRenderer)rendererManager.rendererPrefab.Instantiate();
                 rendererManager.orbitRenderers.Add(renderer);
                 renderer.orbit = cBody.orbit;
-                cBody.orbit.parent.scaledSphere.AddChild(renderer);
+                cBody.orbit.parent.scaledObject.AddChild(renderer);
                 renderer.enabled = true;
             }
 

@@ -10,7 +10,7 @@ public partial class Colony : Node3D
     */
 
     public CelestialBody parentBody;
-    public ScaledObject scaledObject;
+    public MapObject mapObject;
 
     public string name;
     public Vector3 position;

@@ -33,7 +33,8 @@ public partial class CelestialBody : Node3D
 
     // Procedural info
     public TerrainGen pqsSphere;
-    public ScaledObject scaledSphere;
+    public ScaledObject scaledObject;
+    public MapObject mapObject;
     public List<Node> pqsMods;
 
     // Miscellaneous info
@@ -85,9 +86,9 @@ public partial class CelestialBody : Node3D
 
         //Logger.Print($"{name} {Position}");
 
-        scaledSphere.truePosition = GlobalPosition; //cBody.cartesianData.position.GetPosYUp();
-        scaledSphere.altPosition = Position;
-        scaledSphere.ForceUpdate();
+        scaledObject.truePosition = GlobalPosition; //cBody.cartesianData.position.GetPosYUp();
+
+        mapObject.truePosition = cartesianData.position;
 
         // Update rotation
         rot = Math.Tau * (ActiveSave.Instance.saveTime / rotPeriod); //ActiveSave.Instance.saveTime * rotPeriod;
@@ -111,20 +112,21 @@ public partial class CelestialBody : Node3D
         // Update scaled mesh rotation because we'll only be seeing celestial bodies rotate anyways (though maybe change this in the future?)
         if (RealityTangler.Instance.activeReferenceFrame != this)
         {
-            scaledSphere.Rotation = cachedTransform.Basis.GetEuler();
+            scaledObject.Rotation = cachedTransform.Basis.GetEuler();
         }else{
-            // Rotate the active body only if we're looking at it in the map view
-            if (FlightCamera.Instance.inMap)
-            {
-                scaledSphere.Rotation = cachedTransform.Basis.GetEuler();
-            }else{
-                scaledSphere.Rotation = Vector3.Zero;
-            }
+            scaledObject.Rotation = Vector3.Zero;
         }
     }
 
     public void InitializeSelf()
     {
+        // Scaled space and map view
+        scaledObject = new() { Name = $"{name}_Scaled" };
+        ScaledSpace.Instance.AddChild(scaledObject);
+
+        mapObject = new() { Name = $"{name}_Map" };
+        MapView.Instance.AddChild(mapObject);
+
         // Create gimbals and pivots for axial tilt and all that other jazz
         pivot = new();
         AddChild(pivot);

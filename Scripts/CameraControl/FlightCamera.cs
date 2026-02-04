@@ -111,6 +111,8 @@ public partial class FlightCamera : Node3D
         Logger.Print($"{classTag} Map view: {toggle}");
         inMap = toggle;
         ActiveSave.Instance.localSpace.Visible = !toggle;
+        ActiveSave.Instance.scaledSpace.Visible = !toggle;
+        ActiveSave.Instance.mapSpace.Visible = toggle;
 
         zoom = toggle ? mapZoomLimits.Item3 : localZoomLimits.Item3;
         Logger.Print($"{classTag} Zoom is: {zoom}");
@@ -188,7 +190,7 @@ public partial class FlightCamera : Node3D
     {
         localTarget = colony;
         localZoomLimits = (5,10000000,250);
-        mapTarget = colony.scaledObject;
+        mapTarget = colony.mapObject;
         mapZoomLimits = (5,10000000,2);
         Position = Vector3.Zero;
 
@@ -214,7 +216,7 @@ public partial class FlightCamera : Node3D
     // Planets shouldn't be targeted locally so we don't target the local object
     public void TargetObject(CelestialBody cBody)
     {
-        mapTarget = cBody.scaledSphere;
+        mapTarget = cBody.mapObject;
         Position = Vector3.Zero;
 
         Logger.Print($"{classTag} Targeting cBody: {cBody.Name}");

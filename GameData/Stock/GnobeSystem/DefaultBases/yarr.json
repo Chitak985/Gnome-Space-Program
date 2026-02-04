@@ -1,0 +1,33 @@
+{
+    "configType": "Base",
+    "parent": "Foo",
+    "blueprint": true,
+    "initialBase": false,
+    "name": "Gnome Space Center 2",
+
+    "position": [-100,-50,596546.0],
+    "rotation": [90,0,0],
+
+    "buildings": {
+        "GSC_VAB": {
+            "position": [0,28,-200],
+            "rotation": [0,0,0],
+            "scale": [1,1,1],
+            "destroyed": false,
+
+            "additionalData": {},
+
+            "attachedBuildings": {}
+        },
+        "GSC_Launchpad": {
+            "position": [0,5,300],
+            "rotation": [0,180,0],
+            "scale": [1,1,1],
+            "destroyed": false,
+
+            "additionalData": {},
+
+            "attachedBuildings": {}
+        }
+    }
+}
