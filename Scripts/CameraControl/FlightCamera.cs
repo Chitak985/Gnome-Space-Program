@@ -223,10 +223,10 @@ public partial class FlightCamera : Node3D
         Logger.Print($"{classTag} cBody radius: {cBody.radius}");
 
         mapZoomLimits = (
-            (float)(cBody.radius * 1.25f / ScaledSpace.Instance.scaleFactor),
+            (float)(cBody.radius * 1.25f / ScaledSpace.Instance.ScaleFactor),
             float.PositiveInfinity,
-            (float)(cBody.radius * 2f / ScaledSpace.Instance.scaleFactor));
+            (float)(cBody.radius * 2f / ScaledSpace.Instance.ScaleFactor));
 
-        zoom = (float)(cBody.radius * 2f / ScaledSpace.Instance.scaleFactor);
+        zoom = (float)(cBody.radius * 2f / ScaledSpace.Instance.ScaleFactor);
     }
 }

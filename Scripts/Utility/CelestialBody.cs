@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public partial class CelestialBody : Node3D
 {
     // General info
-    public string name;
+    public string cBodyName;
     public bool focusOnload;
     public double mass;
     public double geeASL;
@@ -67,7 +67,7 @@ public partial class CelestialBody : Node3D
     {
         if (orbit != null)
         {
-            orbit.trueAnomaly = Conics.TimeToTrueAnomaly(orbit, ActiveSave.Instance.saveTime, 0) + orbit.trueAnomalyAtEpoch;
+            orbit.trueAnomaly = Conics.TimeToTrueAnomaly(orbit, ActiveSave.Instance.SaveTime, 0) + orbit.trueAnomalyAtEpoch;
             CartesianData data = Conics.ElemToCart(orbit);
             cartesianData.position = data.position + orbit.parent.cartesianData.position;
             cartesianData.velocity = data.position;
@@ -89,9 +89,10 @@ public partial class CelestialBody : Node3D
         scaledObject.truePosition = GlobalPosition; //cBody.cartesianData.position.GetPosYUp();
 
         mapObject.truePosition = cartesianData.position;
+        mapObject.Rotation = cachedTransform.Basis.GetEuler();
 
         // Update rotation
-        rot = Math.Tau * (ActiveSave.Instance.saveTime / rotPeriod); //ActiveSave.Instance.saveTime * rotPeriod;
+        rot = Math.Tau * (ActiveSave.Instance.SaveTime / rotPeriod); //ActiveSave.Instance.saveTime * rotPeriod;
 
         Transform3D trans = new()
         {
@@ -121,10 +122,10 @@ public partial class CelestialBody : Node3D
     public void InitializeSelf()
     {
         // Scaled space and map view
-        scaledObject = new() { Name = $"{name}_Scaled" };
+        scaledObject = new() { Name = $"{cBodyName}_Scaled" };
         ScaledSpace.Instance.AddChild(scaledObject);
 
-        mapObject = new() { Name = $"{name}_Map" };
+        mapObject = new() { Name = $"{cBodyName}_Map" };
         MapView.Instance.AddChild(mapObject);
 
         // Create gimbals and pivots for axial tilt and all that other jazz
@@ -155,6 +156,6 @@ public partial class CelestialBody : Node3D
 
     public override string ToString()
     {
-        return name;
+        return cBodyName;
     }
 }

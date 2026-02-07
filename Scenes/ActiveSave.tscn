@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
 [ext_resource type="Material" uid="uid://bgcp3j11mrprb" path="res://Assets/Materials/Background.tres" id="3_sfn14"]
 [ext_resource type="PackedScene" uid="uid://dt3jn2nr8pm3l" path="res://Assets/Prefabs/UI/planet_icon.tscn" id="4_yxkbd"]
+[ext_resource type="Script" uid="uid://gbltyyg72i1c" path="res://Scripts/PlanetarySystem/Background.cs" id="5_t2n2o"]
 [ext_resource type="Script" uid="uid://qcplqipy8mmr" path="res://Scripts/PlanetarySystem/ScaledSpace.cs" id="5_yxkbd"]
 [ext_resource type="Script" uid="uid://ve83kys7a48x" path="res://Scripts/CameraControl/FlightCamera.cs" id="6_0mdm0"]
 [ext_resource type="Script" uid="uid://chvjvd0id2y27" path="res://Scripts/CraftAssembly/Parts/PartManager.cs" id="6_2c3j4"]
@@ -15,6 +16,7 @@
 [ext_resource type="Script" uid="uid://yt1hbw2t4y8b" path="res://Scripts/Colonies/ColonyManager.cs" id="8_gxrxs"]
 [ext_resource type="Script" uid="uid://crssbseia2fkb" path="res://Scripts/PlanetarySystem/MapView.cs" id="8_h4qns"]
 [ext_resource type="PackedScene" uid="uid://bw23jl4jvv55y" path="res://Assets/Prefabs/UI/colony_icon.tscn" id="9_gusxr"]
+[ext_resource type="Script" uid="uid://ciw1nydyx82x6" path="res://Scripts/PlanetarySystem/LocalSpace.cs" id="10_5brss"]
 [ext_resource type="Script" uid="uid://djpke18bqs2nu" path="res://Scripts/Abominations/RealityTangler.cs" id="13_sfn14"]
 [ext_resource type="Script" uid="uid://byojjoj3wpnpd" path="res://Scripts/UserInterface/MapUI.cs" id="14_23wpb"]
 [ext_resource type="Script" uid="uid://cyombaxie5vkw" path="res://Scripts/Utility/BuildingManager.cs" id="14_uc177"]
@@ -58,18 +60,16 @@ ssao_intensity = 16.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
 
-[node name="ActiveSave" type="Node3D" unique_id=1641581012 node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "stateManager", "localCamera", "localSpace", "scaledSpace", "mapSpace", "localVP")]
+[node name="ActiveSave" type="Node3D" unique_id=1641581012 node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "stateManager", "localSpace", "scaledSpace", "mapSpace")]
 script = ExtResource("1_2c3j4")
 planetSystem = NodePath("PlanetSystem")
 partManager = NodePath("PartManager")
 colonyManager = NodePath("ColonyManager")
 flightCam = NodePath("FlightCamera")
 stateManager = NodePath("StateManager")
-localCamera = NodePath("RenderLayers/LocalContainer/LocalView/Camera3D")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
 mapSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/MapView")
-localVP = NodePath("RenderLayers/LocalContainer/LocalView")
 timeSpeed = 1000.0
 
 [node name="StateManager" type="Node" parent="." unique_id=2074004250]
@@ -148,6 +148,7 @@ fov = 90.0
 far = 100000000000000.02
 
 [node name="Background" type="Node3D" parent="RenderLayers/BackgroundContainer/BackgView" unique_id=1513898732]
+script = ExtResource("5_t2n2o")
 
 [node name="Sky" type="MeshInstance3D" parent="RenderLayers/BackgroundContainer/BackgView/Background" unique_id=470665602]
 transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, 0, 1)
@@ -180,9 +181,8 @@ fov = 90.0
 near = 0.5
 far = 1e+15
 
-[node name="ScaledSpace" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=1784030288 node_paths=PackedStringArray("flightCamera")]
+[node name="ScaledSpace" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=1784030288]
 script = ExtResource("5_yxkbd")
-flightCamera = NodePath("../../../../FlightCamera")
 
 [node name="MapView" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=1218422952]
 script = ExtResource("8_h4qns")
@@ -214,14 +214,13 @@ current = true
 fov = 90.0
 far = 1000000.0
 
-[node name="LocalSpace" type="Node3D" parent="RenderLayers/LocalContainer/LocalView" unique_id=1184150835]
+[node name="LocalSpace" type="Node3D" parent="RenderLayers/LocalContainer/LocalView" unique_id=1184150835 node_paths=PackedStringArray("Viewport", "Camera", "Planets")]
+script = ExtResource("10_5brss")
+Viewport = NodePath("..")
+Camera = NodePath("../Camera3D")
+Planets = NodePath("Planets")
 
 [node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace" unique_id=643920472]
-
-[node name="BackgroundRotate" type="RemoteTransform3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Planets" unique_id=516088706]
-remote_path = NodePath("../../../../../BackgroundContainer/BackgView/Background")
-update_position = false
-update_scale = false
 
 [node name="PlanetSystem" type="Node3D" parent="." unique_id=13215807 node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace")]
 script = ExtResource("1_pocjb")

@@ -5,7 +5,7 @@ using System;
 public partial class MapView : Node3D
 {
     public static MapView Instance { get; private set; }
-    [Export] public float scaleFactor = 10000;
+    [Export] public float ScaleFactor { get; private set; } = 10000;
 
     public override void _Ready()
     {
@@ -33,8 +33,8 @@ public partial class MapView : Node3D
                     }
                 }
 
-                mapObject.GlobalPosition = mapObject.truePosition / scaleFactor - (focusObjectPos / scaleFactor);
-                mapObject.Scale = mapObject.originalScale / scaleFactor;
+                mapObject.GlobalPosition = mapObject.truePosition / ScaleFactor - (focusObjectPos / ScaleFactor);
+                mapObject.Scale = mapObject.originalScale / ScaleFactor;
             }
         }
     }

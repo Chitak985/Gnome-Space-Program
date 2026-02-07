@@ -14,9 +14,8 @@ public partial class ScaledSpace : Node3D
     // Obligatory.
     public static ScaledSpace Instance { get; private set; }
     // By how much the scale is divided by
-    [Export] public float scaleFactor = 10000;
-    [Export] public float moveForward = 0.1f;
-    [Export] public FlightCamera flightCamera;
+    [Export] public float ScaleFactor { get; private set; } = 10000;
+    [Export] public float MoveForward { get; private set; } = 0.1f;
 
     public override void _Ready()
     {
@@ -39,12 +38,12 @@ public partial class ScaledSpace : Node3D
             if (node is ScaledObject scaledObject)
             {
                 Vector3 objPos = scaledObject.truePosition;
-                Vector3 camDir = objPos.DirectionTo(flightCamera.camNode.GlobalPosition);
+                Vector3 camDir = objPos.DirectionTo(FlightCamera.Instance.camNode.GlobalPosition);
 
-                double magnitude = (objPos - flightCamera.camNode.GlobalPosition).Length();
+                double magnitude = (objPos - FlightCamera.Instance.camNode.GlobalPosition).Length();
 
-                scaledObject.GlobalPosition = objPos + camDir * (magnitude/(1+(moveForward/1000f)));// + offsetPosition;
-                scaledObject.Scale = scaledObject.originalScale / scaleFactor;
+                scaledObject.GlobalPosition = objPos + camDir * (magnitude/(1+(MoveForward/1000f)));// + offsetPosition;
+                scaledObject.Scale = scaledObject.originalScale / ScaleFactor;
             }
         }
     }

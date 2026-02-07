@@ -13,26 +13,20 @@ public partial class ActiveSave : Node3D
 	[Export] public ColonyManager colonyManager;
 	[Export] public FlightCamera flightCam;
 	[Export] public StateManager stateManager;
-	[Export] public Camera3D localCamera;
 
     // Spaces
-    [Export] public Node3D localSpace;
+    [Export] public LocalSpace localSpace;
 	[Export] public ScaledSpace scaledSpace;
 	[Export] public MapView mapSpace;
-    [Export] public SubViewport localVP;
 
     // The great dictionary
     public Dictionary<string, Variant> saveParams;
 
 	// This should always be 1.0 upon loading!
 	[Export] public double timeSpeed = 1;
-	// In seconds
-	public double saveTime;
 
-	public void ReportSelf()
-	{
-		Logger.Print($"{classTag} Here!");
-	}
+	// In seconds
+	public double SaveTime { get; private set; }
 
 	public override void _Ready()
 	{
@@ -108,14 +102,14 @@ public partial class ActiveSave : Node3D
 		}
 
 		// Activate local input after the game starts because it doesn't take effect if enabled by default in the editor for some reason
-        localVP.HandleInputLocally = false;
-        localVP.HandleInputLocally = true;
+        localSpace.Viewport.HandleInputLocally = false;
+        localSpace.Viewport.HandleInputLocally = true;
     }
 
 	public override void _Process(double delta)
 	{
 		// Increment time since save creation (for orbital calculations mostly)
-		saveTime += delta * 1000 * timeSpeed / 1000;
+		SaveTime += delta * 1000 * timeSpeed / 1000;
 
 		// Set physics speed to match time speed
 		//Engine.TimeScale = timeSpeed;

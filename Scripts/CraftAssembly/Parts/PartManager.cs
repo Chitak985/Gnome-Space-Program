@@ -135,7 +135,7 @@ public partial class PartManager : Node
         if (@event is InputEventMouseMotion mouseMotion)
         {
             hoveredPart = null;
-            Camera3D camera3D = ActiveSave.Instance.localCamera;
+            Camera3D camera3D = LocalSpace.Instance.Camera;
             PhysicsDirectSpaceState3D spaceState = ActiveSave.Instance.localSpace.GetWorld3D().DirectSpaceState;
 
             Vector3 from = camera3D.ProjectRayOrigin(mouseMotion.Position);

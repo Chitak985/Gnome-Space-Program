@@ -102,7 +102,7 @@ public partial class ColonyManager : Node
         ColonyIcon icon = (ColonyIcon)iconPrefab.Instantiate();
         iconParent.AddChild(icon);
         icon.thing = colony.mapObject;
-        icon.camera = ActiveSave.Instance.localCamera;
+        icon.camera = LocalSpace.Instance.Camera;
 
         icon.colony = colony;
 

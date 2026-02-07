@@ -107,7 +107,7 @@ public partial class PlanetSystem : Node3D
     {
         foreach (CelestialBody cBody in celestialBodies)
         {
-            if (cBody.name == name) return cBody;
+            if (cBody.cBodyName == name) return cBody;
         }
         Logger.Print($"{classTag} Couldn't find CelestialBody with name '{name}'");
         return null;
@@ -162,7 +162,7 @@ public partial class PlanetSystem : Node3D
         foreach (CelestialBody cBody in celestialBodies)
         {
             localSpacePlanets.AddChild(cBody);
-            cBody.Name = cBody.name;
+            cBody.Name = cBody.cBodyName;
 
             if (planetIconPrefab != null && planetIcons != null)
             {
@@ -226,7 +226,7 @@ public partial class PlanetSystem : Node3D
         // Handle "properties" dictionary
         if (ConfigUtility.TryGetDictionary("properties", data, out Dictionary properties))
         {
-            cBody.name = properties.TryGetValue("name", out var name) ? (string)name : MissingString(path, "name"); //GetValue("Properties", "name");
+            cBody.cBodyName = properties.TryGetValue("name", out var name) ? (string)name : MissingString(path, "name"); //GetValue("Properties", "name");
             Logger.Print($"{classTag} Parsing config for: {name}");
             cBody.focusOnload = properties.TryGetValue("focusOnload", out var fuck) && (bool)fuck;
             // only mass or geeASL is required, the unassigned one will be calculated based off one of the values.
@@ -259,7 +259,7 @@ public partial class PlanetSystem : Node3D
                 cBody.tilt = new Vector3((float)tilt[0],(float)tilt[1],(float)tilt[2]);
             }
         }else{
-            Logger.Print($"{classTag} CBody {cBody.name} is missing its rotation!");
+            Logger.Print($"{classTag} CBody {cBody.cBodyName} is missing its rotation!");
         }
 
         // The "parent" parameter is set in a different function because the parent might be parsed after this one
@@ -277,7 +277,7 @@ public partial class PlanetSystem : Node3D
                 sphereOfInfluence = orbit.TryGetValue("sphereOfInfluence", out var soi) ? (double)soi : -1,
             };
         }else{
-            Logger.Print($"{classTag} CBody {cBody.name} is missing its orbit! If this is intended, then disregard this message.");
+            Logger.Print($"{classTag} CBody {cBody.cBodyName} is missing its orbit! If this is intended, then disregard this message.");
         }
         // Same here too
         cBody.cartesianData = new()

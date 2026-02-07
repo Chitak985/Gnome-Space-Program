@@ -50,7 +50,7 @@ public partial class BuildingManager : Node
     {
         if (draggingPart != null)
         {
-            Camera3D camera = ActiveSave.Instance.localCamera;
+            Camera3D camera = LocalSpace.Instance.Camera;
 
             Vector2 mousePos = GetViewport().GetMousePosition();
             Vector3 projectedPosition = camera.ProjectPosition(mousePos, partHoldDistance);
@@ -74,7 +74,7 @@ public partial class BuildingManager : Node
                             foreach (AttachNode attachNode1 in draggingPart.attachNodes)
                             {
                                 // We get screen positions to avoid depth problems
-                                Camera3D localCam = ActiveSave.Instance.localCamera;
+                                Camera3D localCam = LocalSpace.Instance.Camera;
 
                                 Vector3 node0Pos = attachNode0.GlobalPosition;
                                 // Imagine this one (relative node position + supposed global position)

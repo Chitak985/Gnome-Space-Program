@@ -40,7 +40,7 @@ public partial class OrbitRenderer : MeshInstance3D
             List<Vector3> pointsList = SamplePoints(50);
             shaderMat.SetShaderParameter("arrayLength", pointsList.Count);
             shaderMat.SetShaderParameter("points", pointsList.ToArray());
-            shaderMat.SetShaderParameter("nodeSize", orbit.semiMajorAxis / ScaledSpace.Instance.scaleFactor);
+            shaderMat.SetShaderParameter("nodeSize", orbit.semiMajorAxis / ScaledSpace.Instance.ScaleFactor);
             shaderMat.SetShaderParameter("nodePosition", GlobalPosition);
         }else{
             Vector3[] bullshitArray = [Vector3.Zero];

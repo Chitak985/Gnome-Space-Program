@@ -136,7 +136,7 @@ public partial class RealityTangler : Node
     {
         if (activeReferenceFrame != null)
         {
-            Node3D localPlanets = PlanetSystem.Instance.localSpacePlanets;
+            Node3D localPlanets = LocalSpace.Instance.Planets;
 
             Transform3D trans = new()
             {
@@ -149,8 +149,8 @@ public partial class RealityTangler : Node
             localPlanets.GlobalPosition = activeReferenceFrame.GlobalPosition;
         }else{
             // Keep all the planets at 0,0,0 (and rotated to 0,0,0)
-            PlanetSystem.Instance.localSpacePlanets.Position = Vector3.Zero;
-            PlanetSystem.Instance.localSpacePlanets.Rotation = Vector3.Zero;
+            LocalSpace.Instance.Planets.Position = Vector3.Zero;
+            LocalSpace.Instance.Planets.Rotation = Vector3.Zero;
         }
     }
 }
