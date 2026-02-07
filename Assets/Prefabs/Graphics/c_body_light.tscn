@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://d0ci447d308yk"]
+
+[ext_resource type="Script" uid="uid://ccrdsjlig1sfq" path="res://Scripts/Graphics/Lighting/CBodyLight.cs" id="1_qwiay"]
+
+[node name="CBodyLight" type="Node3D" unique_id=220485097 node_paths=PackedStringArray("localLight", "mapLight")]
+script = ExtResource("1_qwiay")
+localLight = NodePath("LocalLight")
+mapLight = NodePath("MapLight")
+
+[node name="LocalLight" type="DirectionalLight3D" parent="." unique_id=195567879]
+transform = Transform3D(0.9999999724897868, 0, 0, 0, 0.9999999423797896, 0, 0, 0, 1.0000001482597736, 0, 0, 0)
+layers = 3
+shadow_enabled = true
+shadow_bias = 0.075
+directional_shadow_split_1 = 0.02
+directional_shadow_split_2 = 0.05
+directional_shadow_split_3 = 0.4
+directional_shadow_max_distance = 8192.0
+
+[node name="MapLight" type="DirectionalLight3D" parent="." unique_id=632845631]
+transform = Transform3D(0.9999999724897868, 0, 0, 0, 0.9999999423797896, 0, 0, 0, 1.0000001482597736, 0, 0, 0)
+layers = 3
+shadow_enabled = true
+shadow_bias = 0.075
+directional_shadow_split_1 = 0.02
+directional_shadow_split_2 = 0.05
+directional_shadow_split_3 = 0.4
+directional_shadow_max_distance = 8192.0

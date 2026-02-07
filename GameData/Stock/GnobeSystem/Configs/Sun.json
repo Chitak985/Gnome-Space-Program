@@ -12,6 +12,10 @@
 	"period": 10000,
 	"tilt": [0, 0, 0],
   },
+  "light": {
+	"brightness": 1,
+	"colour": [1,1,1]
+  },
   "pqs": {
 	"pqsMods": [
 	  {

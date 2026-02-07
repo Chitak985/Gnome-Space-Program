@@ -3,6 +3,7 @@ using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
+// Most of all this junk should be refactored
 public partial class PlanetSystem : Node3D
 {
     [Export] public PackedScene orbitRendererPrefab;
@@ -260,6 +261,18 @@ public partial class PlanetSystem : Node3D
             }
         }else{
             Logger.Print($"{classTag} CBody {cBody.cBodyName} is missing its rotation!");
+        }
+
+        // Handle "lights" if they're present (just forget about it if they're not)
+        if (ConfigUtility.TryGetDictionary("light", data, out Dictionary light))
+        {
+            CBodyLight cBodyLight = LightingManager.Instance.CreateLight(cBody);
+            cBody.light = cBodyLight;
+            cBodyLight.brightness = (float)(light.TryGetValue("brightness", out var brt) ? (float)brt : MissingNum(path, "light/brightness"));
+            if (ConfigUtility.TryGetArray("colour", light, out Godot.Collections.Array colour))
+            {
+                cBodyLight.colour = new Color((float)colour[0], (float)colour[1], (float)colour[2], 1);
+            }
         }
 
         // The "parent" parameter is set in a different function because the parent might be parsed after this one

@@ -24,6 +24,9 @@ public partial class CelestialBody : Node3D
     public Node3D pivot;
     public Node3D gimbal;
 
+    // Light info (This might not exist!)
+    public CBodyLight light; // This updates independently of the cBody
+
     // Orbital info
     public string parentName;
     public Orbit orbit;

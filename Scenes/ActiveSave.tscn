@@ -29,8 +29,10 @@
 [ext_resource type="PackedScene" uid="uid://dam6vsicmpefq" path="res://Assets/Meshes/Gizmo/gizmo.glb" id="17_h3s5b"]
 [ext_resource type="Script" uid="uid://nutgi3n1uf8j" path="res://Scripts/UserInterface/ContextMenus/PlanetMenu.cs" id="17_ue2ba"]
 [ext_resource type="PackedScene" uid="uid://chuuxhnbua61m" path="res://Assets/Prefabs/UI/partmenu_button.tscn" id="19_cuu2x"]
+[ext_resource type="Script" uid="uid://foqxid37ui4r" path="res://Scripts/Graphics/Lighting/LightingManager.cs" id="22_3w3h3"]
 [ext_resource type="StyleBox" uid="uid://cmyfacsvlil8r" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_normal.tres" id="23_2c3fv"]
 [ext_resource type="Script" uid="uid://dshwjlk4h8fed" path="res://Scripts/UserInterface/CraftAssembly/BuildUI.cs" id="23_hx2xn"]
+[ext_resource type="PackedScene" uid="uid://d0ci447d308yk" path="res://Assets/Prefabs/Graphics/c_body_light.tscn" id="23_mbbrb"]
 [ext_resource type="PackedScene" uid="uid://cr52dmkgty470" path="res://Assets/Prefabs/UI/part_selector.tscn" id="23_vd1dx"]
 [ext_resource type="Script" uid="uid://tn3h1s53tlmy" path="res://Scripts/UserInterface/CraftAssembly/PartList.cs" id="24_287u4"]
 [ext_resource type="StyleBox" uid="uid://didwclm676g4f" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_press.tres" id="24_vd1dx"]
@@ -268,9 +270,12 @@ transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
 environment = SubResource("Environment_h3s5b")
 
 [node name="Lights" type="Node" parent="." unique_id=390825035]
+script = ExtResource("22_3w3h3")
+lightPrefab = ExtResource("23_mbbrb")
 
 [node name="TestLight" type="DirectionalLight3D" parent="Lights" unique_id=1622771519]
 transform = Transform3D(0.9396926, -0.2620026, 0.21984634, 0, 0.6427876, 0.76604456, -0.34202012, -0.71984625, 0.60402286, 0, 0, 0)
+visible = false
 layers = 3
 shadow_enabled = true
 shadow_bias = 0.075
