@@ -19,11 +19,7 @@ public partial class ColonyMenu : ContextMenu
 
     public void EnterButtonPressed()
     {
-        FlightCamera.Instance.TargetObject(colonyInQuestion);
-        FlightCamera.Instance.ToggleMapView(false);
-
-        StateManager.Instance.colonyState.activeColony = colonyInQuestion;
-        //FlightCamera.Instance.facingDownObject = colonyInQuestion.parentBody;
+        colonyInQuestion.Enter();
 
         Visible = false;
     }

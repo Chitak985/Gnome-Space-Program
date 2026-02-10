@@ -78,7 +78,7 @@ public partial class FlightCamera : Node3D
         switch (gameState)
         {
             case StateManager.GameState.Flight:
-                facingDownObject = StateManager.Instance.flightState.activeCraft.orbit.parent;
+                facingDownObject = StateManager.Instance.flightState.activeCraft.Orbit.parent;
                 break;
             case StateManager.GameState.Colony:
                 Colony colony = StateManager.Instance.colonyState.activeColony;

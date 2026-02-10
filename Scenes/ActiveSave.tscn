@@ -72,7 +72,6 @@ stateManager = NodePath("StateManager")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
 mapSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/MapView")
-timeSpeed = 1000.0
 
 [node name="StateManager" type="Node" parent="." unique_id=2074004250]
 script = ExtResource("2_wsyj0")
@@ -223,6 +222,9 @@ Camera = NodePath("../Camera3D")
 Planets = NodePath("Planets")
 
 [node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace" unique_id=643920472]
+
+[node name="gizmo" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Planets" unique_id=1125069302 instance=ExtResource("17_h3s5b")]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
 
 [node name="PlanetSystem" type="Node3D" parent="." unique_id=13215807 node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace")]
 script = ExtResource("1_pocjb")

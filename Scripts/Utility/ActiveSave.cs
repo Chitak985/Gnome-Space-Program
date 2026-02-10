@@ -89,14 +89,7 @@ public partial class ActiveSave : Node3D
             if (colony.initialBase)
 			{
                 Logger.Print($"{classTag} Loading into default colony '{colony.name}'");
-                stateManager.colonyState.activeColony = colony;
-
-                // Activate rotating reference frame (maybe not here..??)
-                RealityTangler.Instance.SwitchReferenceFrame(colony.parentBody);
-
-                // Camera refactor incoming; fix this spaghetti asap
-                FlightCamera.Instance.TargetObject(colony);
-                FlightCamera.Instance.ToggleMapView(false);
+                colony.Enter();
                 break;
             }
 		}

@@ -67,4 +67,17 @@ public partial class Colony : Node3D
         }
         return parts;
     }
+
+    // Wrangles control of the game and "enters" the colony
+    public void Enter()
+    {
+        StateManager.Instance.colonyState.activeColony = this;
+
+        // Wrangle the reference frame
+        RealityTangler.Instance.SwitchReferenceFrame(parentBody);
+
+        // Camera refactor incoming; fix this spaghetti asap
+        FlightCamera.Instance.TargetObject(this);
+        FlightCamera.Instance.ToggleMapView(false);
+    }
 }

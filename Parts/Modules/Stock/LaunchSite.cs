@@ -36,6 +36,8 @@ public partial class LaunchSite : PartModule
 
         craft.GlobalPosition = spawnNode.GlobalPosition;
 
+        craft.Initialize();
+
         // We can not focus on the craft and stay in the editor if we absolutely want to
         if (focus)
         {

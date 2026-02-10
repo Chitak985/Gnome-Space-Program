@@ -283,7 +283,7 @@ public partial class Conics : Node
                         // Convert to double3 to use its weird coordinate switching function and back.
                         // I hate this. -R
                         // GetPosYUp should be eliminated... soon.
-                        if (location.position.DistanceTo(GetPosYUp(cBody.cartesianData.position)) < cBodySOI)
+                        if (location.position.DistanceTo(cBody.cartesianData.position) < cBodySOI)
                         {
                             return (cBody, location.position - GetPosYUp(cBody.cartesianData.position));
                         }

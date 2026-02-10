@@ -57,8 +57,6 @@ public partial class RealityTangler : Node
     {
         EmitSignal(SignalName.OrbitProcess);
 
-        UpdateRotatingFrame();
-
         switch (StateManager.Instance.gameState)
         {
             case StateManager.GameState.Flight:
@@ -81,7 +79,7 @@ public partial class RealityTangler : Node
                     Colony colony = StateManager.Instance.colonyState.activeColony;
                     CelestialBody cBody = colony.parentBody;
 
-                    Vector3 addedPosition = cBody.cartesianData.position + colony.position;
+                    Vector3 addedPosition = cBody.cartesianData.position;// + colony.position;
 
                     originOffset = -addedPosition;
                     
@@ -97,6 +95,8 @@ public partial class RealityTangler : Node
         EmitSignal(SignalName.ScaledProcess);
 
         OrbitRendererManager.Instance.UpdateOrbitRenderers();
+
+        UpdateRotatingFrame();
 
         //foreach (CelestialBody cBody in PlanetSystem.Instance.celestialBodies)
         //{

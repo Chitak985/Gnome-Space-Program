@@ -81,10 +81,6 @@ public partial class CelestialBody : Node3D
         // Uh
         originPos = cartesianData.position + RealityTangler.Instance.originOffset;
 
-        // Modify originPos such that the active planet is at the world origin
-        //if (ActiveSave.Instance.activePlanet != null)
-        //    originPos -= ActiveSave.Instance.activePlanet.cartesianData.position;
-
         Position = originPos;
 
         //Logger.Print($"{name} {Position}");
@@ -102,22 +98,20 @@ public partial class CelestialBody : Node3D
             Basis = Basis.FromEuler(new Vector3(0, rot, 0))
         };
 
+        // Update cached trash
+        cachedTransform.Basis = pivot.Transform.Basis * trans.Basis;
+
+        //Logger.Print(this);
+        //Logger.Print((PlanetSystem.Instance.localSpacePlanets.Transform.Basis * cachedTransform.Basis).GetEuler());
+        //Logger.Print(gimbal.GlobalTransform.Basis.GetEuler());
+
         // Don't rotate if we're the active reference frame
         if (RealityTangler.Instance.activeReferenceFrame != this)
         {
             gimbal.Transform = trans;
+            scaledObject.Rotation = gimbal.GlobalTransform.Basis.GetEuler();
         }else{
-            gimbal.GlobalRotation = Vector3.Zero;           
-        }
-
-        // Update cached trash
-        cachedTransform.Basis = pivot.Transform.Basis * trans.Basis;
-
-        // Update scaled mesh rotation because we'll only be seeing celestial bodies rotate anyways (though maybe change this in the future?)
-        if (RealityTangler.Instance.activeReferenceFrame != this)
-        {
-            scaledObject.Rotation = cachedTransform.Basis.GetEuler();
-        }else{
+            gimbal.GlobalRotation = Vector3.Zero;
             scaledObject.Rotation = Vector3.Zero;
         }
     }

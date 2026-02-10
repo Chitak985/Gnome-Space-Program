@@ -10,11 +10,11 @@
   "rotation": {
 	"initial": 0,
 	"period": 1000,
-	"tilt": [0, 0, 2],
+	"tilt": [0, 0, 45],
   },
   "orbit": {
 	"parent": "Gnobe",
-	"semiMajorAxis": 38439900,
+	"semiMajorAxis": 684399,
 	"inclination": 0,
 	"eccentricity": 0.0549,
 	"argumentOfPeriapsis": 021,

@@ -14,27 +14,35 @@ public partial class Craft : Node3D
     public Part centralPart; // The absolute root of the craft, what we orient around
     public List<Part> loadedParts = [];
 
-    public Orbit orbit;
-    public CartesianData cartesianData;
+    public Orbit Orbit;
+
+    // We don't use CartesianData here. It sucks. Stop using it.
+    public Vector3 rotatingPosition; // Cartesian position relative to the parent cBody's rotating reference frame
+    public Vector3 universalPosition; // Absolute position
+    public Vector3 rotatingVelocity;
+    public Vector3 universalVelocity;
 
     public bool Anchored { get; private set; }
 
     public override void _PhysicsProcess(double delta)
     {
         // Loop over every part and apply a force towards the planet
-        foreach (Part part in loadedParts)
+        if (Orbit.parent != null)
         {
-            CelestialBody currentCBody = orbit.cBody; // Replace this later PLEAAASEEE AHHH
+            foreach (Part part in loadedParts)
+            {
+                CelestialBody currentCBody = Orbit.parent;
 
-            Vector3 center = currentCBody.GlobalPosition;
-            Vector3 direction = part.GlobalPosition.DirectionTo(center);
+                Vector3 center = currentCBody.GlobalPosition;
+                Vector3 direction = part.GlobalPosition.DirectionTo(center);
 
-            double distance = (center - part.GlobalPosition).Length();
-            double planetMass = currentCBody.mass;
+                double distance = (center - part.GlobalPosition).Length();
+                double planetMass = currentCBody.mass;
 
-            double force = Conics.GravConstant * (planetMass * part.Mass / Mathf.Pow(distance, 2));
+                double force = Conics.GravConstant * (planetMass * part.Mass / Mathf.Pow(distance, 2));
 
-            part.ApplyCentralForce(force*direction);
+                part.ApplyCentralForce(force*direction);
+            }
         }
     }
 
@@ -50,8 +58,7 @@ public partial class Craft : Node3D
     // Creates stuff like the orbit and whatnot
     public void Initialize()
     {
-        orbit = new();
-        cartesianData = new();
+        Orbit = new();
     }
 
     // Hiujjj??
@@ -116,6 +123,8 @@ public partial class Craft : Node3D
     {
         StateManager.Instance.flightState.activeCraft = this;
         FlightCamera.Instance.TargetObject(this);
+
+        RealityTangler.Instance.SwitchReferenceFrame();
     }
 
     public void ResetOrigin()

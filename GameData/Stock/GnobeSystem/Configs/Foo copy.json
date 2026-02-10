@@ -1,44 +1,41 @@
 {
   "configType": "cBody",
   "properties": {
-	"name": "Gnobe",
+	"name": "PISS",
 	"focusOnload": true,
-	"geeASL": 1,
-	"radius": 600000,
+	"geeASL": 0.1654,
+	"radius": 173750,
 	"inverseRotAltitude": 100000
   },
   "rotation": {
 	"initial": 0,
-	"period": 36000,
-	"tilt": [0, 0, 20],
+	"period": 1000,
+	"tilt": [0, 0, 45],
   },
   "orbit": {
-	"parent": "Sun",
-	"semiMajorAxis": 14959800320,
+	"parent": "Gnobe",
+	"semiMajorAxis": 6843990,
 	"inclination": 0,
-	"eccentricity": 0.0167086,
-	"argumentOfPeriapsis": 325,
+	"eccentricity": 0.0549,
+	"argumentOfPeriapsis": 021,
 	"longitudeOfAscendingNode": 0,
 	"trueAnomalyAtEpoch": 0
-  },
-  "ocean": {
-	"radius": 600000
   },
   "pqs": {
 	"pqsMods": [
 	  {
 		"mod": "fastNoise3D",
-		"type": "perlin",
+		"type": "cellular",
 		"seed": 0,
 		"noiseOffset": [0,0,0],
-		"deformity": 12000,
-		"offset": -6000,
-		"frequency": 2810,
+		"deformity": 6000,
+		"offset": 0,
+		"frequency": 4000,
 		"fractal": {
-		  "type": "pingPong",
+		  "type": "fbm",
 		  "octaves": 10,
 		  "lacunarity": 2,
-		  "gain": 0.5,
+		  "gain": 0.25,
 		  "weightedStrength": 0,
 		  "pingPongParams": {
 			"pingPongStrength": 2
