@@ -3,13 +3,13 @@ using System;
 
 public partial class ResizeHandle : Button
 {
-    [Export] public Control target;
     [Export] public Vector2 direction = new(0,1);
-    bool mouseInWindow = false;
-    bool dragging = false;
-    Vector2 offset;
-    Vector2 sizeOffset;
-    Vector2 posOffset;
+    [Export] public Control target;
+    private bool mouseInWindow = false;
+    private bool dragging = false;
+    private Vector2 offset;
+    private Vector2 sizeOffset;
+    private Vector2 posOffset;
 
     public override void _Ready()
     {

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class CBodyLight : Node3D
 {
@@ -14,23 +15,17 @@ public partial class CBodyLight : Node3D
     public void Create(CelestialBody cBody)
     {
         this.cBody = cBody;
+
+        mapLight.GetParent().RemoveChild(mapLight);
+        MapView.Instance.AddChild(mapLight);
     }
 
     public void UpdateLight()
     {
         if (cBody != null)
         {
-            // Control lights depending on if we're in map or local
-            if (FlightCamera.Instance.inMap)
-            {
-                mapLight.Visible = true;
-                localLight.Visible = false;
-                mapLight.LookAtFromPosition(cBody.mapObject.GlobalPosition, FlightCamera.Instance.GlobalPosition);
-            }else{
-                mapLight.Visible = false;
-                localLight.Visible = true;
-                localLight.LookAtFromPosition(cBody.GlobalPosition, FlightCamera.Instance.GlobalPosition);
-            }
+            mapLight.LookAtFromPosition(cBody.mapObject.GlobalPosition, FlightCamera.Instance.GlobalPosition);
+            localLight.LookAtFromPosition(cBody.GlobalPosition, FlightCamera.Instance.GlobalPosition);
         }
 
         localLight.LightEnergy = brightness;

@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://crssbseia2fkb" path="res://Scripts/PlanetarySystem/MapView.cs" id="8_h4qns"]
 [ext_resource type="PackedScene" uid="uid://bw23jl4jvv55y" path="res://Assets/Prefabs/UI/colony_icon.tscn" id="9_gusxr"]
 [ext_resource type="Script" uid="uid://ciw1nydyx82x6" path="res://Scripts/PlanetarySystem/LocalSpace.cs" id="10_5brss"]
+[ext_resource type="Script" uid="uid://fbpdjag2kcfi" path="res://Scripts/CameraControl/MapCamera.cs" id="12_ou012"]
 [ext_resource type="Script" uid="uid://djpke18bqs2nu" path="res://Scripts/Abominations/RealityTangler.cs" id="13_sfn14"]
 [ext_resource type="Script" uid="uid://byojjoj3wpnpd" path="res://Scripts/UserInterface/MapUI.cs" id="14_23wpb"]
 [ext_resource type="Script" uid="uid://cyombaxie5vkw" path="res://Scripts/Utility/BuildingManager.cs" id="14_uc177"]
@@ -38,7 +39,7 @@
 [ext_resource type="StyleBox" uid="uid://didwclm676g4f" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_press.tres" id="24_vd1dx"]
 [ext_resource type="PackedScene" uid="uid://f72it1x2go4q" path="res://Assets/Prefabs/UI/part_category.tscn" id="25_51qm0"]
 [ext_resource type="StyleBox" uid="uid://d2x1glka2wnkb" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_hover.tres" id="25_hx2xn"]
-[ext_resource type="Script" uid="uid://drlfgjufqytvn" path="res://Scripts/UserInterface/ResizeHandle.cs" id="26_287u4"]
+[ext_resource type="Script" uid="uid://drlfgjufqytvn" path="res://Scripts/UserInterface/Windows/ResizeHandle.cs" id="26_287u4"]
 [ext_resource type="PackedScene" uid="uid://4gm81i1keb5p" path="res://Assets/Prefabs/UI/part_cat_button.tscn" id="30_d1dok"]
 [ext_resource type="Texture2D" uid="uid://bxe8uo40enbck" path="res://Assets/Textures/UserInterface/Buttons/allIcon.svg" id="32_nej1p"]
 [ext_resource type="Texture2D" uid="uid://6gd5l8bljd83" path="res://Assets/Textures/UserInterface/Buttons/launchbutton.svg" id="33_8ed1a"]
@@ -48,6 +49,8 @@
 [ext_resource type="Script" uid="uid://bxldarynbrqxw" path="res://Scripts/UserInterface/ContextMenus/LaunchsiteMenu.cs" id="37_7j3xb"]
 [ext_resource type="Script" uid="uid://dsqu0fmvb11d6" path="res://Scripts/UserInterface/ButtonHandlers/BuildModeExit.cs" id="38_a66g2"]
 [ext_resource type="Texture2D" uid="uid://3e0eh5stlfej" path="res://Assets/Textures/UserInterface/Buttons/exitIcon.svg" id="38_byrdn"]
+[ext_resource type="Script" uid="uid://drrsx2qsfqgck" path="res://Scripts/UserInterface/Windows/DraggablePanel.cs" id="49_oe5si"]
+[ext_resource type="PackedScene" uid="uid://bwoopux77w7qj" path="res://Assets/Prefabs/UI/Components/resize_handles.tscn" id="52_mtnyg"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_h4qns"]
 material = ExtResource("3_sfn14")
@@ -71,7 +74,7 @@ flightCam = NodePath("FlightCamera")
 stateManager = NodePath("StateManager")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
-mapSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/MapView")
+mapSpace = NodePath("ViewportWindows/Map/MapContainer/MapVP/MapView")
 
 [node name="StateManager" type="Node" parent="." unique_id=2074004250]
 script = ExtResource("2_wsyj0")
@@ -81,16 +84,19 @@ process_priority = 100
 script = ExtResource("13_sfn14")
 originResetThreshold = 10000000.0
 
-[node name="FlightCamera" type="Node3D" parent="." unique_id=1009889495 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "camNode")]
+[node name="FlightCamera" type="Node3D" parent="." unique_id=1009889495 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
 script = ExtResource("6_0mdm0")
 multiplyScroll = true
 lerpSpeed = 10.0
 rotationAmnt = 0.5
-rotNode_Y = NodePath("Cam_Rot_Y")
-rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
-camNode = NodePath("Cam_Rot_Y/Cam_Rot_X/RemoteCams")
 zoomAmnt = 1.1
 zoom = 2.0
+rotNode_Y = NodePath("Cam_Rot_Y")
+rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
+CamNode = NodePath("Cam_Rot_Y/Cam_Rot_X/RemoteCams")
+dragCam = &"secondary_interaction"
+zoomIn = &"zoom_in"
+zoomOut = &"zoom_out"
 
 [node name="Cam_Rot_Y" type="Node3D" parent="FlightCamera" unique_id=1913721891]
 
@@ -107,11 +113,6 @@ remote_path = NodePath("../../../../../RenderLayers/ScaledContainer/ScaledView/C
 
 [node name="Background" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=1245192473]
 remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Camera3D")
-
-[node name="Skybox" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=177117427]
-remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Background/Sky")
-update_rotation = false
-update_scale = false
 
 [node name="RenderLayers" type="Control" parent="." unique_id=980932977]
 z_index = -5
@@ -148,8 +149,10 @@ cull_mask = 1047556
 fov = 90.0
 far = 100000000000000.02
 
-[node name="Background" type="Node3D" parent="RenderLayers/BackgroundContainer/BackgView" unique_id=1513898732]
+[node name="Background" type="Node3D" parent="RenderLayers/BackgroundContainer/BackgView" unique_id=1513898732 node_paths=PackedStringArray("positionTarget", "rotationTarget")]
 script = ExtResource("5_t2n2o")
+positionTarget = NodePath("../../../../FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams")
+rotationTarget = NodePath("../../../LocalContainer/LocalView/LocalSpace/Planets")
 
 [node name="Sky" type="MeshInstance3D" parent="RenderLayers/BackgroundContainer/BackgView/Background" unique_id=470665602]
 transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, 0, 1)
@@ -184,9 +187,6 @@ far = 1e+15
 
 [node name="ScaledSpace" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=1784030288]
 script = ExtResource("5_yxkbd")
-
-[node name="MapView" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=1218422952]
-script = ExtResource("8_h4qns")
 
 [node name="LocalContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=1335764156]
 z_index = 1
@@ -223,8 +223,113 @@ Planets = NodePath("Planets")
 
 [node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace" unique_id=643920472]
 
-[node name="gizmo" parent="RenderLayers/LocalContainer/LocalView/LocalSpace/Planets" unique_id=1125069302 instance=ExtResource("17_h3s5b")]
-transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+[node name="ViewportWindows" type="Control" parent="." unique_id=1216988180]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Map" type="Panel" parent="ViewportWindows" unique_id=1962789458]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 6
+script = ExtResource("49_oe5si")
+
+[node name="MapBG" type="SubViewportContainer" parent="ViewportWindows/Map" unique_id=1294685399]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="BackgView" type="SubViewport" parent="ViewportWindows/Map/MapBG" unique_id=46156870]
+transparent_bg = true
+handle_input_locally = false
+msaa_3d = 2
+screen_space_aa = 1
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="ViewportWindows/Map/MapBG/BackgView" unique_id=63100413]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+cull_mask = 1047556
+fov = 90.0
+far = 100000000000000.02
+
+[node name="Background" type="Node3D" parent="ViewportWindows/Map/MapBG/BackgView" unique_id=343312637 node_paths=PackedStringArray("positionTarget", "rotationTarget")]
+script = ExtResource("5_t2n2o")
+positionTarget = NodePath("../../../MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y/Cam_Rot_X/Camera3D")
+rotationTarget = NodePath("../../../MapContainer/MapVP/MapView")
+
+[node name="Sky" type="MeshInstance3D" parent="ViewportWindows/Map/MapBG/BackgView/Background" unique_id=941449535]
+transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, 0, 1)
+layers = 4
+mesh = SubResource("SphereMesh_h4qns")
+skeleton = NodePath("../../../../../Miscellaneous/gizmo")
+
+[node name="MapContainer" type="SubViewportContainer" parent="ViewportWindows/Map" unique_id=144351039]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="MapVP" type="SubViewport" parent="ViewportWindows/Map/MapContainer" unique_id=2039008767]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1582826098]
+environment = SubResource("Environment_h3s5b")
+
+[node name="MapView" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1218422952 node_paths=PackedStringArray("UIContainer", "mapCamera")]
+script = ExtResource("8_h4qns")
+UIContainer = NodePath("../../..")
+openMapEvent = &"map_view"
+mapCamera = NodePath("MapCamera")
+
+[node name="MapCamera" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView" unique_id=1320007421 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
+script = ExtResource("12_ou012")
+multiplyScroll = true
+lerpSpeed = 10.0
+rotationAmnt = 0.5
+zoomAmnt = 1.1
+zoom = 2.0
+maxZoom = 10000.0
+rotNode_Y = NodePath("Cam_Rot_Y")
+rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
+CamNode = NodePath("Cam_Rot_Y/Cam_Rot_X/Camera3D")
+dragCam = &"secondary_interaction"
+zoomIn = &"zoom_in"
+zoomOut = &"zoom_out"
+
+[node name="Cam_Rot_Y" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera" unique_id=1209681140]
+
+[node name="Cam_Rot_X" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y" unique_id=1492844660]
+
+[node name="Camera3D" type="Camera3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y/Cam_Rot_X" unique_id=1532995661]
+
+[node name="Background" type="RemoteTransform3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y/Cam_Rot_X/Camera3D" unique_id=484639160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+remote_path = NodePath("../../../../../../../../MapBG/BackgView/Camera3D")
+
+[node name="ResizeHandles" parent="ViewportWindows/Map" unique_id=365995451 instance=ExtResource("52_mtnyg")]
+layout_mode = 1
 
 [node name="PlanetSystem" type="Node3D" parent="." unique_id=13215807 node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace")]
 script = ExtResource("1_pocjb")

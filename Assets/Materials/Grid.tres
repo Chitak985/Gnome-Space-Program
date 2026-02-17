@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://itxwt6f7xxmm"]
+
+[ext_resource type="Shader" uid="uid://dy8bf57b5l45m" path="res://Assets/Shaders/Grid.gdshader" id="1_7ij23"]
+[ext_resource type="Texture2D" uid="uid://cdanr8sbglduq" path="res://Assets/Textures/grid.png" id="2_n5fcn"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_7ij23")
+shader_parameter/grid_tex = ExtResource("2_n5fcn")
+shader_parameter/scale_mult = 1000.0

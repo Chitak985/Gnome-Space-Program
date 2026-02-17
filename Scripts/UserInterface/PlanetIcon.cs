@@ -13,7 +13,7 @@ public partial class PlanetIcon : MapIcon
     public override void _Pressed()
     {
         FlightCamera flightCam = FlightCamera.Instance;
-        flightCam.TargetObject(planet);
+        //flightCam.TargetObject(planet);
 
         Godot.Collections.Dictionary info = new()
         {

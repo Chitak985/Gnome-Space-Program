@@ -122,7 +122,7 @@ public partial class Craft : Node3D
     public void SnatchFocus()
     {
         StateManager.Instance.flightState.activeCraft = this;
-        FlightCamera.Instance.TargetObject(this);
+        FlightCamera.Instance.TargetObject(this, 100, 1, 10000);
 
         RealityTangler.Instance.SwitchReferenceFrame();
     }

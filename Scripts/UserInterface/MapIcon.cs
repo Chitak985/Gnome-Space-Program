@@ -26,6 +26,6 @@ public partial class MapIcon : TextureButton
     public override void _Pressed()
     {
         FlightCamera flightCam = FlightCamera.Instance;
-        flightCam.TargetObject(thing, new Vector3(1, float.PositiveInfinity, 2), true); //thing.Scale.Z * 1.25f, thing.Scale.Z * 2f);
+        //flightCam.TargetObject(thing, new Vector3(1, float.PositiveInfinity, 2), true); //thing.Scale.Z * 1.25f, thing.Scale.Z * 2f);
     }
 }

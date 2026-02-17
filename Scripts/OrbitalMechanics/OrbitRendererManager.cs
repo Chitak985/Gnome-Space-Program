@@ -20,6 +20,7 @@ public partial class OrbitRendererManager : Node
         foreach (OrbitRenderer renderer in orbitRenderers)
         {
             renderer.Update();
+            renderer.Visible = false; // Just hide them for now
         }
     }
 

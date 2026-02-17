@@ -178,12 +178,11 @@ public partial class BuildingManager : Node
         floatingPartContainer.GlobalTransform = module.vab.GlobalTransform;
 
         // Reposition cam
-        FlightCamera.Instance.TargetObject(module.camPivot, new Vector3(0.1f, maxZoom, targetZoom), false);
+        FlightCamera.Instance.TargetObject(module.camPivot, 100, 1, 10000);
         editorMode = EditorMode.Static;
 
-        // Disable map view while in flight
-        FlightCamera.Instance.ToggleMapView(false);
-        FlightCamera.Instance.canEnterMap = false;
+        // Disable map view
+        MapView.Instance.ToggleMap(false);
 
         // Close Part Menus
         PartMenuHandler.Instance.contextMenus.OpenMenu("", [], true);
@@ -200,7 +199,6 @@ public partial class BuildingManager : Node
         PartMenuHandler.Instance.contextMenus.OpenMenu("", [], true);
 
         // Misc
-        FlightCamera.Instance.canEnterMap = true;
         editorMode = EditorMode.None;
 
         // Return focus to the parent craft / colony IF WE WANT TO
@@ -208,7 +206,7 @@ public partial class BuildingManager : Node
         {
             if (activeThing is Colony colony)
             {
-                FlightCamera.Instance.TargetObject(colony);
+                colony.Enter();
             }
         }
     }

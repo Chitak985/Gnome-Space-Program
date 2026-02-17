@@ -38,9 +38,9 @@ public partial class ScaledSpace : Node3D
             if (node is ScaledObject scaledObject)
             {
                 Vector3 objPos = scaledObject.truePosition;
-                Vector3 camDir = objPos.DirectionTo(FlightCamera.Instance.camNode.GlobalPosition);
+                Vector3 camDir = objPos.DirectionTo(FlightCamera.Instance.CamNode.GlobalPosition);
 
-                double magnitude = (objPos - FlightCamera.Instance.camNode.GlobalPosition).Length();
+                double magnitude = (objPos - FlightCamera.Instance.CamNode.GlobalPosition).Length();
 
                 scaledObject.GlobalPosition = objPos + camDir * (magnitude/(1+(MoveForward/1000f)));// + offsetPosition;
                 scaledObject.Scale = scaledObject.originalScale / ScaleFactor;
