@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxe8uo40enbck"
-path="res://.godot/imported/allIcon.svg-1976f873aa537df8f427663df9dd20c0.ctex"
+uid="uid://3e0eh5stlfej"
+path="res://.godot/imported/exitIcon.svg-262a4cf5bc3974d6eb172bf972d3459f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/UserInterface/Buttons/allIcon.svg"
-dest_files=["res://.godot/imported/allIcon.svg-1976f873aa537df8f427663df9dd20c0.ctex"]
+source_file="res://Assets/Textures/UserInterface/CraftEditor/Buttons/exitIcon.svg"
+dest_files=["res://.godot/imported/exitIcon.svg-262a4cf5bc3974d6eb172bf972d3459f.ctex"]
 
 [params]
 

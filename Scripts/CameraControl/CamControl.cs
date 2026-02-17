@@ -60,7 +60,7 @@ public partial class CamControl : Node3D
         this.maxZoom = maxZoom;
     }
 
-    public override void _Input(InputEvent @event)
+    public override void _UnhandledInput(InputEvent @event)
     {
         if (@event.IsActionPressed(dragCam))
         {
@@ -91,6 +91,7 @@ public partial class CamControl : Node3D
                 if(canZoom) zoom += zoomAmnt;
             }
         }
+    
 
         if (@event is InputEventMouseMotion motion && camRotating == true)
         {

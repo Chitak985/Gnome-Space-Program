@@ -3,6 +3,7 @@ using System;
 
 public partial class DraggablePanel : Panel
 {
+    [Export] public bool draggable = true;
     bool mouseInWindow = false;
     bool dragging = false;
     Vector2 offset;
@@ -15,20 +16,23 @@ public partial class DraggablePanel : Panel
 
     public void GuiEvent(InputEvent inpEvent)
     {
-        if (inpEvent is InputEventMouseButton buttonEvent)
+        if (draggable)
         {
-            if (buttonEvent.ButtonIndex == MouseButton.Left)
+            if (inpEvent is InputEventMouseButton buttonEvent)
             {
-                if (buttonEvent.Pressed)
+                if (buttonEvent.ButtonIndex == MouseButton.Left)
                 {
-                    dragging = true;
-                    offset = GetGlobalMousePosition() - GlobalPosition;
-                }else{
-                    dragging = false;
+                    if (buttonEvent.Pressed)
+                    {
+                        dragging = true;
+                        offset = GetGlobalMousePosition() - GlobalPosition;
+                    }else{
+                        dragging = false;
+                    }
                 }
+            }else if (inpEvent is InputEventMouseMotion && dragging){
+                GlobalPosition = GetGlobalMousePosition() - offset;
             }
-        }else if (inpEvent is InputEventMouseMotion && dragging){
-            GlobalPosition = GetGlobalMousePosition() - offset;
         }
     }
 }

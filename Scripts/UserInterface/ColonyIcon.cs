@@ -27,6 +27,6 @@ public partial class ColonyIcon : MapIcon
             { "colony", colony }
         };
 
-        MapUI.Instance.contextMenus.OpenMenu("ColonyMenu", info, true);
+        MapView.Instance.mapUI.contextMenus.OpenMenu("ColonyMenu", info, true);
     }
 }

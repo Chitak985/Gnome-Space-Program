@@ -20,6 +20,6 @@ public partial class PlanetIcon : MapIcon
             { "planet", planet }
         };
 
-        MapUI.Instance.contextMenus.OpenMenu("PlanetMenu", info, true);
+        MapView.Instance.mapUI.contextMenus.OpenMenu("PlanetMenu", info, true);
     }
 }

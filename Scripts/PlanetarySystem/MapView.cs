@@ -14,6 +14,7 @@ public partial class MapView : Node3D
     [Export] public bool InMap { get; private set; }
     [Export] public bool canEnterMap = true;
     [Export] public MapCamera mapCamera;
+    [Export] public MapUI mapUI;
 
     public override void _Ready()
     {
@@ -27,7 +28,7 @@ public partial class MapView : Node3D
         {
             if (node is MapObject mapObject)
             {
-                Node3D camObject = FlightCamera.Instance.target;
+                Node3D camObject = mapCamera.target;
                 Vector3 focusObjectPos = Vector3.Zero;
 
                 if (camObject is MapObject mapObj)
@@ -36,7 +37,6 @@ public partial class MapView : Node3D
 
                     if (mapObj.counterpart is Colony colonyObj)
                     {
-                        
                         focusObjectPos = colonyObj.parentBody.mapObject.truePosition;
                     }
                 }

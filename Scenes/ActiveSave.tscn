@@ -5,9 +5,7 @@
 [ext_resource type="CameraAttributesPractical" uid="uid://cyf8gikvidq0w" path="res://Assets/Misc/CamAttributes.tres" id="2_cbqy2"]
 [ext_resource type="Script" uid="uid://dcgkvx650oopr" path="res://Scripts/Utility/StateManager.cs" id="2_wsyj0"]
 [ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
-[ext_resource type="Material" uid="uid://bgcp3j11mrprb" path="res://Assets/Materials/Background.tres" id="3_sfn14"]
 [ext_resource type="PackedScene" uid="uid://dt3jn2nr8pm3l" path="res://Assets/Prefabs/UI/planet_icon.tscn" id="4_yxkbd"]
-[ext_resource type="Script" uid="uid://gbltyyg72i1c" path="res://Scripts/PlanetarySystem/Background.cs" id="5_t2n2o"]
 [ext_resource type="Script" uid="uid://qcplqipy8mmr" path="res://Scripts/PlanetarySystem/ScaledSpace.cs" id="5_yxkbd"]
 [ext_resource type="Script" uid="uid://ve83kys7a48x" path="res://Scripts/CameraControl/FlightCamera.cs" id="6_0mdm0"]
 [ext_resource type="Script" uid="uid://chvjvd0id2y27" path="res://Scripts/CraftAssembly/Parts/PartManager.cs" id="6_2c3j4"]
@@ -41,29 +39,25 @@
 [ext_resource type="StyleBox" uid="uid://d2x1glka2wnkb" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_hover.tres" id="25_hx2xn"]
 [ext_resource type="Script" uid="uid://drlfgjufqytvn" path="res://Scripts/UserInterface/Windows/ResizeHandle.cs" id="26_287u4"]
 [ext_resource type="PackedScene" uid="uid://4gm81i1keb5p" path="res://Assets/Prefabs/UI/part_cat_button.tscn" id="30_d1dok"]
-[ext_resource type="Texture2D" uid="uid://bxe8uo40enbck" path="res://Assets/Textures/UserInterface/Buttons/allIcon.svg" id="32_nej1p"]
-[ext_resource type="Texture2D" uid="uid://6gd5l8bljd83" path="res://Assets/Textures/UserInterface/Buttons/launchbutton.svg" id="33_8ed1a"]
+[ext_resource type="Texture2D" uid="uid://bxe8uo40enbck" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/allIcon.svg" id="32_nej1p"]
+[ext_resource type="Texture2D" uid="uid://6gd5l8bljd83" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/launchbutton.svg" id="33_8ed1a"]
 [ext_resource type="Script" uid="uid://dt2716mcyojap" path="res://Scripts/UserInterface/ButtonHandlers/BuildModeLaunchMenu.cs" id="33_yged2"]
 [ext_resource type="Script" uid="uid://0n7uvn3scbtd" path="res://Scripts/UserInterface/ButtonHandlers/BuildModeClear.cs" id="35_p24xc"]
-[ext_resource type="Texture2D" uid="uid://xp6y4oqgn2ko" path="res://Assets/Textures/UserInterface/Buttons/clearicon.svg" id="36_7j3xb"]
+[ext_resource type="Texture2D" uid="uid://xp6y4oqgn2ko" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/clearicon.svg" id="36_7j3xb"]
 [ext_resource type="Script" uid="uid://bxldarynbrqxw" path="res://Scripts/UserInterface/ContextMenus/LaunchsiteMenu.cs" id="37_7j3xb"]
 [ext_resource type="Script" uid="uid://dsqu0fmvb11d6" path="res://Scripts/UserInterface/ButtonHandlers/BuildModeExit.cs" id="38_a66g2"]
-[ext_resource type="Texture2D" uid="uid://3e0eh5stlfej" path="res://Assets/Textures/UserInterface/Buttons/exitIcon.svg" id="38_byrdn"]
+[ext_resource type="Texture2D" uid="uid://3e0eh5stlfej" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/exitIcon.svg" id="38_byrdn"]
 [ext_resource type="Script" uid="uid://drrsx2qsfqgck" path="res://Scripts/UserInterface/Windows/DraggablePanel.cs" id="49_oe5si"]
 [ext_resource type="PackedScene" uid="uid://bwoopux77w7qj" path="res://Assets/Prefabs/UI/Components/resize_handles.tscn" id="52_mtnyg"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_h4qns"]
-material = ExtResource("3_sfn14")
-flip_faces = true
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p24xc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
 
 [sub_resource type="Environment" id="Environment_h3s5b"]
 background_mode = 1
 ssao_radius = 14.58
 ssao_intensity = 16.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p24xc"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
 
 [node name="ActiveSave" type="Node3D" unique_id=1641581012 node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "stateManager", "localSpace", "scaledSpace", "mapSpace")]
 script = ExtResource("1_2c3j4")
@@ -111,9 +105,6 @@ remote_path = NodePath("../../../../../RenderLayers/LocalContainer/LocalView/Cam
 [node name="Scaled" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=1061326743]
 remote_path = NodePath("../../../../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
 
-[node name="Background" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=1245192473]
-remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Camera3D")
-
 [node name="RenderLayers" type="Control" parent="." unique_id=980932977]
 z_index = -5
 texture_filter = 1
@@ -124,41 +115,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="BackgroundContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=845648237]
-z_index = -1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch = true
-
-[node name="BackgView" type="SubViewport" parent="RenderLayers/BackgroundContainer" unique_id=131666149]
-transparent_bg = true
-handle_input_locally = false
-msaa_3d = 2
-screen_space_aa = 1
-size = Vector2i(1920, 1080)
-render_target_update_mode = 4
-
-[node name="Camera3D" type="Camera3D" parent="RenderLayers/BackgroundContainer/BackgView" unique_id=1463558889]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
-cull_mask = 1047556
-fov = 90.0
-far = 100000000000000.02
-
-[node name="Background" type="Node3D" parent="RenderLayers/BackgroundContainer/BackgView" unique_id=1513898732 node_paths=PackedStringArray("positionTarget", "rotationTarget")]
-script = ExtResource("5_t2n2o")
-positionTarget = NodePath("../../../../FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams")
-rotationTarget = NodePath("../../../LocalContainer/LocalView/LocalSpace/Planets")
-
-[node name="Sky" type="MeshInstance3D" parent="RenderLayers/BackgroundContainer/BackgView/Background" unique_id=470665602]
-transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, 0, 1)
-layers = 4
-mesh = SubResource("SphereMesh_h4qns")
-skeleton = NodePath("../../../../../Miscellaneous/gizmo")
 
 [node name="ScaledContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=672276359]
 layout_mode = 1
@@ -223,174 +179,6 @@ Planets = NodePath("Planets")
 
 [node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace" unique_id=643920472]
 
-[node name="ViewportWindows" type="Control" parent="." unique_id=1216988180]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="Map" type="Panel" parent="ViewportWindows" unique_id=1962789458]
-custom_minimum_size = Vector2(200, 100)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_default_cursor_shape = 6
-script = ExtResource("49_oe5si")
-
-[node name="MapBG" type="SubViewportContainer" parent="ViewportWindows/Map" unique_id=1294685399]
-z_index = -1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch = true
-
-[node name="BackgView" type="SubViewport" parent="ViewportWindows/Map/MapBG" unique_id=46156870]
-transparent_bg = true
-handle_input_locally = false
-msaa_3d = 2
-screen_space_aa = 1
-size = Vector2i(1920, 1080)
-render_target_update_mode = 4
-
-[node name="Camera3D" type="Camera3D" parent="ViewportWindows/Map/MapBG/BackgView" unique_id=63100413]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
-cull_mask = 1047556
-fov = 90.0
-far = 100000000000000.02
-
-[node name="Background" type="Node3D" parent="ViewportWindows/Map/MapBG/BackgView" unique_id=343312637 node_paths=PackedStringArray("positionTarget", "rotationTarget")]
-script = ExtResource("5_t2n2o")
-positionTarget = NodePath("../../../MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y/Cam_Rot_X/Camera3D")
-rotationTarget = NodePath("../../../MapContainer/MapVP/MapView")
-
-[node name="Sky" type="MeshInstance3D" parent="ViewportWindows/Map/MapBG/BackgView/Background" unique_id=941449535]
-transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, 0, 1)
-layers = 4
-mesh = SubResource("SphereMesh_h4qns")
-skeleton = NodePath("../../../../../Miscellaneous/gizmo")
-
-[node name="MapContainer" type="SubViewportContainer" parent="ViewportWindows/Map" unique_id=144351039]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch = true
-
-[node name="MapVP" type="SubViewport" parent="ViewportWindows/Map/MapContainer" unique_id=2039008767]
-own_world_3d = true
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1920, 1080)
-render_target_update_mode = 4
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1582826098]
-environment = SubResource("Environment_h3s5b")
-
-[node name="MapView" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1218422952 node_paths=PackedStringArray("UIContainer", "mapCamera")]
-script = ExtResource("8_h4qns")
-UIContainer = NodePath("../../..")
-openMapEvent = &"map_view"
-mapCamera = NodePath("MapCamera")
-
-[node name="MapCamera" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView" unique_id=1320007421 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
-script = ExtResource("12_ou012")
-multiplyScroll = true
-lerpSpeed = 10.0
-rotationAmnt = 0.5
-zoomAmnt = 1.1
-zoom = 2.0
-maxZoom = 10000.0
-rotNode_Y = NodePath("Cam_Rot_Y")
-rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
-CamNode = NodePath("Cam_Rot_Y/Cam_Rot_X/Camera3D")
-dragCam = &"secondary_interaction"
-zoomIn = &"zoom_in"
-zoomOut = &"zoom_out"
-
-[node name="Cam_Rot_Y" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera" unique_id=1209681140]
-
-[node name="Cam_Rot_X" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y" unique_id=1492844660]
-
-[node name="Camera3D" type="Camera3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y/Cam_Rot_X" unique_id=1532995661]
-
-[node name="Background" type="RemoteTransform3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y/Cam_Rot_X/Camera3D" unique_id=484639160]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
-remote_path = NodePath("../../../../../../../../MapBG/BackgView/Camera3D")
-
-[node name="ResizeHandles" parent="ViewportWindows/Map" unique_id=365995451 instance=ExtResource("52_mtnyg")]
-layout_mode = 1
-
-[node name="PlanetSystem" type="Node3D" parent="." unique_id=13215807 node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace")]
-script = ExtResource("1_pocjb")
-orbitRendererPrefab = ExtResource("3_212tm")
-planetIconPrefab = ExtResource("4_yxkbd")
-planetIcons = NodePath("../UI/MapUI/PlanetIcons")
-localCamera = NodePath("../RenderLayers/LocalContainer/LocalView/Camera3D")
-localSpace = NodePath("../RenderLayers/LocalContainer/LocalView/LocalSpace")
-scaledSpace = NodePath("../RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
-DEBUG_GizmoPrefab = ExtResource("17_h3s5b")
-
-[node name="PartManager" type="Node" parent="." unique_id=1645644584]
-process_priority = 3290
-script = ExtResource("6_2c3j4")
-
-[node name="CraftManager" type="Node" parent="." unique_id=837445787]
-script = ExtResource("6_ijjgm")
-
-[node name="ColonyManager" type="Node" parent="." unique_id=639718792 node_paths=PackedStringArray("iconParent")]
-script = ExtResource("8_gxrxs")
-iconPrefab = ExtResource("9_gusxr")
-iconParent = NodePath("../UI/MapUI/ColonyIcons")
-
-[node name="BuildingManager" type="Node" parent="." unique_id=811713000 node_paths=PackedStringArray("editorPartContainer", "floatingPartContainer", "buildUI")]
-script = ExtResource("14_uc177")
-editorPartContainer = NodePath("EditorParts")
-floatingPartContainer = NodePath("FloatingParts")
-buildUI = NodePath("../UI/BuildUI")
-partMoveSpeed = 42.0
-
-[node name="EditorParts" type="Node3D" parent="BuildingManager" unique_id=923514272]
-
-[node name="FloatingParts" type="Node3D" parent="BuildingManager" unique_id=1573556491]
-
-[node name="OrbitRendererManager" type="Node" parent="." unique_id=1421214884]
-script = ExtResource("15_h7vhn")
-rendererPrefab = ExtResource("16_np084")
-
-[node name="Miscellaneous" type="Node" parent="." unique_id=763652581]
-
-[node name="gizmo" parent="Miscellaneous" unique_id=904981576 instance=ExtResource("17_h3s5b")]
-transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Miscellaneous" unique_id=1060175846]
-environment = SubResource("Environment_h3s5b")
-
-[node name="Lights" type="Node" parent="." unique_id=390825035]
-script = ExtResource("22_3w3h3")
-lightPrefab = ExtResource("23_mbbrb")
-
-[node name="TestLight" type="DirectionalLight3D" parent="Lights" unique_id=1622771519]
-transform = Transform3D(0.9396926, -0.2620026, 0.21984634, 0, 0.6427876, 0.76604456, -0.34202012, -0.71984625, 0.60402286, 0, 0, 0)
-visible = false
-layers = 3
-shadow_enabled = true
-shadow_bias = 0.075
-directional_shadow_split_1 = 0.02
-directional_shadow_split_2 = 0.05
-directional_shadow_split_3 = 0.4
-directional_shadow_max_distance = 8192.0
-
 [node name="UI" type="Control" parent="." unique_id=6163037]
 layout_mode = 3
 anchors_preset = 15
@@ -424,153 +212,6 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("15_ue2ba")
 menus = []
-
-[node name="MapUI" type="Control" parent="UI" unique_id=327474485 node_paths=PackedStringArray("contextMenus")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme = ExtResource("7_yxkbd")
-script = ExtResource("14_23wpb")
-contextMenus = NodePath("ContextMenus")
-
-[node name="PlanetIcons" type="Control" parent="UI/MapUI" unique_id=7508125]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-mouse_filter = 2
-
-[node name="ColonyIcons" type="Control" parent="UI/MapUI" unique_id=74573277]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-mouse_filter = 2
-
-[node name="ContextMenus" type="Control" parent="UI/MapUI" unique_id=634416631 node_paths=PackedStringArray("menus")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("15_ue2ba")
-menus = [NodePath("ColonyMenu"), NodePath("PlanetMenu")]
-
-[node name="ColonyMenu" type="Panel" parent="UI/MapUI/ContextMenus" unique_id=1209619276 node_paths=PackedStringArray("title")]
-visible = false
-layout_mode = 0
-offset_left = 1670.0
-offset_top = 807.0
-offset_right = 1891.0
-offset_bottom = 1057.0
-script = ExtResource("15_p543u")
-title = NodePath("VBoxContainer/Title")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/MapUI/ContextMenus/ColonyMenu" unique_id=744676155]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 9.0
-offset_top = 7.0
-offset_right = -9.0
-offset_bottom = -45.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Title" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=570385702]
-layout_mode = 2
-text = "COLONY NAME"
-
-[node name="Label2" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=1739743777]
-layout_mode = 2
-text = "OTHER INFO"
-
-[node name="Label3" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=2062304356]
-layout_mode = 2
-text = "OTHER INFO"
-
-[node name="Label4" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=1311950702]
-layout_mode = 2
-text = "OTHER INFO"
-
-[node name="Label5" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=420589065]
-layout_mode = 2
-text = "OTHER INFO"
-
-[node name="Label6" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=679138661]
-layout_mode = 2
-text = "OTHER INFO"
-
-[node name="EnterButton" type="Button" parent="UI/MapUI/ContextMenus/ColonyMenu" unique_id=1731887427]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 9.0
-offset_top = -40.0
-offset_right = 84.0
-offset_bottom = -8.0
-grow_vertical = 0
-text = "Enter"
-
-[node name="PlanetMenu" type="Panel" parent="UI/MapUI/ContextMenus" unique_id=6665928 node_paths=PackedStringArray("title", "radius", "mass", "gravity")]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 1568.0
-offset_top = 873.0
-offset_right = -29.0
-offset_bottom = -23.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("17_ue2ba")
-title = NodePath("VBoxContainer/Title")
-radius = NodePath("VBoxContainer/Radius")
-mass = NodePath("VBoxContainer/Mass")
-gravity = NodePath("VBoxContainer/Gravity")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/MapUI/ContextMenus/PlanetMenu" unique_id=764233715]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 9.0
-offset_top = 7.0
-offset_right = -9.0
-offset_bottom = -6.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Title" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=80387065]
-layout_mode = 2
-text = "PLANET NAME"
-
-[node name="Radius" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1164703744]
-layout_mode = 2
-text = "RADIUS"
-
-[node name="Mass" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=600804206]
-layout_mode = 2
-text = "MASS"
-
-[node name="Gravity" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1458144534]
-layout_mode = 2
-text = "GRAVITY"
-
-[node name="Label5" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=401718634]
-layout_mode = 2
-text = "OTHER INFO"
-
-[node name="Label6" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1902628798]
-layout_mode = 2
-text = "OTHER INFO"
 
 [node name="BuildUI" type="Control" parent="UI" unique_id=1081851632 node_paths=PackedStringArray("partListContainer", "partList")]
 visible = false
@@ -884,4 +525,318 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[connection signal="pressed" from="UI/MapUI/ContextMenus/ColonyMenu/EnterButton" to="UI/MapUI/ContextMenus/ColonyMenu" method="EnterButtonPressed"]
+[node name="ViewportWindows" type="Control" parent="." unique_id=1216988180]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("7_yxkbd")
+
+[node name="Map" type="Panel" parent="ViewportWindows" unique_id=1962789458]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_force_pass_scroll_events = false
+script = ExtResource("49_oe5si")
+draggable = false
+
+[node name="MapContainer" type="SubViewportContainer" parent="ViewportWindows/Map" unique_id=144351039]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="MapVP" type="SubViewport" parent="ViewportWindows/Map/MapContainer" unique_id=2039008767]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1582826098]
+environment = SubResource("Environment_h3s5b")
+
+[node name="MapView" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1218422952 node_paths=PackedStringArray("UIContainer", "mapCamera", "mapUI")]
+script = ExtResource("8_h4qns")
+UIContainer = NodePath("../../..")
+openMapEvent = &"map_view"
+mapCamera = NodePath("MapCamera")
+mapUI = NodePath("../../../MapUI")
+
+[node name="MapCamera" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView" unique_id=1320007421 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
+script = ExtResource("12_ou012")
+multiplyScroll = true
+lerpSpeed = 10.0
+rotationAmnt = 0.5
+zoomAmnt = 1.1
+zoom = 2.0
+maxZoom = 10000.0
+rotNode_Y = NodePath("Cam_Rot_Y")
+rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
+CamNode = NodePath("Cam_Rot_Y/Cam_Rot_X/Camera3D")
+dragCam = &"secondary_interaction"
+zoomIn = &"zoom_in"
+zoomOut = &"zoom_out"
+
+[node name="Cam_Rot_Y" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera" unique_id=1209681140]
+
+[node name="Cam_Rot_X" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y" unique_id=1492844660]
+
+[node name="Camera3D" type="Camera3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y/Cam_Rot_X" unique_id=1532995661]
+far = 100000000.0
+
+[node name="ResizeHandles" parent="ViewportWindows/Map" unique_id=365995451 instance=ExtResource("52_mtnyg")]
+layout_mode = 1
+
+[node name="MapUI" type="Control" parent="ViewportWindows/Map" unique_id=327474485 node_paths=PackedStringArray("contextMenus", "dragPanel")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("7_yxkbd")
+script = ExtResource("14_23wpb")
+contextMenus = NodePath("ContextMenus")
+dragPanel = NodePath("..")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ViewportWindows/Map/MapUI" unique_id=688219339]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 40.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="UndockButton" type="Button" parent="ViewportWindows/Map/MapUI/HBoxContainer" unique_id=1114260660]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="ViewportWindows/Map/MapUI/HBoxContainer/UndockButton" unique_id=2083253347]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("33_8ed1a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlanetIcons" type="Control" parent="ViewportWindows/Map/MapUI" unique_id=7508125]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ColonyIcons" type="Control" parent="ViewportWindows/Map/MapUI" unique_id=74573277]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ContextMenus" type="Control" parent="ViewportWindows/Map/MapUI" unique_id=634416631 node_paths=PackedStringArray("menus")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("15_ue2ba")
+menus = [NodePath("ColonyMenu"), NodePath("PlanetMenu")]
+
+[node name="ColonyMenu" type="Panel" parent="ViewportWindows/Map/MapUI/ContextMenus" unique_id=1209619276 node_paths=PackedStringArray("title")]
+visible = false
+layout_mode = 0
+offset_left = 1670.0
+offset_top = 807.0
+offset_right = 1891.0
+offset_bottom = 1057.0
+script = ExtResource("15_p543u")
+title = NodePath("VBoxContainer/Title")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu" unique_id=744676155]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = 7.0
+offset_right = -9.0
+offset_bottom = -45.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=570385702]
+layout_mode = 2
+text = "COLONY NAME"
+
+[node name="Label2" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=1739743777]
+layout_mode = 2
+text = "OTHER INFO"
+
+[node name="Label3" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=2062304356]
+layout_mode = 2
+text = "OTHER INFO"
+
+[node name="Label4" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=1311950702]
+layout_mode = 2
+text = "OTHER INFO"
+
+[node name="Label5" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=420589065]
+layout_mode = 2
+text = "OTHER INFO"
+
+[node name="Label6" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=679138661]
+layout_mode = 2
+text = "OTHER INFO"
+
+[node name="EnterButton" type="Button" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu" unique_id=1731887427]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = -40.0
+offset_right = 84.0
+offset_bottom = -8.0
+grow_vertical = 0
+text = "Enter"
+
+[node name="PlanetMenu" type="Panel" parent="ViewportWindows/Map/MapUI/ContextMenus" unique_id=6665928 node_paths=PackedStringArray("title", "radius", "mass", "gravity")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1568.0
+offset_top = 873.0
+offset_right = -29.0
+offset_bottom = -23.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("17_ue2ba")
+title = NodePath("VBoxContainer/Title")
+radius = NodePath("VBoxContainer/Radius")
+mass = NodePath("VBoxContainer/Mass")
+gravity = NodePath("VBoxContainer/Gravity")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu" unique_id=764233715]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = 7.0
+offset_right = -9.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=80387065]
+layout_mode = 2
+text = "PLANET NAME"
+
+[node name="Radius" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1164703744]
+layout_mode = 2
+text = "RADIUS"
+
+[node name="Mass" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=600804206]
+layout_mode = 2
+text = "MASS"
+
+[node name="Gravity" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1458144534]
+layout_mode = 2
+text = "GRAVITY"
+
+[node name="Label5" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=401718634]
+layout_mode = 2
+text = "OTHER INFO"
+
+[node name="Label6" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1902628798]
+layout_mode = 2
+text = "OTHER INFO"
+
+[node name="PlanetSystem" type="Node3D" parent="." unique_id=13215807 node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace")]
+script = ExtResource("1_pocjb")
+orbitRendererPrefab = ExtResource("3_212tm")
+planetIconPrefab = ExtResource("4_yxkbd")
+planetIcons = NodePath("../ViewportWindows/Map/MapUI/PlanetIcons")
+localCamera = NodePath("../RenderLayers/LocalContainer/LocalView/Camera3D")
+localSpace = NodePath("../RenderLayers/LocalContainer/LocalView/LocalSpace")
+scaledSpace = NodePath("../RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
+DEBUG_GizmoPrefab = ExtResource("17_h3s5b")
+
+[node name="PartManager" type="Node" parent="." unique_id=1645644584]
+process_priority = 3290
+script = ExtResource("6_2c3j4")
+
+[node name="CraftManager" type="Node" parent="." unique_id=837445787]
+script = ExtResource("6_ijjgm")
+
+[node name="ColonyManager" type="Node" parent="." unique_id=639718792 node_paths=PackedStringArray("iconParent")]
+script = ExtResource("8_gxrxs")
+iconPrefab = ExtResource("9_gusxr")
+iconParent = NodePath("../ViewportWindows/Map/MapUI/ColonyIcons")
+
+[node name="BuildingManager" type="Node" parent="." unique_id=811713000 node_paths=PackedStringArray("editorPartContainer", "floatingPartContainer", "buildUI")]
+script = ExtResource("14_uc177")
+editorPartContainer = NodePath("EditorParts")
+floatingPartContainer = NodePath("FloatingParts")
+buildUI = NodePath("../UI/BuildUI")
+partMoveSpeed = 42.0
+
+[node name="EditorParts" type="Node3D" parent="BuildingManager" unique_id=923514272]
+
+[node name="FloatingParts" type="Node3D" parent="BuildingManager" unique_id=1573556491]
+
+[node name="OrbitRendererManager" type="Node" parent="." unique_id=1421214884]
+script = ExtResource("15_h7vhn")
+rendererPrefab = ExtResource("16_np084")
+
+[node name="Miscellaneous" type="Node" parent="." unique_id=763652581]
+
+[node name="gizmo" parent="Miscellaneous" unique_id=904981576 instance=ExtResource("17_h3s5b")]
+transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Miscellaneous" unique_id=1060175846]
+environment = SubResource("Environment_h3s5b")
+
+[node name="Lights" type="Node" parent="." unique_id=390825035]
+script = ExtResource("22_3w3h3")
+lightPrefab = ExtResource("23_mbbrb")
+
+[node name="TestLight" type="DirectionalLight3D" parent="Lights" unique_id=1622771519]
+transform = Transform3D(0.9396926, -0.2620026, 0.21984634, 0, 0.6427876, 0.76604456, -0.34202012, -0.71984625, 0.60402286, 0, 0, 0)
+visible = false
+layers = 3
+shadow_enabled = true
+shadow_bias = 0.075
+directional_shadow_split_1 = 0.02
+directional_shadow_split_2 = 0.05
+directional_shadow_split_3 = 0.4
+directional_shadow_max_distance = 8192.0
+
+[connection signal="pressed" from="ViewportWindows/Map/MapUI/HBoxContainer/UndockButton" to="ViewportWindows/Map/MapUI" method="OnDockButtonPressed"]
+[connection signal="pressed" from="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/EnterButton" to="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu" method="EnterButtonPressed"]

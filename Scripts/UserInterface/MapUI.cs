@@ -4,12 +4,34 @@ using System;
 // Singleton for all the map ui bs
 public partial class MapUI : Control
 {
-    public static MapUI Instance { get; private set; }
-
     [Export] public ContextMenus contextMenus;
 
-    public override void _Ready()
+    [Export] private DraggablePanel dragPanel;
+    [Export] private float undockMult = 0.5f;
+
+    private bool docked = true;
+
+    public void ToggleDock(bool toggle)
     {
-        Instance = this;
+        docked = toggle;
+        dragPanel.draggable = !toggle;
+
+        Vector2 vpSize = GetViewport().GetVisibleRect().Size;
+        if (toggle)
+        {
+            dragPanel.Size = vpSize;
+            dragPanel.Position = Vector2.Zero;
+        }else{
+            Vector2 undockedSize = dragPanel.Size;
+            if (undockedSize == vpSize) undockedSize = GetViewport().GetVisibleRect().Size * undockMult;
+
+            dragPanel.Size = undockedSize;
+            dragPanel.Position = (vpSize - undockedSize) / 2;
+        }
+    }
+
+    public void OnDockButtonPressed()
+    {
+        ToggleDock(!docked);
     }
 }

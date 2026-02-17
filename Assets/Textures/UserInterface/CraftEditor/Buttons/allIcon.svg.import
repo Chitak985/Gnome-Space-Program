@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xp6y4oqgn2ko"
-path="res://.godot/imported/clearicon.svg-dfd164a65549ff3ff90b5285b01ee9db.ctex"
+uid="uid://bxe8uo40enbck"
+path="res://.godot/imported/allIcon.svg-b1d4e697bc6a6320a441e35a7c711c91.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/UserInterface/Buttons/clearicon.svg"
-dest_files=["res://.godot/imported/clearicon.svg-dfd164a65549ff3ff90b5285b01ee9db.ctex"]
+source_file="res://Assets/Textures/UserInterface/CraftEditor/Buttons/allIcon.svg"
+dest_files=["res://.godot/imported/allIcon.svg-b1d4e697bc6a6320a441e35a7c711c91.ctex"]
 
 [params]
 

@@ -78,5 +78,6 @@ public partial class Colony : Node3D
 
         FlightCamera.Instance.TargetObject(this, 100, 1, 10000);
         MapView.Instance.ToggleMap(false);
+        MapView.Instance.mapCamera.TargetObject(mapObject, 100, 1, 10000);
     }
 }

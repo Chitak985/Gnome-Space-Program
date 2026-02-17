@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3e0eh5stlfej"
-path="res://.godot/imported/exitIcon.svg-a17c0ac78cedbee5b1b076c66fede0c5.ctex"
+uid="uid://6gd5l8bljd83"
+path="res://.godot/imported/launchbutton.svg-7b9151b4604b4d4b630810378485d0c1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/UserInterface/Buttons/exitIcon.svg"
-dest_files=["res://.godot/imported/exitIcon.svg-a17c0ac78cedbee5b1b076c66fede0c5.ctex"]
+source_file="res://Assets/Textures/UserInterface/CraftEditor/Buttons/launchbutton.svg"
+dest_files=["res://.godot/imported/launchbutton.svg-7b9151b4604b4d4b630810378485d0c1.ctex"]
 
 [params]
 

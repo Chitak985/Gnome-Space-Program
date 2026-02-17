@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6gd5l8bljd83"
-path="res://.godot/imported/launchbutton.svg-a47de0244bab77ff443431e55bdf1d4e.ctex"
+uid="uid://xp6y4oqgn2ko"
+path="res://.godot/imported/clearicon.svg-203946600a51173aa64dd7dd15f9e699.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/UserInterface/Buttons/launchbutton.svg"
-dest_files=["res://.godot/imported/launchbutton.svg-a47de0244bab77ff443431e55bdf1d4e.ctex"]
+source_file="res://Assets/Textures/UserInterface/CraftEditor/Buttons/clearicon.svg"
+dest_files=["res://.godot/imported/clearicon.svg-203946600a51173aa64dd7dd15f9e699.ctex"]
 
 [params]
 
