@@ -165,14 +165,6 @@ public partial class PlanetSystem : Node3D
             localSpacePlanets.AddChild(cBody);
             cBody.Name = cBody.cBodyName;
 
-            if (planetIconPrefab != null && planetIcons != null)
-            {
-                PlanetIcon icon = (PlanetIcon)planetIconPrefab.Instantiate();
-                icon.planet = cBody;
-                icon.camera = localCamera;
-                planetIcons.AddChild(icon);
-            }
-
             if (cBody.focusOnload) focusOnLoadBody = cBody;
 
             CelestialBody parent = FindCBodyByName(cBody.parentName);

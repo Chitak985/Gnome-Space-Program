@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 // Shares many similarities with ScaledSpace, though serves a completely different function.
 public partial class MapView : Node3D
@@ -15,6 +16,10 @@ public partial class MapView : Node3D
     [Export] public bool canEnterMap = true;
     [Export] public MapCamera mapCamera;
     [Export] public MapUI mapUI;
+
+    [Export] private Control mapIconContainer;
+    [Export] private PackedScene mapIconPrefab;
+    public List<MapIcon> MapIcons { get; private set; } = [];
 
     public override void _Ready()
     {
@@ -62,5 +67,14 @@ public partial class MapView : Node3D
         {
             ToggleMap(!InMap);
         }
+    }
+
+    public void AddMapIcon(MapObject mapObject, Image icon = null)
+    {
+        MapIcon mapIcon = mapIconPrefab.Instantiate<MapIcon>();
+        mapIconContainer.AddChild(mapIcon);
+        mapIcon.Initialize(mapObject);
+
+        MapIcons.Add(mapIcon);
     }
 }

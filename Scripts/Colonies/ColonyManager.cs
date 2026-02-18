@@ -98,14 +98,6 @@ public partial class ColonyManager : Node
         colony.mapObject.Position = colony.position;
         colony.mapObject.counterpart = colony;
 
-        // HHhhhhmmmmmmmmmm....
-        ColonyIcon icon = (ColonyIcon)iconPrefab.Instantiate();
-        iconParent.AddChild(icon);
-        icon.thing = colony.mapObject;
-        icon.camera = LocalSpace.Instance.Camera;
-
-        icon.colony = colony;
-
         //if (ConfigUtility.TryGetDictionary("buildings", data, out Dictionary buildings))
         //{
         //    colony.savedParts = buildings;

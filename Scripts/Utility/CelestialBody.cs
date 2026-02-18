@@ -124,6 +124,7 @@ public partial class CelestialBody : Node3D
 
         mapObject = new() { Name = $"{cBodyName}_Map" };
         MapView.Instance.AddChild(mapObject);
+        MapView.Instance.AddMapIcon(mapObject);
 
         // Create gimbals and pivots for axial tilt and all that other jazz
         pivot = new();
