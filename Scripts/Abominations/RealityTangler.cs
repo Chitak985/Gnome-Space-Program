@@ -10,11 +10,14 @@ Exceptions may include ScaledSpace and the OrbitManager
 */
 public partial class RealityTangler : Node
 {
+    [Export] private Node3D AHHHHHHHHHHHH;
     public static RealityTangler Instance { get; private set; }
     public static readonly string classTag = "([color=darkred]RealityTangler[color=white])";
 
     [Export] public float originResetThreshold = 100;
-    [Export] public Vector3 originOffset = Vector3.Zero;
+    [Export] public Vector3 planetaryOffset = Vector3.Zero; // Only the planet's offset
+    [Export] public Vector3 originOffset = Vector3.Zero; // planetaryOffset + local position
+    [Export] public Vector3 referenceFrameOriginOffset = Vector3.Zero; // Whatever the hell this is
 
     // Universe will rotate around this, won't if it's null.
     public CelestialBody activeReferenceFrame;
@@ -79,10 +82,10 @@ public partial class RealityTangler : Node
                     Colony colony = StateManager.Instance.colonyState.activeColony;
                     CelestialBody cBody = colony.parentBody;
 
-                    Vector3 addedPosition = cBody.cartesianData.position;// + colony.position;
+                    planetaryOffset = cBody.cartesianData.position;
+                    referenceFrameOriginOffset = cBody.GetGlobalPositionOfPoint(colony.position);
+                    originOffset = cBody.cartesianData.position + colony.position;
 
-                    originOffset = -addedPosition;
-                    
                     EmitSignal(SignalName.OrbitProcess);
                 }
                 break;

@@ -79,7 +79,13 @@ public partial class CelestialBody : Node3D
         }
 
         // Uh
-        originPos = cartesianData.position + RealityTangler.Instance.originOffset;
+        if (RealityTangler.Instance.activeReferenceFrame == this)
+        {
+            originPos = cartesianData.position - RealityTangler.Instance.originOffset; 
+        }else{
+            originPos = cartesianData.position - RealityTangler.Instance.planetaryOffset;
+        }
+        
 
         Position = originPos;
 
@@ -150,6 +156,19 @@ public partial class CelestialBody : Node3D
     {
         // Just to prevent jitter
         ProcessTransform();
+    }
+
+    // Gets the global position of a point on the planet (factoring in rotation)
+    public Vector3 GetGlobalPositionOfPoint(Vector3 point)
+    {
+        Transform3D trans = new()
+        {
+            Origin = point
+        };;
+
+        Transform3D finalTrans = cachedTransform * trans;
+
+        return finalTrans.Origin;
     }
 
     public override string ToString()

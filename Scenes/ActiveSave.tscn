@@ -171,13 +171,15 @@ stateManager = NodePath("StateManager")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
 mapSpace = NodePath("ViewportWindows/Map/MapContainer/MapVP/MapView")
+timeSpeed = 1000.0
 
 [node name="StateManager" type="Node" parent="." unique_id=2074004250]
 script = ExtResource("2_wsyj0")
 
-[node name="RealityTangler" type="Node" parent="." unique_id=1762014724]
+[node name="RealityTangler" type="Node" parent="." unique_id=1762014724 node_paths=PackedStringArray("AHHHHHHHHHHHH")]
 process_priority = 100
 script = ExtResource("13_sfn14")
+AHHHHHHHHHHHH = NodePath("../Miscellaneous/gizmo2")
 originResetThreshold = 10000000.0
 
 [node name="FlightCamera" type="Node3D" parent="." unique_id=1009889495 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
@@ -886,11 +888,10 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="PlanetSystem" type="Node3D" parent="." unique_id=13215807 node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace")]
+[node name="PlanetSystem" type="Node3D" parent="." unique_id=13215807 node_paths=PackedStringArray("localCamera", "localSpace", "scaledSpace")]
 script = ExtResource("1_pocjb")
 orbitRendererPrefab = ExtResource("3_212tm")
 planetIconPrefab = SubResource("PackedScene_oe5si")
-planetIcons = NodePath("")
 localCamera = NodePath("../RenderLayers/LocalContainer/LocalView/Camera3D")
 localSpace = NodePath("../RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("../RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
@@ -903,10 +904,9 @@ script = ExtResource("6_2c3j4")
 [node name="CraftManager" type="Node" parent="." unique_id=837445787]
 script = ExtResource("6_ijjgm")
 
-[node name="ColonyManager" type="Node" parent="." unique_id=639718792 node_paths=PackedStringArray("iconParent")]
+[node name="ColonyManager" type="Node" parent="." unique_id=639718792]
 script = ExtResource("8_gxrxs")
 iconPrefab = SubResource("PackedScene_kqsux")
-iconParent = NodePath("")
 
 [node name="BuildingManager" type="Node" parent="." unique_id=811713000 node_paths=PackedStringArray("editorPartContainer", "floatingPartContainer", "buildUI")]
 script = ExtResource("14_uc177")
@@ -930,6 +930,9 @@ transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Miscellaneous" unique_id=1060175846]
 environment = SubResource("Environment_h3s5b")
+
+[node name="gizmo2" parent="Miscellaneous" unique_id=620451043 instance=ExtResource("17_h3s5b")]
+transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, 0)
 
 [node name="Lights" type="Node" parent="." unique_id=390825035]
 script = ExtResource("22_3w3h3")

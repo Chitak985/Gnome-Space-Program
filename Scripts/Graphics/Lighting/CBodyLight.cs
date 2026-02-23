@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Collections.Generic;
 
 public partial class CBodyLight : Node3D
 {
@@ -16,6 +14,7 @@ public partial class CBodyLight : Node3D
     {
         this.cBody = cBody;
 
+        // This is a horrible idea please fix this as soon as you're not fixing every other possible issue in this game thank youuu :3
         mapLight.GetParent().RemoveChild(mapLight);
         MapView.Instance.AddChild(mapLight);
     }
