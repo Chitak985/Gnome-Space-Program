@@ -30,23 +30,20 @@ public partial class LaunchSite : PartModule
 
     public Craft SpawnCraft(Dictionary partData, bool focus = false)
     {
-        Craft craft = new();
-        ActiveSave.Instance.localSpace.AddChild(craft);
-        craft.Instantiate(partData);
-
-        craft.GlobalPosition = spawnNode.GlobalPosition;
-
-        craft.Initialize();
-
-        // We can not focus on the craft and stay in the editor if we absolutely want to
-        if (focus)
+        Vector3 originPos = Vector3.Zero;
+        // Handle crafts soon for fucks sake
+        if (part.parentThing is Colony colony)
         {
-            BuildingManager.Instance.ExitBuildMode(false);
-            craft.SnatchFocus();
+            CelestialBody cBody = colony.parentBody;
+            originPos = cBody.GetGlobalPositionOfPoint(colony.position);
         }
 
-        // Unleash physics and let it do its thing
-        craft.Anchor(false);
+        Transform3D transform = new() {
+            Origin = originPos
+        };
+
+        // Defer this to craft manager
+        Craft craft = CraftManager.Instance.SpawnCraft(partData, transform, focus);
 
         return craft;
     }

@@ -57,7 +57,7 @@ public partial class OrbitTester : Node3D
         
         foreach (CelestialBody cBody in cBodyList)
         {
-            cBody.CreateDebugOrb(this);
+            //cBody.CreateDebugOrb(this);
             if (cBody.orbit != null)
             {
                 _ = cBody.orbit.ComputeMU();
@@ -126,7 +126,7 @@ public partial class OrbitTester : Node3D
 
                     //Vector3 position = cBody.cartesianData.position;
 
-                    cBody.debugOrb.GlobalPosition = data.position;
+                    // cBody.debugOrb.GlobalPosition = data.position;
                 }else{
                     orbitPos = anotherBody.cartesianData.position;
                     orbitVel = anotherBody.cartesianData.velocity;
@@ -141,7 +141,7 @@ public partial class OrbitTester : Node3D
 
                     Vector3 finalPos = data.position + cBody.orbit.parent.cartesianData.position;
                     
-                    cBody.debugOrb.GlobalPosition = finalPos;
+                    // cBody.debugOrb.GlobalPosition = finalPos;
                 }
 
                 //cBody.orbit.DumpOrbitParams();

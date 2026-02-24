@@ -45,13 +45,39 @@ public partial class CelestialBody : Node3D
     public string configPath;
 
     // DEBUG
-    public MeshInstance3D debugOrb;
+    private Node3D scaledGizmo;
+    private Node3D mapGizmo;
 
-    public void CreateDebugOrb(Node3D parent)
+    // Deletes old gizmos tooo
+    public void CreateGizmo()
     {
-        debugOrb = new MeshInstance3D();
-        debugOrb.Mesh = new SphereMesh();
-        parent.AddChild(debugOrb);
+        scaledGizmo?.QueueFree();
+        scaledGizmo = null;
+        mapGizmo?.QueueFree();
+        mapGizmo = null;
+        
+        scaledGizmo = (Node3D)PlanetSystem.Instance.DEBUG_GizmoPrefab.Instantiate();
+        scaledGizmo.Scale = Vector3.One * (float)radius * 0.03f;
+
+        foreach (Node node in scaledGizmo.GetChildren())
+        {
+            if (node is MeshInstance3D mesh)
+            {
+                mesh.SetLayerMaskValue(1, true);
+                mesh.SetLayerMaskValue(2, true);
+            }
+        }
+        scaledObject.AddChild(scaledGizmo);
+
+        mapGizmo = (Node3D)PlanetSystem.Instance.DEBUG_GizmoPrefab.Instantiate();
+        mapGizmo.Scale = Vector3.One * (float)radius * 0.03f;
+        mapObject.AddChild(mapGizmo);
+    }
+
+    public void ToggleGizmo(bool toggle)
+    {
+        scaledGizmo.Visible = toggle;
+        mapGizmo.Visible = toggle;
     }
 
     public override void _Process(double delta)
@@ -68,6 +94,8 @@ public partial class CelestialBody : Node3D
     // Process the cBody orbital positioning calculations. Used by RealityTangler to "force" repositioning to avoid jitter.
     public void ProcessTransform()
     {
+        Rotation = Vector3.Zero;
+
         if (orbit != null)
         {
             orbit.trueAnomaly = Conics.TimeToTrueAnomaly(orbit, ActiveSave.Instance.SaveTime, 0) + orbit.trueAnomalyAtEpoch;
@@ -81,9 +109,9 @@ public partial class CelestialBody : Node3D
         // Uh
         if (RealityTangler.Instance.activeReferenceFrame == this)
         {
-            originPos = cartesianData.position - RealityTangler.Instance.originOffset; 
+            originPos = cartesianData.position - RealityTangler.Instance.OriginOffset; 
         }else{
-            originPos = cartesianData.position - RealityTangler.Instance.planetaryOffset;
+            originPos = cartesianData.position - RealityTangler.Instance.PlanetaryOffset;
         }
         
 
@@ -150,6 +178,8 @@ public partial class CelestialBody : Node3D
             Name = "PQS"
         };
         gimbal.AddChild(pqsSphere);
+
+        CreateGizmo();
     }
 
     public void ResetOrigin()

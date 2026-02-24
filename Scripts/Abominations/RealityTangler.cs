@@ -10,14 +10,13 @@ Exceptions may include ScaledSpace and the OrbitManager
 */
 public partial class RealityTangler : Node
 {
-    [Export] private Node3D AHHHHHHHHHHHH;
     public static RealityTangler Instance { get; private set; }
     public static readonly string classTag = "([color=darkred]RealityTangler[color=white])";
 
     [Export] public float originResetThreshold = 100;
-    [Export] public Vector3 planetaryOffset = Vector3.Zero; // Only the planet's offset
-    [Export] public Vector3 originOffset = Vector3.Zero; // planetaryOffset + local position
-    [Export] public Vector3 referenceFrameOriginOffset = Vector3.Zero; // Whatever the hell this is
+    [Export] public Vector3 PlanetaryOffset { get; private set;} // Only the planet's offset
+    [Export] public Vector3 OriginOffset { get; private set;} // planetaryOffset + local position
+    [Export] public Vector3 ReferenceFrameOriginOffset { get; private set;} // Whatever the hell this is
 
     // Universe will rotate around this, won't if it's null.
     public CelestialBody activeReferenceFrame;
@@ -49,7 +48,7 @@ public partial class RealityTangler : Node
         EmitSignal(SignalName.ScaledProcess);
         EmitSignal(SignalName.OrbitProcess);
         EmitSignal(SignalName.OriginReset);
-        originOffset -= focusedObjectPos;
+        OriginOffset -= focusedObjectPos;
 
         //GD.Print("burh!!!");
         //GD.Print(originOffset);
@@ -82,15 +81,15 @@ public partial class RealityTangler : Node
                     Colony colony = StateManager.Instance.colonyState.activeColony;
                     CelestialBody cBody = colony.parentBody;
 
-                    planetaryOffset = cBody.cartesianData.position;
-                    referenceFrameOriginOffset = cBody.GetGlobalPositionOfPoint(colony.position);
-                    originOffset = cBody.cartesianData.position + colony.position;
+                    PlanetaryOffset = cBody.cartesianData.position;
+                    ReferenceFrameOriginOffset = cBody.GetGlobalPositionOfPoint(colony.position);
+                    OriginOffset = cBody.cartesianData.position + colony.position;
 
                     EmitSignal(SignalName.OrbitProcess);
                 }
                 break;
             default:
-                originOffset = Vector3.Zero; // We once again panic because what the hell
+                OriginOffset = Vector3.Zero; // We once again panic because what the hell
                 break;
         }
 
@@ -131,7 +130,6 @@ public partial class RealityTangler : Node
             cBody.TopLevel = true;
         }else{
             activeReferenceFrame = null;
-
         }
     }
 

@@ -37,27 +37,7 @@ public partial class PlanetSystem : Node3D
     {
         foreach (CelestialBody celestialBody in celestialBodies)
         {
-            Node3D gizmo;
-            if (celestialBody.FindChild("gizmo") == null)
-            {
-                gizmo = (Node3D)DEBUG_GizmoPrefab.Instantiate();
-                gizmo.Scale = Vector3.One * (float)celestialBody.radius * 0.03f;
-
-                foreach (Node node in gizmo.GetChildren())
-                {
-                    if (node is MeshInstance3D mesh)
-                    {
-                        mesh.SetLayerMaskValue(1, true);
-                        mesh.SetLayerMaskValue(2, true);
-                    }
-                }
-
-                celestialBody.scaledObject.AddChild(gizmo);
-            }else{
-                gizmo = (Node3D)celestialBody.FindChild("gizmo");
-            }
-
-            gizmo.Visible = toggle;
+            celestialBody.ToggleGizmo(toggle);
         }
     }
 
@@ -91,7 +71,7 @@ public partial class PlanetSystem : Node3D
         Logger.Print($"{classTag} System created successfully!");
 
         // Debug pass
-        if (DEBUG_startWithGizmo) ToggleGizmo(true);
+        ToggleGizmo(DEBUG_startWithGizmo);
     }
 
     public void CreateSystem(List<string> configs)

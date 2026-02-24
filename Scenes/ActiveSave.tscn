@@ -49,6 +49,7 @@
 [ext_resource type="Texture2D" uid="uid://3e0eh5stlfej" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/exitIcon.svg" id="38_byrdn"]
 [ext_resource type="Texture2D" uid="uid://x8kvw8eh51rl" path="res://Assets/Textures/dropdown_button_down.png" id="39_mbbrb"]
 [ext_resource type="Texture2D" uid="uid://cvu7pnyn48c8j" path="res://Assets/Textures/dropdown_button_right.png" id="40_ul3nw"]
+[ext_resource type="PackedScene" uid="uid://dxhvfmveoa832" path="res://Assets/Prefabs/Debug/DebugGizmo.tscn" id="43_oe5si"]
 [ext_resource type="Script" uid="uid://drrsx2qsfqgck" path="res://Scripts/UserInterface/Windows/DraggablePanel.cs" id="49_oe5si"]
 [ext_resource type="PackedScene" uid="uid://bwoopux77w7qj" path="res://Assets/Prefabs/UI/Components/resize_handles.tscn" id="52_mtnyg"]
 
@@ -171,15 +172,14 @@ stateManager = NodePath("StateManager")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
 mapSpace = NodePath("ViewportWindows/Map/MapContainer/MapVP/MapView")
-timeSpeed = 1000.0
+timeSpeed = 0.0
 
 [node name="StateManager" type="Node" parent="." unique_id=2074004250]
 script = ExtResource("2_wsyj0")
 
-[node name="RealityTangler" type="Node" parent="." unique_id=1762014724 node_paths=PackedStringArray("AHHHHHHHHHHHH")]
+[node name="RealityTangler" type="Node" parent="." unique_id=1762014724]
 process_priority = 100
 script = ExtResource("13_sfn14")
-AHHHHHHHHHHHH = NodePath("../Miscellaneous/gizmo2")
 originResetThreshold = 10000000.0
 
 [node name="FlightCamera" type="Node3D" parent="." unique_id=1009889495 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
@@ -895,7 +895,8 @@ planetIconPrefab = SubResource("PackedScene_oe5si")
 localCamera = NodePath("../RenderLayers/LocalContainer/LocalView/Camera3D")
 localSpace = NodePath("../RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("../RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
-DEBUG_GizmoPrefab = ExtResource("17_h3s5b")
+DEBUG_startWithGizmo = true
+DEBUG_GizmoPrefab = ExtResource("43_oe5si")
 
 [node name="PartManager" type="Node" parent="." unique_id=1645644584]
 process_priority = 3290
@@ -930,9 +931,6 @@ transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Miscellaneous" unique_id=1060175846]
 environment = SubResource("Environment_h3s5b")
-
-[node name="gizmo2" parent="Miscellaneous" unique_id=620451043 instance=ExtResource("17_h3s5b")]
-transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, 0)
 
 [node name="Lights" type="Node" parent="." unique_id=390825035]
 script = ExtResource("22_3w3h3")
