@@ -14,7 +14,7 @@
   },
   "orbit": {
 	"parent": "Gnobe",
-	"semiMajorAxis": 784748,
+	"semiMajorAxis": 38474800,
 	"inclination": 0,
 	"eccentricity": 0.0549,
 	"argumentOfPeriapsis": 021,
