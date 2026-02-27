@@ -12,28 +12,72 @@ public partial class CraftManager : Node
         Instance = this;
     }
 
-    public Craft SpawnCraft(Dictionary partData, Transform3D spawnTransform, bool focus = false)
+    /*
+        partData - A dictionary which stores the craft's structure and all necessary data to build it
+        driver - All orbital / cartesian paremeters
+        inRotatingFrame - Whether or not to interpret the given velocity/position as in the parent planet's rotating reference frame
+        focus - Whether or not to "snatch" the camera's focus to this new craft
+    */
+    public Craft SpawnCraft(Dictionary partData, OrbitDriver driver, bool focus = false)
     {
-        Logger.Print($"{classTag} Spawning craft at {spawnTransform.Origin}");
+        // NON ROTATING position relative to the planet
+        Vector3 inertialPosition = driver.cartesian.position;
+
+        Logger.Print($"{classTag} Spawning craft at {inertialPosition}");
 
         Craft craft = new();
         ActiveSave.Instance.localSpace.AddChild(craft);
         craft.Instantiate(partData);
 
-        craft.GlobalPosition = spawnTransform.Origin;
+        // TODO - make this relative to the planet
+        craft.GlobalPosition = inertialPosition;
 
-        craft.Initialize();
+        craft.Initialize(driver);
 
-        // We can not focus on the craft and stay in the editor if we absolutely want to
+        // We can focus on the craft if we want to
         if (focus)
         {
             BuildingManager.Instance.ExitBuildMode(false);
             craft.SnatchFocus();
         }
 
-        // Unleash physics and let it do its thing
-        craft.Anchor(false);
+        RealityTangler.Instance.SwitchReferenceFrame();
 
+        // Unleash physics and let it do its thing...
+        craft.Anchor(false);
+        craft.SetVelocityToCartesian();
+
+        return craft;
+    }
+
+    // For if one wants to spawn a craft at a specific orbit
+    public Craft SpawnCraft(Dictionary partData, Orbit orbit, bool focus = false)
+    {
+        OrbitDriver driver = new()
+        {
+            parent = orbit.parent,
+            orbit = orbit,
+            cartesian = Conics.ElemToCart(orbit)
+        };
+
+        Craft craft = SpawnCraft(partData, driver, focus);
+        return craft;
+    }
+
+    // For if one wants to spawn a craft at a specific orbit
+    public Craft SpawnCraft(Dictionary partData, CartesianData cartesian, bool focus = false)
+    {
+        OrbitDriver driver = new()
+        {
+            parent = cartesian.parent,
+            orbit = new(), // TODO: Make function for converting cartesian elements to orbital elements!!!
+            cartesian = cartesian
+        };
+
+        Logger.Print($"POSITION IS {cartesian.position}");
+        Logger.Print($"VELOCITY IS {cartesian.velocity}");
+
+        Craft craft = SpawnCraft(partData, driver, focus);
         return craft;
     }
 }

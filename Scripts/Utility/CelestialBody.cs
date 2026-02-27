@@ -94,6 +94,7 @@ public partial class CelestialBody : Node3D
     // Process the cBody orbital positioning calculations. Used by RealityTangler to "force" repositioning to avoid jitter.
     public void ProcessTransform()
     {
+        // Okay so Godot automatically transforms the rotation and sometimes planets can end up being titled to some baffling degree so just do this and forget
         Rotation = Vector3.Zero;
 
         if (orbit != null)
@@ -199,6 +200,35 @@ public partial class CelestialBody : Node3D
         Transform3D finalTrans = cachedTransform * trans;
 
         return finalTrans.Origin;
+    }
+
+    // Returns the velocity vector of the planet's surface at that point IN THE GEOCENTRIC REFERENCE FRAME!!
+    // Ate a bit of https://en.wikipedia.org/wiki/Rigid_body_dynamics and shat out this function
+    public Vector3 GetSurfaceRotationVelocity(Vector3 point)
+    {
+        // Rotation period is in seconds per 2pi radians.
+        // Angular velocity has to be in radians per second.
+        double angularVelocity = 1 / (rotPeriod / Math.Tau);
+
+        Vector3 angularVelocityVector = Vector3.Up * angularVelocity;
+
+        Vector3 velocity = angularVelocityVector.Cross(point); // Cross and pray
+
+        return velocity;
+    }
+
+    // Shamelessly stolen from https://stackoverflow.com/questions/46247499/vector3-to-latitude-longitude
+    // CONVERT POSITION TO GEOCENTRIC REFERENCE FRAME FIRST!
+    public Vector2 GetLatitudeLongitude(Vector3 position, bool radians = false)
+    {
+        double lat = Math.Acos(position.Y / radius); //theta
+        double lon = Math.Atan(position.X / position.Z); //phi
+
+        // Skip conversion if we just want radians
+        if (radians) return new Vector2(lat, lon);
+
+        double radToDeg = 180 / Math.PI;
+        return new Vector2(lat * radToDeg, lon * radToDeg);
     }
 
     public override string ToString()

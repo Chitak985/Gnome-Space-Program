@@ -172,7 +172,6 @@ stateManager = NodePath("StateManager")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
 mapSpace = NodePath("ViewportWindows/Map/MapContainer/MapVP/MapView")
-timeSpeed = 0.0
 
 [node name="StateManager" type="Node" parent="." unique_id=2074004250]
 script = ExtResource("2_wsyj0")
@@ -895,7 +894,6 @@ planetIconPrefab = SubResource("PackedScene_oe5si")
 localCamera = NodePath("../RenderLayers/LocalContainer/LocalView/Camera3D")
 localSpace = NodePath("../RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("../RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
-DEBUG_startWithGizmo = true
 DEBUG_GizmoPrefab = ExtResource("43_oe5si")
 
 [node name="PartManager" type="Node" parent="." unique_id=1645644584]

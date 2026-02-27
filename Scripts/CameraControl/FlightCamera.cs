@@ -22,7 +22,7 @@ public partial class FlightCamera : CamControl
         switch (gameState)
         {
             case StateManager.GameState.Flight:
-                ground = StateManager.Instance.flightState.activeCraft.Orbit.parent;
+                ground = StateManager.Instance.flightState.activeCraft.OrbitDriver.parent;
                 break;
             case StateManager.GameState.Colony:
                 Colony colony = StateManager.Instance.colonyState.activeColony;

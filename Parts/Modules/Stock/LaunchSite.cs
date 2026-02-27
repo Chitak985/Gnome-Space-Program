@@ -30,20 +30,24 @@ public partial class LaunchSite : PartModule
 
     public Craft SpawnCraft(Dictionary partData, bool focus = false)
     {
-        Vector3 originPos = Vector3.Zero;
+        Vector3 originPos = new Vector3(0,0,100);
+        CelestialBody cBody = null;
         // Handle crafts soon for fucks sake
         if (part.parentThing is Colony colony)
         {
-            CelestialBody cBody = colony.parentBody;
+            cBody = colony.parentBody;
             originPos = cBody.GetGlobalPositionOfPoint(colony.position);
         }
 
-        Transform3D transform = new() {
-            Origin = originPos
+        CartesianData cartesianData = new()
+        {
+            parent = cBody,
+            position = originPos,
+            velocity = cBody.GetSurfaceRotationVelocity(originPos)
         };
 
-        // Defer this to craft manager
-        Craft craft = CraftManager.Instance.SpawnCraft(partData, transform, focus);
+        // Send this to craft manager
+        Craft craft = CraftManager.Instance.SpawnCraft(partData, cartesianData, focus);
 
         return craft;
     }

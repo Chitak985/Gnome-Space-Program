@@ -14,24 +14,19 @@ public partial class Craft : Node3D
     public Part centralPart; // The absolute root of the craft, what we orient around
     public List<Part> loadedParts = [];
 
-    public Orbit Orbit;
-
-    // We don't use CartesianData here. It sucks. Stop using it.
-    public Vector3 rotatingPosition; // Cartesian position relative to the parent cBody's rotating reference frame
-    public Vector3 universalPosition; // Absolute position
-    public Vector3 rotatingVelocity;
-    public Vector3 universalVelocity;
+    // Orbits and positions are ALWAYS in global space. NO EXCEPTIONS.
+    public OrbitDriver OrbitDriver { get; private set; }
 
     public bool Anchored { get; private set; }
 
     public override void _PhysicsProcess(double delta)
     {
         // Loop over every part and apply a force towards the planet
-        if (Orbit.parent != null)
+        if (OrbitDriver.parent != null)
         {
             foreach (Part part in loadedParts)
             {
-                CelestialBody currentCBody = Orbit.parent;
+                CelestialBody currentCBody = OrbitDriver.parent;
 
                 Vector3 center = currentCBody.GlobalPosition;
                 Vector3 direction = part.GlobalPosition.DirectionTo(center);
@@ -41,9 +36,11 @@ public partial class Craft : Node3D
 
                 double force = Conics.GravConstant * (planetMass * part.Mass / Mathf.Pow(distance, 2));
 
-                part.ApplyCentralForce(force*direction);
+                //part.ApplyCentralForce(force*direction);
             }
         }
+
+        GlobalPosition = centralPart.GlobalPosition;
     }
 
     public void Anchor(bool toggle)
@@ -56,9 +53,9 @@ public partial class Craft : Node3D
     }
 
     // Creates stuff like the orbit and whatnot
-    public void Initialize()
+    public void Initialize(OrbitDriver orbitDriver)
     {
-        Orbit = new();
+        OrbitDriver = orbitDriver;
     }
 
     // Hiujjj??
@@ -124,7 +121,7 @@ public partial class Craft : Node3D
         StateManager.Instance.flightState.activeCraft = this;
         FlightCamera.Instance.TargetObject(this, 100, 1, 10000);
 
-        RealityTangler.Instance.SwitchReferenceFrame();
+        //RealityTangler.Instance.SwitchReferenceFrame();
     }
 
     public void ResetOrigin()
@@ -133,6 +130,15 @@ public partial class Craft : Node3D
         {
             Logger.Print("RESET");
             GlobalPosition = Vector3.Zero;
+        }
+    }
+
+    // Sets the velocity from the cartesian data
+    public void SetVelocityToCartesian()
+    {
+        foreach (Part part in loadedParts)
+        {
+            part.LinearVelocity = OrbitDriver.cartesian.velocity;
         }
     }
 }
