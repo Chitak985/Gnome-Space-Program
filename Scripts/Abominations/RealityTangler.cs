@@ -141,7 +141,7 @@ public partial class RealityTangler : Node
 
             Transform3D trans = new()
             {
-                Basis = activeReferenceFrame.cachedTransform.Basis.Inverse()
+                Basis = activeReferenceFrame.CachedTransform.Basis.Inverse()
             };
 
             localPlanets.GlobalTransform = trans;

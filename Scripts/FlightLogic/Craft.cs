@@ -138,7 +138,16 @@ public partial class Craft : Node3D
     {
         foreach (Part part in loadedParts)
         {
-            part.LinearVelocity = OrbitDriver.cartesian.velocity;
+            Vector3 finalVel = OrbitDriver.cartesian.velocity;
+
+            // Subtract planet's rotation if we're in a geocentric reference frame
+            if (RealityTangler.Instance.activeReferenceFrame != null)
+            {
+                CelestialBody activeFrame = RealityTangler.Instance.activeReferenceFrame;
+                finalVel -= activeFrame.GetSurfaceRotationVelocity(OrbitDriver.cartesian.position);
+            }
+
+            part.LinearVelocity = finalVel;
         }
     }
 }

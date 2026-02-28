@@ -36,7 +36,7 @@ public partial class LaunchSite : PartModule
         if (part.parentThing is Colony colony)
         {
             cBody = colony.parentBody;
-            originPos = cBody.GetGlobalPositionOfPoint(colony.position);
+            originPos = colony.position;
         }
 
         CartesianData cartesianData = new()

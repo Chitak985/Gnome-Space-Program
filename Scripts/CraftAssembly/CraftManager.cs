@@ -21,16 +21,22 @@ public partial class CraftManager : Node
     public Craft SpawnCraft(Dictionary partData, OrbitDriver driver, bool focus = false)
     {
         // NON ROTATING position relative to the planet
-        Vector3 inertialPosition = driver.cartesian.position;
+        Vector3 position = driver.cartesian.position;
 
-        Logger.Print($"{classTag} Spawning craft at {inertialPosition}");
+        Logger.Print($"{classTag} Spawning craft at {position}");
 
         Craft craft = new();
         ActiveSave.Instance.localSpace.AddChild(craft);
         craft.Instantiate(partData);
 
-        // TODO - make this relative to the planet
-        craft.GlobalPosition = inertialPosition;
+        if (RealityTangler.Instance.activeReferenceFrame == null)
+        {
+            craft.GlobalPosition = position; // We can just set the position directly
+        }else{
+            CelestialBody referenceFrame = RealityTangler.Instance.activeReferenceFrame;
+            craft.GlobalPosition = position + referenceFrame.GlobalPosition; // We are forced to factor in the planet's node position
+        }
+        
 
         craft.Initialize(driver);
 
@@ -40,8 +46,6 @@ public partial class CraftManager : Node
             BuildingManager.Instance.ExitBuildMode(false);
             craft.SnatchFocus();
         }
-
-        RealityTangler.Instance.SwitchReferenceFrame();
 
         // Unleash physics and let it do its thing...
         craft.Anchor(false);

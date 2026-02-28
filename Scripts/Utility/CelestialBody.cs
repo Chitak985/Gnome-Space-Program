@@ -17,8 +17,8 @@ public partial class CelestialBody : Node3D
     public double rot;
     public double rotPeriod;
     public Vector3 tilt;
-    // Really just stores the rotation but okay I guess
-    public Transform3D cachedTransform;
+    // Transform that isn't affected by the body's node transform
+    public Transform3D CachedTransform { get; private set; }
 
     // Axial tilt nodes
     public Node3D pivot;
@@ -123,7 +123,7 @@ public partial class CelestialBody : Node3D
         scaledObject.truePosition = GlobalPosition; //cBody.cartesianData.position.GetPosYUp();
 
         mapObject.truePosition = cartesianData.position;
-        mapObject.Rotation = cachedTransform.Basis.GetEuler();
+        mapObject.Rotation = CachedTransform.Basis.GetEuler();
 
         // Update rotation
         rot = Math.Tau * (ActiveSave.Instance.SaveTime / rotPeriod); //ActiveSave.Instance.saveTime * rotPeriod;
@@ -134,7 +134,11 @@ public partial class CelestialBody : Node3D
         };
 
         // Update cached trash
-        cachedTransform.Basis = pivot.Transform.Basis * trans.Basis;
+        Transform3D newCachedTransform = new()
+        {
+            Basis = pivot.Transform.Basis * trans.Basis
+        };
+        CachedTransform = newCachedTransform;
 
         //Logger.Print(this);
         //Logger.Print((PlanetSystem.Instance.localSpacePlanets.Transform.Basis * cachedTransform.Basis).GetEuler());
@@ -197,20 +201,24 @@ public partial class CelestialBody : Node3D
             Origin = point
         };;
 
-        Transform3D finalTrans = cachedTransform * trans;
+        Transform3D finalTrans = CachedTransform * trans;
 
         return finalTrans.Origin;
     }
 
     // Returns the velocity vector of the planet's surface at that point IN THE GEOCENTRIC REFERENCE FRAME!!
     // Ate a bit of https://en.wikipedia.org/wiki/Rigid_body_dynamics and shat out this function
-    public Vector3 GetSurfaceRotationVelocity(Vector3 point)
+    public Vector3 GetSurfaceRotationVelocity(Vector3 point, bool geocentric = false)
     {
         // Rotation period is in seconds per 2pi radians.
         // Angular velocity has to be in radians per second.
-        double angularVelocity = 1 / (rotPeriod / Math.Tau);
+        double angularVelocity = Math.Tau / rotPeriod;
 
-        Vector3 angularVelocityVector = Vector3.Up * angularVelocity;
+        Vector3 planetUp = Vector3.Up;
+        // Factor in planet's tilt if it's not geocentric
+        if (!geocentric) planetUp = CachedTransform.Basis.Y;
+
+        Vector3 angularVelocityVector = planetUp * angularVelocity;
 
         Vector3 velocity = angularVelocityVector.Cross(point); // Cross and pray
 
