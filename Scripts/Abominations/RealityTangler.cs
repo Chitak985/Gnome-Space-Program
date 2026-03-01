@@ -57,8 +57,8 @@ public partial class RealityTangler : Node
     // Eaten from OrbitManager.cs because we need all the syncing we can get
     private void Process()
     {
+        // Orbits will not work unless you process them twice for some fucking reason
         EmitSignal(SignalName.OrbitProcess);
-
         switch (StateManager.Instance.gameState)
         {
             case StateManager.GameState.Flight:
@@ -66,12 +66,16 @@ public partial class RealityTangler : Node
                 if (activeCraft != null)
                 {
                     // We don't need the square root of this anyways
-                    double originDistance = activeCraft.GlobalPosition.DistanceSquaredTo(Vector3.Zero);
+                    //double originDistance = activeCraft.GlobalPosition.DistanceSquaredTo(Vector3.Zero);
 
-                    if (originDistance > originResetThreshold * originResetThreshold)
-                    {
-                        ResetOrigin(activeCraft);
-                    }
+                    //if (originDistance > originResetThreshold * originResetThreshold)
+                    //{
+                        //ResetOrigin(activeCraft);
+                    //}
+                    CelestialBody cBody = activeCraft.OrbitDriver.parent;
+                    PlanetaryOffset = cBody.cartesianData.position;
+                    OriginOffset = cBody.cartesianData.position;
+                    EmitSignal(SignalName.OrbitProcess);
                 }
                 break;
             case StateManager.GameState.Colony:
@@ -84,7 +88,6 @@ public partial class RealityTangler : Node
                     PlanetaryOffset = cBody.cartesianData.position;
                     ReferenceFrameOriginOffset = cBody.GetGlobalPositionOfPoint(colony.position);
                     OriginOffset = cBody.cartesianData.position + colony.position;
-
                     EmitSignal(SignalName.OrbitProcess);
                 }
                 break;

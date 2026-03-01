@@ -55,9 +55,9 @@ public partial class Conics : Node
         );
 
         Vector3 vPQW = new(
-            -Math.Sqrt(MU / semiLatusRectum) * Math.Sin(trueAnomaly),
+            Math.Sqrt(MU / semiLatusRectum) * (eccentricity + Math.Cos(trueAnomaly)),
             0,
-            Math.Sqrt(MU / semiLatusRectum) * (eccentricity + Math.Cos(trueAnomaly))
+            -Math.Sqrt(MU / semiLatusRectum) * Math.Sin(trueAnomaly)
         );
 
         Basis R =

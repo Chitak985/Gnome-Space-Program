@@ -79,7 +79,15 @@ public partial class TerrainGen : Node3D
                 break;
         }
         
-        if (player != null) playerPos = player.GlobalPosition;
+        if (player != null)
+        {
+            if (RealityTangler.Instance.activeReferenceFrame == cBody)
+            {
+                playerPos = player.GlobalPosition;
+            }else{
+                playerPos = player.GlobalPosition - cBody.GlobalPosition;
+            }
+        }
 
         planetCenter = GlobalPosition;
     }
@@ -215,7 +223,14 @@ public partial class TerrainGen : Node3D
             for (int i = 0; i < quadList.Count; i++)
             {
                 Quad planetQuad = quadList[i];
-                double distanceFromPlr = (planetQuad.centerPosition - (playerPos-planetCenter)).Length();
+
+                Vector3 quadPos = planetQuad.centerPosition;
+                if (RealityTangler.Instance.activeReferenceFrame == null)
+                {
+                    quadPos = cBody.GetGlobalPositionOfPoint(planetQuad.centerPosition);
+                }
+
+                double distanceFromPlr = (quadPos - (playerPos-planetCenter)).Length();
                 int quadDetail = planetQuad.detailLevel;
 
                 planetQuad.readyToSubdivide = false;

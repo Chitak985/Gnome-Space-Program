@@ -114,7 +114,6 @@ public partial class CelestialBody : Node3D
         }else{
             originPos = cartesianData.position - RealityTangler.Instance.PlanetaryOffset;
         }
-        
 
         Position = originPos;
 

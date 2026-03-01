@@ -39,15 +39,26 @@ public partial class LaunchSite : PartModule
             originPos = colony.position;
         }
 
-        CartesianData cartesianData = new()
-        {
+        //CartesianData cartesianData = new()
+        //{
+        //    parent = cBody,
+        //    position = originPos,
+        //    velocity = cBody.GetSurfaceRotationVelocity(originPos)
+        //};
+
+        Orbit orbit = new() {
             parent = cBody,
-            position = originPos,
-            velocity = cBody.GetSurfaceRotationVelocity(originPos)
+            semiMajorAxis = 700000,
+            eccentricity = 0,
+            inclination = 0,
+            argumentOfPeriapsis = 0,
+            longitudeOfAscendingNode = 0,
+            trueAnomaly = 0,
+            trueAnomalyAtEpoch = 0
         };
 
         // Send this to craft manager
-        Craft craft = CraftManager.Instance.SpawnCraft(partData, cartesianData, focus);
+        Craft craft = CraftManager.Instance.SpawnCraft(partData, orbit, focus);
 
         return craft;
     }

@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,13 +11,16 @@ using System.Linq;
 */
 public partial class Craft : Node3D
 {
-    public Dictionary partData;
-    public Part centralPart; // The absolute root of the craft, what we orient around
-    public List<Part> loadedParts = [];
+    public Dictionary PartData { get; private set; }
+    public Part CentralPart { get; private set; } // The absolute root of the craft, what we orient around
+    public List<Part> LoadedParts { get; private set; } = [];
 
     // Orbits and positions are ALWAYS in global space. NO EXCEPTIONS.
     public OrbitDriver OrbitDriver { get; private set; }
 
+    // If the craft is physically loaded (This will affect how its positioning works!)
+    public bool Loaded { get; private set; }
+    // Whether to lock the craft's physics
     public bool Anchored { get; private set; }
 
     public override void _PhysicsProcess(double delta)
@@ -24,7 +28,7 @@ public partial class Craft : Node3D
         // Loop over every part and apply a force towards the planet
         if (OrbitDriver.parent != null)
         {
-            foreach (Part part in loadedParts)
+            foreach (Part part in LoadedParts)
             {
                 CelestialBody currentCBody = OrbitDriver.parent;
 
@@ -36,41 +40,61 @@ public partial class Craft : Node3D
 
                 double force = Conics.GravConstant * (planetMass * part.Mass / Mathf.Pow(distance, 2));
 
-                //part.ApplyCentralForce(force*direction);
+                part.ApplyCentralForce(force*direction);
             }
         }
 
-        GlobalPosition = centralPart.GlobalPosition;
+        if(!Anchored) GlobalPosition = CentralPart.GlobalPosition;
     }
 
     public void Anchor(bool toggle)
     {
         Anchored = toggle;
-        foreach (Part part in loadedParts)
+        foreach (Part part in LoadedParts)
         {
             part.Anchor(toggle);
         }
     }
 
-    // Creates stuff like the orbit and whatnot
-    public void Initialize(OrbitDriver orbitDriver)
+    // Hopefully loads the craft in the correct position/orientation
+    public void Load(bool toggle)
+    {
+        Loaded = toggle;
+
+        if (toggle)
+        {
+            // Load craft
+            Instantiate(PartData);
+        }else{
+            // Unload craft
+            throw new NotImplementedException();
+        }
+    }
+
+    // Create the abstract idea of a craft
+    // DOES NOT INSTANTIATE IT!
+    public void Initialize(OrbitDriver orbitDriver, Dictionary partData)
     {
         OrbitDriver = orbitDriver;
+        PartData = partData;
+
+        // NON ROTATING position relative to the planet
+        Vector3 position = orbitDriver.cartesian.position;
     }
 
     // Hiujjj??
     public void Instantiate()
     {
-        Instantiate(partData);
+        Instantiate(PartData);
     }
 
     public void Instantiate(Dictionary partData)
     {
         RealityTangler.Instance.OriginReset += ResetOrigin;
-        this.partData = partData;
+        this.PartData = partData;
         AddPartFromData(partData, parentObject: this);
 
-        centralPart = loadedParts[0];
+        CentralPart = LoadedParts[0];
     }
 
     // Recursive function to reconstruct a bunch of parts from given part data
@@ -105,9 +129,9 @@ public partial class Craft : Node3D
         // ADD HANDLING FOR MODULES
 
         // Add the part to the list before moving on to its attachments
-        loadedParts.Add(part);
+        LoadedParts.Add(part);
 
-        Array attachedParts = (Array)data["attachedParts"];
+        Godot.Collections.Array attachedParts = (Godot.Collections.Array)data["attachedParts"];
         // loop over attached parts
         foreach (Dictionary childData in attachedParts.Select(v => (Dictionary)v))
         {
@@ -118,6 +142,7 @@ public partial class Craft : Node3D
     // Middle-man function in case we want something special to happen
     public void SnatchFocus()
     {
+        StateManager.Instance.gameState = StateManager.GameState.Flight;
         StateManager.Instance.flightState.activeCraft = this;
         FlightCamera.Instance.TargetObject(this, 100, 1, 10000);
 
@@ -134,9 +159,9 @@ public partial class Craft : Node3D
     }
 
     // Sets the velocity from the cartesian data
-    public void SetVelocityToCartesian()
+    public void SetVelocityFromCartesian()
     {
-        foreach (Part part in loadedParts)
+        foreach (Part part in LoadedParts)
         {
             Vector3 finalVel = OrbitDriver.cartesian.velocity;
 
@@ -149,5 +174,31 @@ public partial class Craft : Node3D
 
             part.LinearVelocity = finalVel;
         }
+    }
+
+    public void SetPositionFromCartesian(bool returnVelocity = true)
+    {
+        Anchor(true);
+
+        Vector3 positionResult = OrbitDriver.cartesian.position;
+
+        if (RealityTangler.Instance.activeReferenceFrame != null)
+        {
+            //positionResult = OrbitDriver.cartesian.position + RealityTangler.Instance.activeReferenceFrame.GlobalPosition;
+        }
+
+        Position = positionResult;
+        foreach (Part part in LoadedParts)
+        {
+            if (part.parentPart != null)
+            {
+                part.Position = part.parentNode.Position - part.usedNode.Position;
+            }else{
+                part.Position = Vector3.Zero;
+            }
+        }
+        Anchor(false);
+        // Return the velocity lost from anchoring
+        if(returnVelocity) SetVelocityFromCartesian();
     }
 }

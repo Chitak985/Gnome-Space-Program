@@ -20,25 +20,13 @@ public partial class CraftManager : Node
     */
     public Craft SpawnCraft(Dictionary partData, OrbitDriver driver, bool focus = false)
     {
-        // NON ROTATING position relative to the planet
-        Vector3 position = driver.cartesian.position;
-
-        Logger.Print($"{classTag} Spawning craft at {position}");
+        Logger.Print($"{classTag} Spawning craft at {driver.cartesian.position} with velocity {driver.cartesian.velocity}");
 
         Craft craft = new();
         ActiveSave.Instance.localSpace.AddChild(craft);
-        craft.Instantiate(partData);
 
-        if (RealityTangler.Instance.activeReferenceFrame == null)
-        {
-            craft.GlobalPosition = position; // We can just set the position directly
-        }else{
-            CelestialBody referenceFrame = RealityTangler.Instance.activeReferenceFrame;
-            craft.GlobalPosition = position + referenceFrame.GlobalPosition; // We are forced to factor in the planet's node position
-        }
-        
-
-        craft.Initialize(driver);
+        craft.Initialize(driver, partData);
+        craft.Load(true);
 
         // We can focus on the craft if we want to
         if (focus)
@@ -49,7 +37,7 @@ public partial class CraftManager : Node
 
         // Unleash physics and let it do its thing...
         craft.Anchor(false);
-        craft.SetVelocityToCartesian();
+        craft.SetPositionFromCartesian();
 
         return craft;
     }
@@ -68,7 +56,7 @@ public partial class CraftManager : Node
         return craft;
     }
 
-    // For if one wants to spawn a craft at a specific orbit
+    // For if one wants to spawn a craft at a specific position
     public Craft SpawnCraft(Dictionary partData, CartesianData cartesian, bool focus = false)
     {
         OrbitDriver driver = new()

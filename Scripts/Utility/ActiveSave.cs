@@ -105,6 +105,6 @@ public partial class ActiveSave : Node3D
 		SaveTime += delta * 1000 * timeSpeed / 1000;
 
 		// Set physics speed to match time speed
-		//Engine.TimeScale = timeSpeed;
+		Engine.TimeScale = timeSpeed;
 	}
 }
