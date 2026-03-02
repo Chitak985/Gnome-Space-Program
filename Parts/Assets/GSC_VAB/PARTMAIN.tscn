@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=4 uid="uid://b2pba25ejflam"]
+[gd_scene format=4 uid="uid://b2pba25ejflam"]
 
 [ext_resource type="Script" uid="uid://2jguooep700o" path="res://Scripts/CraftAssembly/Parts/Part.cs" id="1_2gjxd"]
 [ext_resource type="Material" uid="uid://cq16nvjct50k6" path="res://Assets/Materials/HoverGlow2.tres" id="2_2mt1h"]
@@ -658,137 +658,138 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_hfs3h")
 
-[node name="GscVab" type="RigidBody3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+[node name="GscVab" type="RigidBody3D" unique_id=1859377601 node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+continuous_cd = true
 script = ExtResource("1_2gjxd")
 glowMat = ExtResource("2_2mt1h")
 glowMesh = NodePath("mesh/Main")
 attachNodes = []
 colliders = []
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2086310992]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 43.5, 0)
 shape = SubResource("BoxShape3D_2gjxd")
 
-[node name="mesh" type="Node3D" parent="."]
+[node name="mesh" type="Node3D" parent="." unique_id=39378020]
 transform = Transform3D(12, 0, 0, 0, 12, 0, 0, 0, 12, 0, 0, 0)
 
-[node name="Main" type="MeshInstance3D" parent="mesh"]
+[node name="Main" type="MeshInstance3D" parent="mesh" unique_id=1792218004]
 mesh = SubResource("ArrayMesh_wgyil")
 skeleton = NodePath("")
 
-[node name="Helipad" type="MeshInstance3D" parent="mesh"]
+[node name="Helipad" type="MeshInstance3D" parent="mesh" unique_id=1466563952]
 mesh = SubResource("ArrayMesh_vv8sn")
 skeleton = NodePath("")
 
-[node name="Stair" type="MeshInstance3D" parent="mesh"]
+[node name="Stair" type="MeshInstance3D" parent="mesh" unique_id=1651598091]
 transform = Transform3D(0.09434021, 0, 0, 0, 0.09434021, 0, 0, 0, 0.09434021, 0.9019278, 7.1465054, 1.2610799)
 mesh = SubResource("ArrayMesh_8qabx")
 skeleton = NodePath("")
 
-[node name="Railing" type="MeshInstance3D" parent="mesh/Stair"]
+[node name="Railing" type="MeshInstance3D" parent="mesh/Stair" unique_id=1131313634]
 transform = Transform3D(10.599933, 0, 0, 0, 10.599933, 0, 0, 0, 10.599933, -2.9669623, 0.97146606, 2.9109383)
 mesh = SubResource("ArrayMesh_ll53o")
 skeleton = NodePath("")
 
-[node name="Railing_001" type="MeshInstance3D" parent="mesh/Stair"]
+[node name="Railing_001" type="MeshInstance3D" parent="mesh/Stair" unique_id=1521456200]
 transform = Transform3D(1.8954158e-06, 0, -10.599933, 0, 10.599933, 0, 10.599933, 0, 1.8954158e-06, -2.9669623, 0.97146606, 2.9109383)
 mesh = SubResource("ArrayMesh_bcv5d")
 skeleton = NodePath("")
 
-[node name="Railing_002" type="MeshInstance3D" parent="mesh/Stair"]
+[node name="Railing_002" type="MeshInstance3D" parent="mesh/Stair" unique_id=1396700862]
 transform = Transform3D(1.8954158e-06, 0, 10.599933, 0, 10.599933, 0, -10.599933, 0, 1.8954158e-06, 2.8220463, 2.9123154, 0.92894936)
 mesh = SubResource("ArrayMesh_fuyee")
 skeleton = NodePath("")
 
-[node name="Railing_003" type="MeshInstance3D" parent="mesh/Stair"]
+[node name="Railing_003" type="MeshInstance3D" parent="mesh/Stair" unique_id=382022896]
 transform = Transform3D(-10.599933, 0, 1.6005454e-06, 0, 10.599933, 0, -1.6005454e-06, 0, -10.599933, 2.8220463, 2.9123154, -1.1276617)
 mesh = SubResource("ArrayMesh_ta7s4")
 skeleton = NodePath("")
 
-[node name="Railing_004" type="MeshInstance3D" parent="mesh/Stair"]
+[node name="Railing_004" type="MeshInstance3D" parent="mesh/Stair" unique_id=735455495]
 transform = Transform3D(0, -7.495284, -7.4952846, 0, 7.4952846, -7.4952846, 10.599933, 0, 0, -0.8899393, 0.98931885, 0.92894936)
 mesh = SubResource("ArrayMesh_ltral")
 skeleton = NodePath("")
 
-[node name="Railing_005" type="MeshInstance3D" parent="mesh/Stair"]
+[node name="Railing_005" type="MeshInstance3D" parent="mesh/Stair" unique_id=503576640]
 transform = Transform3D(0, 7.495284, 7.4952846, 0, 7.4952846, -7.4952846, -10.599933, 0, 0, 0.74867916, -0.94428253, 2.9109383)
 mesh = SubResource("ArrayMesh_vwlip")
 skeleton = NodePath("")
 
-[node name="gnometoscale" type="MeshInstance3D" parent="mesh"]
+[node name="gnometoscale" type="MeshInstance3D" parent="mesh" unique_id=1924458799]
 transform = Transform3D(0.055380203, 0, 0, 0, 0.055380203, 0, 0, 0, 0.055380203, 0, 0.11611909, 4.124625)
 mesh = SubResource("ArrayMesh_civa3")
 skeleton = NodePath("")
 
-[node name="gnometoscale_001" type="MeshInstance3D" parent="mesh"]
+[node name="gnometoscale_001" type="MeshInstance3D" parent="mesh" unique_id=266888796]
 transform = Transform3D(0.055380203, 0, 0, 0, 0.055380203, 0, 0, 0, 0.055380203, 1.1414785, 7.107976, 1.2674297)
 mesh = SubResource("ArrayMesh_shkhh")
 skeleton = NodePath("")
 
-[node name="Stair_001" type="MeshInstance3D" parent="mesh"]
+[node name="Stair_001" type="MeshInstance3D" parent="mesh" unique_id=32123977]
 transform = Transform3D(-0.09434021, 0, 1.4244976e-08, 0, 0.09434021, 0, -1.4244976e-08, 0, -0.09434021, -0.9019278, 7.1465054, -1.26108)
 mesh = SubResource("ArrayMesh_1c8o4")
 skeleton = NodePath("")
 
-[node name="Railing_006" type="MeshInstance3D" parent="mesh/Stair_001"]
+[node name="Railing_006" type="MeshInstance3D" parent="mesh/Stair_001" unique_id=845710910]
 transform = Transform3D(10.599933, 0, 0, 0, 10.599933, 0, 0, 0, 10.599933, -2.9669633, 0.97146606, 2.9109392)
 mesh = SubResource("ArrayMesh_qxfms")
 skeleton = NodePath("")
 
-[node name="Railing_007" type="MeshInstance3D" parent="mesh/Stair_001"]
+[node name="Railing_007" type="MeshInstance3D" parent="mesh/Stair_001" unique_id=293052496]
 transform = Transform3D(1.8954158e-06, 0, -10.599933, 0, 10.599933, 0, 10.599933, 0, 1.8954158e-06, -2.9669633, 0.97146606, 2.9109392)
 mesh = SubResource("ArrayMesh_1aqo3")
 skeleton = NodePath("")
 
-[node name="Railing_008" type="MeshInstance3D" parent="mesh/Stair_001"]
+[node name="Railing_008" type="MeshInstance3D" parent="mesh/Stair_001" unique_id=1751462487]
 transform = Transform3D(1.8954158e-06, 0, 10.599933, 0, 10.599933, 0, -10.599933, 0, 1.8954158e-06, 2.8220446, 2.9123154, 0.92894846)
 mesh = SubResource("ArrayMesh_ndiot")
 skeleton = NodePath("")
 
-[node name="Railing_009" type="MeshInstance3D" parent="mesh/Stair_001"]
+[node name="Railing_009" type="MeshInstance3D" parent="mesh/Stair_001" unique_id=674157515]
 transform = Transform3D(-10.599933, 0, 1.6005456e-06, 0, 10.599933, 0, -1.6005456e-06, 0, -10.599933, 2.8220453, 2.9123154, -1.1276617)
 mesh = SubResource("ArrayMesh_fy55q")
 skeleton = NodePath("")
 
-[node name="Railing_010" type="MeshInstance3D" parent="mesh/Stair_001"]
+[node name="Railing_010" type="MeshInstance3D" parent="mesh/Stair_001" unique_id=886518211]
 transform = Transform3D(0, -7.495284, -7.4952846, 0, 7.4952846, -7.4952846, 10.599933, 0, 0, -0.88994, 0.99980927, 0.928949)
 mesh = SubResource("ArrayMesh_v6t75")
 skeleton = NodePath("")
 
-[node name="Railing_011" type="MeshInstance3D" parent="mesh/Stair_001"]
+[node name="Railing_011" type="MeshInstance3D" parent="mesh/Stair_001" unique_id=2131790792]
 transform = Transform3D(0, 7.495284, 7.4952846, 0, 7.4952846, -7.4952846, -10.599933, 0, 0, 0.7486778, -0.94052887, 2.9109385)
 mesh = SubResource("ArrayMesh_oqat1")
 skeleton = NodePath("")
 
-[node name="Interior" type="MeshInstance3D" parent="mesh"]
+[node name="Interior" type="MeshInstance3D" parent="mesh" unique_id=992200673]
 mesh = SubResource("ArrayMesh_l1xko")
 skeleton = NodePath("")
 
-[node name="Base" type="MeshInstance3D" parent="mesh"]
+[node name="Base" type="MeshInstance3D" parent="mesh" unique_id=1558452632]
 mesh = SubResource("ArrayMesh_t04ys")
 skeleton = NodePath("")
 
-[node name="Lights" type="Node3D" parent="."]
+[node name="Lights" type="Node3D" parent="." unique_id=868603701]
 
-[node name="SpotLight3D" type="SpotLight3D" parent="Lights"]
+[node name="SpotLight3D" type="SpotLight3D" parent="Lights" unique_id=1667629395]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 20, 81, 30)
 light_energy = 4.0
 spot_range = 250.0
 spot_angle = 80.73
 
-[node name="SpotLight3D2" type="SpotLight3D" parent="Lights"]
+[node name="SpotLight3D2" type="SpotLight3D" parent="Lights" unique_id=1679935227]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -20, 81, 30)
 light_energy = 4.0
 spot_range = 250.0
 spot_angle = 80.73
 
-[node name="SpotLight3D3" type="SpotLight3D" parent="Lights"]
+[node name="SpotLight3D3" type="SpotLight3D" parent="Lights" unique_id=1690881981]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 20, 81, -30)
 light_energy = 4.0
 spot_range = 250.0
 spot_angle = 80.73
 
-[node name="SpotLight3D4" type="SpotLight3D" parent="Lights"]
+[node name="SpotLight3D4" type="SpotLight3D" parent="Lights" unique_id=1261230265]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -20, 81, -30)
 light_energy = 4.0
 spot_range = 250.0

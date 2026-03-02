@@ -28,23 +28,38 @@ public partial class LaunchSite : PartModule
         siteName = (string)configData["siteName"];
     }
 
+    public Vector3 GetLaunchPosition()
+    {
+        // Pull a position out of this heap of trash
+        Vector3 parentPosition = Vector3.Zero;
+        if (part.parentThing is Colony colony)
+        {
+            parentPosition = colony.position;
+        }
+
+        Vector3 result = spawnNode.GlobalPosition + parentPosition;
+
+        return result;
+    }
+
     public Craft SpawnCraft(Dictionary partData, bool focus = false)
     {
-        Vector3 originPos = new Vector3(0,0,100);
         CelestialBody cBody = null;
-        // Handle crafts soon for fucks sake
+        Vector3 originPos = Vector3.Zero;
+
+        // Handle crafts soon for crying out loud
         if (part.parentThing is Colony colony)
         {
             cBody = colony.parentBody;
-            originPos = colony.position;
+            originPos = GetLaunchPosition();
         }
 
-        //CartesianData cartesianData = new()
-        //{
-        //    parent = cBody,
-        //    position = originPos,
-        //    velocity = cBody.GetSurfaceRotationVelocity(originPos)
-        //};
+        CartesianData cartesianData = new()
+        {
+            parent = cBody,
+            position = originPos,
+            velocity = cBody.GetSurfaceRotationVelocity(originPos)
+        };
 
         Orbit orbit = new() {
             parent = cBody,

@@ -31,6 +31,8 @@ public partial class CelestialBody : Node3D
     public string parentName;
     public Orbit orbit;
     public CartesianData cartesianData;
+    // The absolute position relative to the root body
+    public Vector3 GlobalCartesianPosition { get; private set; }
 
     public List<CelestialBody> childPlanets = [];
 
@@ -80,17 +82,6 @@ public partial class CelestialBody : Node3D
         mapGizmo.Visible = toggle;
     }
 
-    public override void _Process(double delta)
-    {
-        // Propagate the cBody's orbit
-
-        //ProcessOrbitalPosition();
-
-        //scaledSphere.truePosition = GetPosYUp(cartesianData.position);
-
-        //pivot.Rotation += new Vector3(0, 0.01, 0);
-    }
-
     // Process the cBody orbital positioning calculations. Used by RealityTangler to "force" repositioning to avoid jitter.
     public void ProcessTransform()
     {
@@ -101,8 +92,10 @@ public partial class CelestialBody : Node3D
         {
             orbit.trueAnomaly = Conics.TimeToTrueAnomaly(orbit, ActiveSave.Instance.SaveTime, 0) + orbit.trueAnomalyAtEpoch;
             CartesianData data = Conics.ElemToCart(orbit);
-            cartesianData.position = data.position + orbit.parent.cartesianData.position;
-            cartesianData.velocity = data.position;
+            cartesianData = data;
+            GlobalCartesianPosition = cartesianData.position + orbit.parent.cartesianData.position;
+            //cartesianData.position = data.position + orbit.parent.cartesianData.position;
+            //cartesianData.velocity = data.position;
             //GD.Print(SaveManager.Instance.saveTime);
             //GD.Print($"{cartesianData.position.X}, {cartesianData.position.Y}, {cartesianData.position.Z}");
         }
@@ -110,9 +103,9 @@ public partial class CelestialBody : Node3D
         // Uh
         if (RealityTangler.Instance.activeReferenceFrame == this)
         {
-            originPos = cartesianData.position - RealityTangler.Instance.OriginOffset; 
+            originPos = GlobalCartesianPosition - RealityTangler.Instance.OriginOffset; 
         }else{
-            originPos = cartesianData.position - RealityTangler.Instance.PlanetaryOffset;
+            originPos = GlobalCartesianPosition - RealityTangler.Instance.PlanetaryOffset;
         }
 
         Position = originPos;
@@ -121,7 +114,7 @@ public partial class CelestialBody : Node3D
 
         scaledObject.truePosition = GlobalPosition; //cBody.cartesianData.position.GetPosYUp();
 
-        mapObject.truePosition = cartesianData.position;
+        mapObject.truePosition = GlobalCartesianPosition;
         mapObject.Rotation = CachedTransform.Basis.GetEuler();
 
         // Update rotation
@@ -198,7 +191,7 @@ public partial class CelestialBody : Node3D
         Transform3D trans = new()
         {
             Origin = point
-        };;
+        };
 
         Transform3D finalTrans = CachedTransform * trans;
 
@@ -222,6 +215,13 @@ public partial class CelestialBody : Node3D
         Vector3 velocity = angularVelocityVector.Cross(point); // Cross and pray
 
         return velocity;
+    }
+
+    // Gets the velocity in this reference frame
+    public Vector3 GetLocalVelocity(Vector3 velocity)
+    {
+        Vector3 localVel = CachedTransform.Basis.Inverse() * velocity;
+        return localVel;
     }
 
     // Shamelessly stolen from https://stackoverflow.com/questions/46247499/vector3-to-latitude-longitude

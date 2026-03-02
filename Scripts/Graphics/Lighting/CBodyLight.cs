@@ -2,8 +2,8 @@ using Godot;
 
 public partial class CBodyLight : Node3D
 {
-    [Export] private DirectionalLight3D localLight;
-    [Export] private DirectionalLight3D mapLight;
+    [Export] private Node3D localLightContainer;
+    [Export] private Node3D mapLightContainer;
 
     private CelestialBody cBody;
 
@@ -15,8 +15,8 @@ public partial class CBodyLight : Node3D
         this.cBody = cBody;
 
         // This is a horrible idea please fix this as soon as you're not fixing every other possible issue in this game thank youuu :3
-        mapLight.GetParent().RemoveChild(mapLight);
-        MapView.Instance.AddChild(mapLight);
+        mapLightContainer.GetParent().RemoveChild(mapLightContainer);
+        MapView.Instance.AddChild(mapLightContainer);
     }
 
     public void UpdateLight()
@@ -24,15 +24,27 @@ public partial class CBodyLight : Node3D
         if (cBody != null)
         {
             if(cBody.mapObject.GlobalPosition != MapView.Instance.mapCamera.GlobalPosition)
-                mapLight.LookAtFromPosition(cBody.mapObject.GlobalPosition, MapView.Instance.mapCamera.GlobalPosition);
+                mapLightContainer.LookAtFromPosition(cBody.mapObject.GlobalPosition, MapView.Instance.mapCamera.GlobalPosition);
             if(cBody.GlobalPosition != FlightCamera.Instance.GlobalPosition)
-                localLight.LookAtFromPosition(cBody.GlobalPosition, FlightCamera.Instance.GlobalPosition);
+                localLightContainer.LookAtFromPosition(cBody.GlobalPosition, FlightCamera.Instance.GlobalPosition);
         }
 
-        localLight.LightEnergy = brightness;
-        mapLight.LightEnergy = brightness;
+        foreach (Node node in localLightContainer.GetChildren())
+        {
+            if (node is DirectionalLight3D light)
+            {
+                light.LightEnergy = brightness / localLightContainer.GetChildCount();
+                light.LightColor = colour;
+            }
+        }
 
-        localLight.LightColor = colour;
-        mapLight.LightColor = colour;
+        foreach (Node node in mapLightContainer.GetChildren())
+        {
+            if (node is DirectionalLight3D light)
+            {
+                light.LightEnergy = brightness / localLightContainer.GetChildCount();
+                light.LightColor = colour;
+            }
+        }
     }
 }

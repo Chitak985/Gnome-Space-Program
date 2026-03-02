@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=4 uid="uid://drmdivxomqm0s"]
+[gd_scene format=4 uid="uid://drmdivxomqm0s"]
 
 [ext_resource type="Script" uid="uid://2jguooep700o" path="res://Scripts/CraftAssembly/Parts/Part.cs" id="1_3lrrq"]
 [ext_resource type="Material" uid="uid://cq16nvjct50k6" path="res://Assets/Materials/HoverGlow2.tres" id="2_20msv"]
@@ -384,84 +384,85 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_dmeqv")
 
-[node name="GBRP_1_Engine" type="RigidBody3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+[node name="GBRP_1_Engine" type="RigidBody3D" unique_id=1346084838 node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+continuous_cd = true
 script = ExtResource("1_3lrrq")
 glowMat = ExtResource("2_20msv")
 glowMesh = NodePath("GBRP1_Engine_Ver1/Nozzle")
 attachNodes = [NodePath("AttachNodes/AttachmentNode"), NodePath("AttachNodes/AttachmentNode2")]
 colliders = [NodePath("Collider1"), NodePath("Collider2")]
 
-[node name="AttachNodes" type="Node3D" parent="."]
+[node name="AttachNodes" type="Node3D" parent="." unique_id=1858597773]
 
-[node name="AttachmentNode" type="Node3D" parent="AttachNodes" node_paths=PackedStringArray("part")]
+[node name="AttachmentNode" type="Node3D" parent="AttachNodes" unique_id=52813619 node_paths=PackedStringArray("part")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.645, 0)
 script = ExtResource("2_rnlsl")
 part = NodePath("../..")
 
-[node name="AttachmentNode2" type="Node3D" parent="AttachNodes" node_paths=PackedStringArray("part")]
+[node name="AttachmentNode2" type="Node3D" parent="AttachNodes" unique_id=401060281 node_paths=PackedStringArray("part")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
 script = ExtResource("2_rnlsl")
 part = NodePath("../..")
 
-[node name="Collider1" type="CollisionShape3D" parent="."]
+[node name="Collider1" type="CollisionShape3D" parent="." unique_id=1292182073]
 shape = SubResource("ConvexPolygonShape3D_pjnpj")
 
-[node name="Collider2" type="CollisionShape3D" parent="."]
+[node name="Collider2" type="CollisionShape3D" parent="." unique_id=330101326]
 shape = SubResource("ConvexPolygonShape3D_i6v6r")
 
-[node name="GBRP1_Engine_Ver1" type="Node3D" parent="."]
+[node name="GBRP1_Engine_Ver1" type="Node3D" parent="." unique_id=1415144974]
 
-[node name="Shroud" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="Shroud" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=2057425444]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.44311, 0)
 mesh = SubResource("ArrayMesh_7mm6d")
 skeleton = NodePath("")
 
-[node name="Combustor" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="Combustor" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=122217283]
 transform = Transform3D(0.4759984, 0, 0, 0, 0.4759984, 0, 0, 0, 0.4759984, 2.3830074e-05, 0.3578195, 5.6947698e-05)
 mesh = SubResource("ArrayMesh_3tj3x")
 skeleton = NodePath("")
 
-[node name="Nozzle" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="Nozzle" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=675556100]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1999564, 0)
 mesh = SubResource("ArrayMesh_cbfm6")
 skeleton = NodePath("")
 
-[node name="Struts" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="Struts" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=1800924724]
 transform = Transform3D(0.639372, 0, -0.6393719, 0, 0.9042085, 0, 0.6393719, 0, 0.639372, 0.029637728, 0.40009698, 0)
 mesh = SubResource("ArrayMesh_flcx8")
 skeleton = NodePath("")
 
-[node name="Pump" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="Pump" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=586618758]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.28213546, 0.36249965, 0)
 mesh = SubResource("ArrayMesh_wwuf5")
 skeleton = NodePath("")
 
-[node name="TubeFuel" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="TubeFuel" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=1556052412]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.022250341, 0.50160134, -0.0088750385)
 mesh = SubResource("ArrayMesh_b5v01")
 skeleton = NodePath("")
 
-[node name="LetterTee" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="LetterTee" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=746389970]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.21007212, 0.48002386, -0.008404317)
 mesh = SubResource("ArrayMesh_5453g")
 skeleton = NodePath("")
 
-[node name="Inchworm" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="Inchworm" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=1228880604]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03804189, 0.34450635, 0.088343516)
 mesh = SubResource("ArrayMesh_ev5eu")
 skeleton = NodePath("")
 
-[node name="TubeOxy" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="TubeOxy" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=1868544595]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18751863, 0.41863602, -0.12883256)
 mesh = SubResource("ArrayMesh_yinkv")
 skeleton = NodePath("")
 
-[node name="Flange" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="Flange" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=1660443238]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2593097, 0.5600368, -0.007580223)
 mesh = SubResource("ArrayMesh_ekbkh")
 skeleton = NodePath("")
 
-[node name="COLLIDER" type="MeshInstance3D" parent="GBRP1_Engine_Ver1"]
+[node name="COLLIDER" type="MeshInstance3D" parent="GBRP1_Engine_Ver1" unique_id=2068390154]
 visible = false
 mesh = SubResource("ArrayMesh_n7wbg")
 skeleton = NodePath("")

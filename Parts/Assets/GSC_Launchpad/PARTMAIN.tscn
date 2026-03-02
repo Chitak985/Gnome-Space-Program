@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://dr0vsmacmxaq0"]
+[gd_scene format=4 uid="uid://dr0vsmacmxaq0"]
 
 [ext_resource type="Script" uid="uid://2jguooep700o" path="res://Scripts/CraftAssembly/Parts/Part.cs" id="1_7hc1n"]
 [ext_resource type="Material" uid="uid://cq16nvjct50k6" path="res://Assets/Materials/HoverGlow2.tres" id="2_jfuk2"]
@@ -72,25 +72,26 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_kkslg")
 
-[node name="GscVab" type="RigidBody3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+[node name="GscVab" type="RigidBody3D" unique_id=444563923 node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+continuous_cd = true
 script = ExtResource("1_7hc1n")
 glowMat = ExtResource("2_jfuk2")
 glowMesh = NodePath("GSC_Launchpad/Base")
 attachNodes = []
 colliders = []
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2088812076]
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_uhres")
 
-[node name="GSC_Launchpad" type="Node3D" parent="."]
+[node name="GSC_Launchpad" type="Node3D" parent="." unique_id=224438645]
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
 
-[node name="Base" type="MeshInstance3D" parent="GSC_Launchpad"]
+[node name="Base" type="MeshInstance3D" parent="GSC_Launchpad" unique_id=647030499]
 mesh = SubResource("ArrayMesh_nkg5g")
 skeleton = NodePath("")
 
-[node name="Grate" type="MeshInstance3D" parent="GSC_Launchpad"]
+[node name="Grate" type="MeshInstance3D" parent="GSC_Launchpad" unique_id=983579696]
 transform = Transform3D(3.9652095, 0, 0, 0, 3.9652095, 0, 0, 0, 3.9652095, 0, 1.4862546, 0)
 mesh = SubResource("ArrayMesh_ed1bi")
 skeleton = NodePath("")

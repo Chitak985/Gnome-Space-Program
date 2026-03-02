@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=4 uid="uid://cw3mckhix0d5i"]
+[gd_scene format=4 uid="uid://cw3mckhix0d5i"]
 
 [ext_resource type="Script" uid="uid://2jguooep700o" path="res://Scripts/CraftAssembly/Parts/Part.cs" id="1_fdmar"]
 [ext_resource type="Material" uid="uid://cq16nvjct50k6" path="res://Assets/Materials/HoverGlow2.tres" id="2_xqvd7"]
@@ -143,45 +143,46 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_7cmij")
 
-[node name="MG1Pod" type="RigidBody3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+[node name="MG1Pod" type="RigidBody3D" unique_id=317248248 node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+continuous_cd = true
 script = ExtResource("1_fdmar")
 glowMat = ExtResource("2_xqvd7")
 glowMesh = NodePath("MG1_Pod_Ver5/Capsule_001")
 attachNodes = [NodePath("AttachNodes/AttachmentNode"), NodePath("AttachNodes/AttachmentNode2")]
 colliders = [NodePath("CollisionShape3D")]
 
-[node name="AttachNodes" type="Node3D" parent="."]
+[node name="AttachNodes" type="Node3D" parent="." unique_id=1646011821]
 
-[node name="AttachmentNode" type="Node3D" parent="AttachNodes" node_paths=PackedStringArray("part")]
+[node name="AttachmentNode" type="Node3D" parent="AttachNodes" unique_id=1319156998 node_paths=PackedStringArray("part")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.315, 0)
 script = ExtResource("5_gtcd5")
 part = NodePath("../..")
 
-[node name="AttachmentNode2" type="Node3D" parent="AttachNodes" node_paths=PackedStringArray("part")]
+[node name="AttachmentNode2" type="Node3D" parent="AttachNodes" unique_id=636408036 node_paths=PackedStringArray("part")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.315, 0)
 script = ExtResource("5_gtcd5")
 part = NodePath("../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1697004638]
 shape = SubResource("ConvexPolygonShape3D_xqvd7")
 
-[node name="MG1_Pod_Ver5" type="Node3D" parent="."]
+[node name="MG1_Pod_Ver5" type="Node3D" parent="." unique_id=905921142]
 
-[node name="Capsule_001" type="MeshInstance3D" parent="MG1_Pod_Ver5"]
+[node name="Capsule_001" type="MeshInstance3D" parent="MG1_Pod_Ver5" unique_id=770983444]
 mesh = SubResource("ArrayMesh_8hq85")
 skeleton = NodePath("")
 
-[node name="Hatch_001" type="MeshInstance3D" parent="MG1_Pod_Ver5"]
+[node name="Hatch_001" type="MeshInstance3D" parent="MG1_Pod_Ver5" unique_id=796311603]
 transform = Transform3D(1.0029728, 0, 0, 0, 1.0029728, 0, 0, 0, 1.0029728, 0, 0, 0)
 mesh = SubResource("ArrayMesh_2fdsl")
 skeleton = NodePath("")
 
-[node name="Window_001" type="MeshInstance3D" parent="MG1_Pod_Ver5"]
+[node name="Window_001" type="MeshInstance3D" parent="MG1_Pod_Ver5" unique_id=193720361]
 transform = Transform3D(1.0029728, 0, 0, 0, 1.0029728, 0, 0, 0, 1.0029728, 0, 0, 0)
 mesh = SubResource("ArrayMesh_bbh72")
 skeleton = NodePath("")
 
-[node name="Collider" type="MeshInstance3D" parent="MG1_Pod_Ver5"]
+[node name="Collider" type="MeshInstance3D" parent="MG1_Pod_Ver5" unique_id=204582126]
 visible = false
 mesh = SubResource("ArrayMesh_6ubjk")
 skeleton = NodePath("")

@@ -22,6 +22,7 @@ public partial class Craft : Node3D
     public bool Loaded { get; private set; }
     // Whether to lock the craft's physics
     public bool Anchored { get; private set; }
+    public MapObject MapObject { get; private set; }
 
     public override void _PhysicsProcess(double delta)
     {
@@ -45,6 +46,11 @@ public partial class Craft : Node3D
         }
 
         if(!Anchored) GlobalPosition = CentralPart.GlobalPosition;
+
+        if (MapObject != null)
+        {
+            MapObject.truePosition = OrbitDriver.cartesian.position + OrbitDriver.parent.GlobalCartesianPosition;
+        }
     }
 
     public void Anchor(bool toggle)
@@ -65,6 +71,7 @@ public partial class Craft : Node3D
         {
             // Load craft
             Instantiate(PartData);
+            CraftManager.Instance.RegisterLoadedCraft(this);
         }else{
             // Unload craft
             throw new NotImplementedException();
@@ -78,8 +85,10 @@ public partial class Craft : Node3D
         OrbitDriver = orbitDriver;
         PartData = partData;
 
-        // NON ROTATING position relative to the planet
-        Vector3 position = orbitDriver.cartesian.position;
+        // Create map object
+        MapObject = new() { Name = $"{Name}_Map" };
+        MapView.Instance.AddChild(MapObject);
+        MapView.Instance.AddMapIcon(MapObject);
     }
 
     // Hiujjj??
@@ -124,6 +133,9 @@ public partial class Craft : Node3D
 
                 part.CreateAttachJoints(part.usedNode, part.parentNode);
             }
+
+            // Assign parent
+            part.parentPart = parentPart;
         }
         
         // ADD HANDLING FOR MODULES
@@ -170,6 +182,7 @@ public partial class Craft : Node3D
             {
                 CelestialBody activeFrame = RealityTangler.Instance.activeReferenceFrame;
                 finalVel -= activeFrame.GetSurfaceRotationVelocity(OrbitDriver.cartesian.position);
+                finalVel = activeFrame.GetLocalVelocity(finalVel);
             }
 
             part.LinearVelocity = finalVel;

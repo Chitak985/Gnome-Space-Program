@@ -18,7 +18,7 @@ public partial class RealityTangler : Node
     [Export] public Vector3 OriginOffset { get; private set;} // planetaryOffset + local position
     [Export] public Vector3 ReferenceFrameOriginOffset { get; private set;} // Whatever the hell this is
 
-    // Universe will rotate around this, won't if it's null.
+    // Universe will rotate around this, but it won't if it's null.
     public CelestialBody activeReferenceFrame;
 
     // Planets, crafts, and whatnot should like and subscribe to this
