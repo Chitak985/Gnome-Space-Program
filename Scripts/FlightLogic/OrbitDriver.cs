@@ -8,8 +8,19 @@ using Godot;
 
 public class OrbitDriver
 {
-    public bool active; // Controls the aforementioned "dormancy"
     public CelestialBody parent; // For easy access. This is also stored over in the orbit and cartesian data
     public Orbit orbit;
     public CartesianData cartesian;
+    public OrbitRenderer renderer;
+
+    public void Update()
+    {
+        orbit.parent = parent;
+        cartesian.parent = parent;
+        if (renderer != null)
+        {
+            renderer.orbit = null;
+            renderer.orbit = orbit; // Update the orbit
+        }
+    }
 }

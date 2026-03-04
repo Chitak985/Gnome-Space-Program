@@ -23,12 +23,18 @@ public partial class Craft : Node3D
     // Whether to lock the craft's physics
     public bool Anchored { get; private set; }
     public MapObject MapObject { get; private set; }
+    public OrbitRenderer OrbitRenderer { get; private set; }
+
+    // Whether or not the physical position of the CENTRAL part node should update orbital data
+    private bool physicsUpdatesOrbit;
 
     public override void _PhysicsProcess(double delta)
     {
         // Loop over every part and apply a force towards the planet
         if (OrbitDriver.parent != null)
         {
+            OrbitDriver.Update();
+
             foreach (Part part in LoadedParts)
             {
                 CelestialBody currentCBody = OrbitDriver.parent;
@@ -43,19 +49,32 @@ public partial class Craft : Node3D
 
                 part.ApplyCentralForce(force*direction);
             }
+
+            if (MapObject != null)
+            {
+                MapObject.truePosition = OrbitDriver.cartesian.position + OrbitDriver.parent.GlobalCartesianPosition;
+            }
+
+            if (physicsUpdatesOrbit)
+            {
+                // Because cartesian position is relative to planet
+                Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.parent.GlobalPosition;
+                Vector3 globalPos = OrbitDriver.parent.GetGlobalPositionOfPoint(relativePos);
+
+                OrbitDriver.cartesian.position = globalPos;
+                OrbitDriver.cartesian.velocity = CentralPart.LinearVelocity; // Feels sloppy but all we can do is pray
+
+                OrbitDriver.orbit = Conics.CartToElem(OrbitDriver.cartesian);
+            }
         }
 
         if(!Anchored) GlobalPosition = CentralPart.GlobalPosition;
-
-        if (MapObject != null)
-        {
-            MapObject.truePosition = OrbitDriver.cartesian.position + OrbitDriver.parent.GlobalCartesianPosition;
-        }
     }
 
     public void Anchor(bool toggle)
     {
         Anchored = toggle;
+        physicsUpdatesOrbit = !toggle;
         foreach (Part part in LoadedParts)
         {
             part.Anchor(toggle);
@@ -89,6 +108,8 @@ public partial class Craft : Node3D
         MapObject = new() { Name = $"{Name}_Map" };
         MapView.Instance.AddChild(MapObject);
         MapView.Instance.AddMapIcon(MapObject);
+
+        orbitDriver.renderer = OrbitRendererManager.Instance.CreateOrbitRenderer(this);
     }
 
     // Hiujjj??

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public partial class OrbitRendererManager : Node
 {
+    [Export] public double orbitPrecision;
     [Export] public PackedScene rendererPrefab;
     public static OrbitRendererManager Instance { get; private set; }
     public List<OrbitRenderer> orbitRenderers = [];
@@ -15,12 +16,33 @@ public partial class OrbitRendererManager : Node
         Instance = this;
     }
 
+    // Create renderer for celestial bodies
+    public OrbitRenderer CreateOrbitRenderer(CelestialBody cBody)
+    {
+        OrbitRenderer renderer = (OrbitRenderer)rendererPrefab.Instantiate();
+        orbitRenderers.Add(renderer);
+        renderer.orbit = cBody.orbit;
+        cBody.orbit.parent.mapObject.AddChild(renderer);
+        renderer.enabled = true;
+        return renderer;
+    }
+
+    // Create renderer for crafts
+    public OrbitRenderer CreateOrbitRenderer(Craft craft)
+    {
+        OrbitRenderer renderer = (OrbitRenderer)rendererPrefab.Instantiate();
+        orbitRenderers.Add(renderer);
+        renderer.orbit = craft.OrbitDriver.orbit;
+        craft.OrbitDriver.parent.mapObject.AddChild(renderer);
+        renderer.enabled = true;
+        return renderer;
+    }
+
     public void UpdateOrbitRenderers()
     {
         foreach (OrbitRenderer renderer in orbitRenderers)
         {
             renderer.Update();
-            renderer.Visible = false; // Just hide them for now
         }
     }
 

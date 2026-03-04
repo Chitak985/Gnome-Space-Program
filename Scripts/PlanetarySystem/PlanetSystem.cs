@@ -159,12 +159,7 @@ public partial class PlanetSystem : Node3D
                 parent.childPlanets.Add(cBody);
 
                 // Create orbit renderer (AAHHHH)
-                OrbitRendererManager rendererManager = OrbitRendererManager.Instance;
-                OrbitRenderer renderer = (OrbitRenderer)rendererManager.rendererPrefab.Instantiate();
-                rendererManager.orbitRenderers.Add(renderer);
-                renderer.orbit = cBody.orbit;
-                cBody.orbit.parent.scaledObject.AddChild(renderer);
-                renderer.enabled = true;
+                OrbitRendererManager.Instance.CreateOrbitRenderer(cBody);
             }
 
             // Assign orbital process to RealityTangler

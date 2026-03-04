@@ -669,7 +669,7 @@ render_target_update_mode = 4
 [node name="WorldEnvironment" type="WorldEnvironment" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1582826098]
 environment = SubResource("Environment_h3s5b")
 
-[node name="MapView" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1218422952 node_paths=PackedStringArray("UIContainer", "mapCamera", "mapUI", "mapIconContainer")]
+[node name="MapView" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1218422952 node_paths=PackedStringArray("UIContainer", "mapCamera", "mapUI", "mapIconContainer", "Viewport")]
 script = ExtResource("8_h4qns")
 UIContainer = NodePath("../../..")
 openMapEvent = &"map_view"
@@ -677,6 +677,7 @@ mapCamera = NodePath("MapCamera")
 mapUI = NodePath("../../../MapUI")
 mapIconContainer = NodePath("../../../MapUI/MapIcons")
 mapIconPrefab = ExtResource("32_ul3nw")
+Viewport = NodePath("../..")
 
 [node name="MapCamera" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView" unique_id=1320007421 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
 script = ExtResource("12_ou012")
@@ -688,7 +689,7 @@ zoom = 2.0
 maxZoom = 10000.0
 rotNode_Y = NodePath("Cam_Rot_Y")
 rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
-CamNode = NodePath("Cam_Rot_Y/Cam_Rot_X/Camera3D")
+CamNode = NodePath("Cam_Rot_Y/Cam_Rot_X/MapCamera3D")
 dragCam = &"secondary_interaction"
 zoomIn = &"zoom_in"
 zoomOut = &"zoom_out"
@@ -697,7 +698,7 @@ zoomOut = &"zoom_out"
 
 [node name="Cam_Rot_X" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y" unique_id=1492844660]
 
-[node name="Camera3D" type="Camera3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y/Cam_Rot_X" unique_id=1532995661]
+[node name="MapCamera3D" type="Camera3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y/Cam_Rot_X" unique_id=1532995661]
 far = 100000000.0
 
 [node name="Grid" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=232402699]
@@ -920,6 +921,7 @@ partMoveSpeed = 42.0
 
 [node name="OrbitRendererManager" type="Node" parent="." unique_id=1421214884]
 script = ExtResource("15_h7vhn")
+orbitPrecision = 100.0
 rendererPrefab = ExtResource("16_np084")
 
 [node name="Miscellaneous" type="Node" parent="." unique_id=763652581]

@@ -19,7 +19,11 @@ public partial class MapView : Node3D
 
     [Export] private Control mapIconContainer;
     [Export] private PackedScene mapIconPrefab;
+
     public List<MapIcon> MapIcons { get; private set; } = [];
+    [Export] public SubViewportContainer Viewport; // Just have it bro
+
+    public Vector3 FocusOffset { get; private set; }
 
     public override void _Ready()
     {
@@ -28,25 +32,22 @@ public partial class MapView : Node3D
 
     public override void _Process(double delta)
     {
+        if (mapCamera.target is MapObject mapObj)
+        {
+            FocusOffset = mapObj.truePosition;
+
+            if (mapObj.counterpart is Colony colonyObj)
+            {
+                FocusOffset = colonyObj.parentBody.mapObject.truePosition;
+            }
+        }
+
         Godot.Collections.Array<Node> childNodes = GetChildren();
         foreach (Node node in childNodes)
         {
             if (node is MapObject mapObject)
             {
-                Node3D camObject = mapCamera.target;
-                Vector3 focusObjectPos = Vector3.Zero;
-
-                if (camObject is MapObject mapObj)
-                {
-                    focusObjectPos = mapObj.truePosition;
-
-                    if (mapObj.counterpart is Colony colonyObj)
-                    {
-                        focusObjectPos = colonyObj.parentBody.mapObject.truePosition;
-                    }
-                }
-
-                mapObject.GlobalPosition = mapObject.truePosition / ScaleFactor - (focusObjectPos / ScaleFactor);
+                mapObject.GlobalPosition = mapObject.truePosition / ScaleFactor - (FocusOffset / ScaleFactor);
                 mapObject.Scale = mapObject.originalScale / ScaleFactor;
             }
         }

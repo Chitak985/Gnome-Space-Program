@@ -2,55 +2,33 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class OrbitRenderer : MeshInstance3D
+public partial class OrbitRenderer : Node3D
 {
-    public const int MAX_ARRAY_LENGTH = 1024;
-    public ShaderMaterial shaderMat;
     public Orbit orbit;
+    [Export] private Line2D line2D;
+    [Export] private SubViewport viewport;
+    [Export] private float margin = 1.1f;
+
     public bool enabled;
-
-    public override void _Ready()
-    {
-        ShaderMaterial mat = (ShaderMaterial)MaterialOverride.Duplicate(true);
-        MaterialOverride = mat;
-        shaderMat = (ShaderMaterial)MaterialOverride;
-    }
-
-    /*
-    public override void _Process(double delta)
-    {
-        List<Vector3> pointsList = SamplePoints(50);
-        shaderMat.SetShaderParameter("arrayLength", pointsList.Count);
-        shaderMat.SetShaderParameter("points", pointsList.ToArray());
-
-        // Move the plane to match the orbit
-        Scale = new Vector3(orbit.semiMajorAxis, orbit.semiMajorAxis, orbit.semiMajorAxis) * (1.1 + orbit.eccentricity);
-        Rotation = new Vector3(orbit.inclination, orbit.longitudeOfAscendingNode, 0);
-    }
-    */
 
     public void Update()
     {
-        if (enabled && Visible)
-        {
-            // Move the plane to match the orbit
-            Scale = new Vector3(orbit.semiMajorAxis, orbit.semiMajorAxis, orbit.semiMajorAxis) * (1.1 + orbit.eccentricity);
-            Rotation = new Vector3(orbit.inclination, orbit.longitudeOfAscendingNode, 0);
+        //Logger.Print(GetViewport().GetVisibleRect().Size * vpSizeRatio);
 
-            List<Vector3> pointsList = SamplePoints(50);
-            shaderMat.SetShaderParameter("arrayLength", pointsList.Count);
-            shaderMat.SetShaderParameter("points", pointsList.ToArray());
-            shaderMat.SetShaderParameter("nodeSize", orbit.semiMajorAxis / ScaledSpace.Instance.ScaleFactor);
-            shaderMat.SetShaderParameter("nodePosition", GlobalPosition);
-        }else{
-            Vector3[] bullshitArray = [Vector3.Zero];
-            shaderMat.SetShaderParameter("arrayLength", 1);
-            shaderMat.SetShaderParameter("points", bullshitArray);
-        }
+        viewport.Size = (Vector2I) (MapView.Instance.Viewport.Size);
+        //camDist = GetViewport().GetCamera3D().GlobalPosition.DistanceTo(GlobalPosition);
+        double scale = orbit.semiMajorAxis * (1 + orbit.eccentricity) * margin;
+
+        // Move the plane to match the orbit
+        Scale = new Vector3(scale,scale,scale);
+        GlobalRotation = new Vector3(orbit.inclination, orbit.longitudeOfAscendingNode, 0);
+
+        List<Vector2> pointsList = SamplePoints(OrbitRendererManager.Instance.orbitPrecision);
+        line2D.Points = [.. pointsList];
     }
 
     // Sample multiple points in orbit
-    public List<Vector3> SamplePoints(double precision)
+    public List<Vector2> SamplePoints(double precision)
     {
         int amount = (int)Math.Round(Math.PI * 2.0 * precision);
         if (orbit.eccentricity > 1)
@@ -58,7 +36,7 @@ public partial class OrbitRenderer : MeshInstance3D
 
         double startTrueAn = orbit.trueAnomaly;
 
-        List<Vector3> positions = [];
+        List<Vector2> positions = [];
 
         for (int i = 0; i < amount; i++)
         {
@@ -71,12 +49,19 @@ public partial class OrbitRenderer : MeshInstance3D
                 inclination = orbit.inclination,
                 argumentOfPeriapsis = orbit.argumentOfPeriapsis,
                 longitudeOfAscendingNode = orbit.longitudeOfAscendingNode,
-                trueAnomaly = startTrueAn + i / precision,
+                trueAnomaly = startTrueAn + i/precision,
                 period = orbit.period
             };
             CartesianData data = Conics.ElemToCart(newOrbit);
+                
+            Vector3 position = (data.position + orbit.parent.cartesianData.position - MapView.Instance.FocusOffset) / MapView.Instance.ScaleFactor;
 
-            positions.Add(data.position / orbit.semiMajorAxis);
+            Vector2 projectedPosition = GetViewport().GetCamera3D().UnprojectPosition(position);
+
+            if (!GetViewport().GetCamera3D().IsPositionBehind(position))
+            {
+                positions.Add(projectedPosition);
+            }
         }
 
         positions.Add(positions[0]);
