@@ -73,8 +73,8 @@ public partial class RealityTangler : Node
                         //ResetOrigin(activeCraft);
                     //}
                     CelestialBody cBody = activeCraft.OrbitDriver.parent;
-                    PlanetaryOffset = cBody.cartesianData.position;
-                    OriginOffset = cBody.cartesianData.position;
+                    PlanetaryOffset = cBody.OrbitDriver.cartesian.position;
+                    OriginOffset = cBody.OrbitDriver.cartesian.position;
                     EmitSignal(SignalName.OrbitProcess);
                 }
                 break;
@@ -85,9 +85,9 @@ public partial class RealityTangler : Node
                     Colony colony = StateManager.Instance.colonyState.activeColony;
                     CelestialBody cBody = colony.parentBody;
 
-                    PlanetaryOffset = cBody.cartesianData.position;
+                    PlanetaryOffset = cBody.OrbitDriver.cartesian.position;
                     ReferenceFrameOriginOffset = cBody.GetGlobalPositionOfPoint(colony.position);
-                    OriginOffset = cBody.cartesianData.position + colony.position;
+                    OriginOffset = cBody.OrbitDriver.cartesian.position + colony.position;
                     EmitSignal(SignalName.OrbitProcess);
                 }
                 break;

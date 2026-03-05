@@ -150,21 +150,21 @@ public partial class PlanetSystem : Node3D
             CelestialBody parent = FindCBodyByName(cBody.parentName);
             if (parent != null)
             {
-                cBody.orbit.parent = parent;
-                cBody.orbit.cBody = cBody;
-                if (cBody.orbit.sphereOfInfluence <= 0) // 14959800320 * ((5.289772250524424*10^22) / (1.7565459*10^28))^(2/5)
-                    cBody.orbit.sphereOfInfluence = cBody.orbit.semiMajorAxis * Math.Pow(5.289772250524424e22 / 1.7565459e28, 2f/5f);
-                cBody.cartesianData.parent = parent;
-                cBody.cartesianData.cBody = cBody;
+                cBody.OrbitDriver.parent = parent;
+                cBody.OrbitDriver.orbit.cBody = cBody;
+                if (cBody.OrbitDriver.orbit.sphereOfInfluence <= 0) // 14959800320 * ((5.289772250524424*10^22) / (1.7565459*10^28))^(2/5)
+                    cBody.OrbitDriver.orbit.sphereOfInfluence = cBody.OrbitDriver.orbit.semiMajorAxis * Math.Pow(5.289772250524424e22 / 1.7565459e28, 2f/5f);
+                cBody.OrbitDriver.cartesian.cBody = cBody;
                 parent.childPlanets.Add(cBody);
-
-                // Create orbit renderer (AAHHHH)
-                OrbitRendererManager.Instance.CreateOrbitRenderer(cBody);
             }
+
+            cBody.OrbitDriver.Update();
 
             // Assign orbital process to RealityTangler
             RealityTangler.Instance.OrbitProcess += cBody.ProcessTransform;
             RealityTangler.Instance.OriginReset += cBody.ResetOrigin;
+
+            cBody.InitializeSelf();
         }
     }
 
@@ -173,16 +173,7 @@ public partial class PlanetSystem : Node3D
         CelestialBody cBody = ParseConfig(configPath);
         // Add cBody to the great planetary list (and set as root body if it is)
         celestialBodies.Add(cBody);
-        if (cBody.orbit != null)
-        {
-            //OrbitRenderer renderer = (OrbitRenderer)orbitRendererPrefab.Instantiate();
-            //renderer.cBody = cBody;
-            //renderer.camera = ((RemoteCam)GetTree().GetFirstNodeInGroup("Camera")).localCamera;
-            //orbitRenderers.AddChild(renderer);
-        }
         if (cBody.isRoot) rootBody = cBody;
-
-        cBody.InitializeSelf();
     }
 
     public static CelestialBody ParseConfig(string path)
@@ -242,11 +233,12 @@ public partial class PlanetSystem : Node3D
             }
         }
 
+        cBody.OrbitDriver = new();
         // The "parent" parameter is set in a different function because the parent might be parsed after this one
         if (ConfigUtility.TryGetDictionary("orbit", data, out Dictionary orbit))
         {
             cBody.parentName = orbit.TryGetValue("parent", out var pnm) ? (string)pnm : null;
-            cBody.orbit = new Orbit{
+            cBody.OrbitDriver.orbit = new Orbit{
                 semiMajorAxis = orbit.TryGetValue("semiMajorAxis", out var sma) ? (double)sma : MissingNum(path, "orbit/semiMajorAxis"),
                 inclination = orbit.TryGetValue("inclination", out var inc) ? (double)inc : MissingNum(path, "orbit/inclination"),
                 eccentricity = orbit.TryGetValue("eccentricity", out var ecc) ? (double)ecc : MissingNum(path, "orbit/eccentricity"),
@@ -260,7 +252,7 @@ public partial class PlanetSystem : Node3D
             Logger.Print($"{classTag} CBody {cBody.cBodyName} is missing its orbit! If this is intended, then disregard this message.");
         }
         // Same here too
-        cBody.cartesianData = new()
+        cBody.OrbitDriver.cartesian = new()
         {
             position = Vector3.Zero,
             velocity = Vector3.Zero

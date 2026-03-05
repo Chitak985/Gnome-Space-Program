@@ -15,7 +15,7 @@ public partial class Craft : Node3D
     public Part CentralPart { get; private set; } // The absolute root of the craft, what we orient around
     public List<Part> LoadedParts { get; private set; } = [];
 
-    // Orbits and positions are ALWAYS in global space. NO EXCEPTIONS.
+    // Orbits and positions are ALWAYS in global (non-rotating) space.
     public OrbitDriver OrbitDriver { get; private set; }
 
     // If the craft is physically loaded (This will affect how its positioning works!)
@@ -61,8 +61,10 @@ public partial class Craft : Node3D
                 Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.parent.GlobalPosition;
                 Vector3 globalPos = OrbitDriver.parent.GetGlobalPositionOfPoint(relativePos);
 
+                Vector3 globalVel = OrbitDriver.parent.GetGlobalVelocity(CentralPart.LinearVelocity + OrbitDriver.parent.GetSurfaceRotationVelocity(globalPos));
+
                 OrbitDriver.cartesian.position = globalPos;
-                OrbitDriver.cartesian.velocity = CentralPart.LinearVelocity; // Feels sloppy but all we can do is pray
+                OrbitDriver.cartesian.velocity = globalVel; // Feels sloppy but all we can do is pray
 
                 OrbitDriver.orbit = Conics.CartToElem(OrbitDriver.cartesian);
             }
@@ -102,6 +104,7 @@ public partial class Craft : Node3D
     public void Initialize(OrbitDriver orbitDriver, Dictionary partData)
     {
         OrbitDriver = orbitDriver;
+        AddChild(OrbitDriver); // Kidnap the orbit driver
         PartData = partData;
 
         // Create map object
@@ -109,7 +112,7 @@ public partial class Craft : Node3D
         MapView.Instance.AddChild(MapObject);
         MapView.Instance.AddMapIcon(MapObject);
 
-        orbitDriver.renderer = OrbitRendererManager.Instance.CreateOrbitRenderer(this);
+        OrbitRenderer = OrbitRendererManager.Instance.CreateOrbitRenderer(this);
     }
 
     // Hiujjj??

@@ -1,26 +1,28 @@
 using Godot;
 
 /*
-    Class for handing craft motion (which is why it's in the FlightLogic folder and not the OrbitalMechanics folder)
-    This class sits dormantly when a craft is subject to ordinary newtonian physics. 
-    It only comes into play during timewarp or when the craft is unloaded.
+    Class for handing craft and celestial motion
+    Each respective class controls this in its own way.
 */
 
-public class OrbitDriver
+public partial class OrbitDriver : Node
 {
-    public CelestialBody parent; // For easy access. This is also stored over in the orbit and cartesian data
+    public CelestialBody parent;
     public Orbit orbit;
     public CartesianData cartesian;
-    public OrbitRenderer renderer;
+
+    // For stuff that wants indirectly track this orbit such as an orbit renderer
+    [Signal] public delegate void DriverUpdateEventHandler(OrbitDriver instance);
 
     public void Update()
     {
-        orbit.parent = parent;
-        cartesian.parent = parent;
-        if (renderer != null)
+        if (orbit != null)
         {
-            renderer.orbit = null;
-            renderer.orbit = orbit; // Update the orbit
+            orbit.parent = parent;
         }
+       
+        cartesian.parent = parent;
+
+        EmitSignal(SignalName.DriverUpdate, this);
     }
 }

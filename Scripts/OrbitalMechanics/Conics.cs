@@ -80,8 +80,8 @@ public partial class Conics : Node
     {
         // define mu, vectors, and epsilon
         double mu = GravConstant * data.parent.mass;
-        Vector3 rVec = data.position;
-        Vector3 vVec = data.velocity;
+        Vector3 rVec = new(data.position.Z, data.position.X, data.position.Y); // Just flip some numbers around and pray
+        Vector3 vVec = new(data.velocity.Z, data.velocity.X, data.velocity.Y);
         double eps = 1e-8;
 
         // Specific angular momentum and its magnitude
@@ -268,7 +268,7 @@ public partial class Conics : Node
         if (PlanetSystem.Instance != null)
         {
             // Set SOI to infinity if orbit doesn't exist (only applicable to root body) 
-            double currentPlanetSOI = location.parent.orbit == null ? double.PositiveInfinity : location.parent.orbit.sphereOfInfluence;
+            double currentPlanetSOI = location.parent.OrbitDriver.orbit == null ? double.PositiveInfinity : location.parent.OrbitDriver.orbit.sphereOfInfluence;
 
             if (location.parent != null)
             {
@@ -277,22 +277,22 @@ public partial class Conics : Node
                     // Search orbiting bodies
                     foreach (CelestialBody cBody in location.parent.childPlanets)
                     {
-                        double cBodySOI = cBody.orbit == null ? double.PositiveInfinity : cBody.orbit.sphereOfInfluence;
+                        double cBodySOI = cBody.OrbitDriver.orbit == null ? double.PositiveInfinity : cBody.OrbitDriver.orbit.sphereOfInfluence;
                         // As part of the large world coordinate refactor, this weird inconsistent 
                         // coordinate system should be removed. For now, a stupid workaround.
                         // Convert to double3 to use its weird coordinate switching function and back.
                         // I hate this. -R
                         // GetPosYUp should be eliminated... soon.
-                        if (location.position.DistanceTo(cBody.cartesianData.position) < cBodySOI)
+                        if (location.position.DistanceTo(cBody.OrbitDriver.cartesian.position) < cBodySOI)
                         {
-                            return (cBody, location.position - GetPosYUp(cBody.cartesianData.position));
+                            return (cBody, location.position - GetPosYUp(cBody.OrbitDriver.cartesian.position));
                         }
                     }
                     // Return current cBody because we are not within any child SOI
                     return (location.parent, location.position);
                 }else{
                     // Return parent body because we are outside the sphere of influence
-                    return (location.parent.orbit.parent, location.position + GetPosYUp(location.parent.cartesianData.position));
+                    return (location.parent.OrbitDriver.orbit.parent, location.position + GetPosYUp(location.parent.OrbitDriver.cartesian.position));
                 }
             }else{
                 // Return root body as last resort fallback

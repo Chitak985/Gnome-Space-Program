@@ -21,8 +21,8 @@ public partial class OrbitRendererManager : Node
     {
         OrbitRenderer renderer = (OrbitRenderer)rendererPrefab.Instantiate();
         orbitRenderers.Add(renderer);
-        renderer.orbit = cBody.orbit;
-        cBody.orbit.parent.mapObject.AddChild(renderer);
+        renderer.orbit = cBody.OrbitDriver.orbit;
+        cBody.OrbitDriver.parent.mapObject.AddChild(renderer);
         renderer.enabled = true;
         return renderer;
     }

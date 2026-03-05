@@ -23,6 +23,7 @@ public partial class OrbitDisplay : Control
 
     public override void _Process(double delta)
     {
+        /*
         if (cBody != null)
         {
             CartesianData cartData = cBody.cartesianData;
@@ -41,5 +42,6 @@ public partial class OrbitDisplay : Control
             trueAnomaly.Text = $"True Anomaly: {orbit.trueAnomaly}";
             period.Text = $"Period: {orbit.period}";
         }
+        */
     }
 }

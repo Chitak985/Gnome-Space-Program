@@ -29,9 +29,9 @@ public partial class CelestialBody : Node3D
 
     // Orbital info
     public string parentName;
-    public Orbit orbit;
-    public CartesianData cartesianData;
-    // The absolute position relative to the root body
+    public OrbitDriver OrbitDriver { get; set; } // Change to private set when refactoring planet creation code as it will be created inside this class instead
+    public OrbitRenderer OrbitRenderer { get; private set; }
+    // The absolute position factoring in the root body
     public Vector3 GlobalCartesianPosition { get; private set; }
 
     public List<CelestialBody> childPlanets = [];
@@ -85,15 +85,17 @@ public partial class CelestialBody : Node3D
     // Process the cBody orbital positioning calculations. Used by RealityTangler to "force" repositioning to avoid jitter.
     public void ProcessTransform()
     {
+        OrbitDriver.Update();
+
         // Okay so Godot automatically transforms the rotation and sometimes planets can end up being titled to some baffling degree so just do this and forget
         Rotation = Vector3.Zero;
 
-        if (orbit != null)
+        if (OrbitDriver.orbit != null)
         {
-            orbit.trueAnomaly = Conics.TimeToTrueAnomaly(orbit, ActiveSave.Instance.SaveTime, 0) + orbit.trueAnomalyAtEpoch;
-            CartesianData data = Conics.ElemToCart(orbit);
-            cartesianData = data;
-            GlobalCartesianPosition = cartesianData.position + orbit.parent.cartesianData.position;
+            OrbitDriver.orbit.trueAnomaly = Conics.TimeToTrueAnomaly(OrbitDriver.orbit, ActiveSave.Instance.SaveTime, 0) + OrbitDriver.orbit.trueAnomalyAtEpoch;
+            CartesianData data = Conics.ElemToCart(OrbitDriver.orbit);
+            OrbitDriver.cartesian = data;
+            GlobalCartesianPosition = OrbitDriver.cartesian.position + OrbitDriver.parent.OrbitDriver.cartesian.position;
             //cartesianData.position = data.position + orbit.parent.cartesianData.position;
             //cartesianData.velocity = data.position;
             //GD.Print(SaveManager.Instance.saveTime);
@@ -149,6 +151,8 @@ public partial class CelestialBody : Node3D
 
     public void InitializeSelf()
     {
+        AddChild(OrbitDriver); // Fuuuuck shiiiiiiiiiiit this suuucks
+
         // Scaled space and map view
         scaledObject = new() { Name = $"{cBodyName}_Scaled" };
         ScaledSpace.Instance.AddChild(scaledObject);
@@ -177,6 +181,12 @@ public partial class CelestialBody : Node3D
         gimbal.AddChild(pqsSphere);
 
         CreateGizmo();
+
+        if (OrbitDriver.parent != null)
+        {
+            Logger.Print(OrbitDriver.parent);
+            OrbitRenderer = OrbitRendererManager.Instance.CreateOrbitRenderer(this);
+        }
     }
 
     public void ResetOrigin()
@@ -217,8 +227,15 @@ public partial class CelestialBody : Node3D
         return velocity;
     }
 
-    // Gets the velocity in this reference frame
+    // Returns a local velocity from a global velocty
     public Vector3 GetLocalVelocity(Vector3 velocity)
+    {
+        Vector3 localVel = CachedTransform.Basis.Inverse() * velocity;
+        return localVel;
+    }
+
+    // Returns a global velocity from a local velocity (this function may not work correctly)
+    public Vector3 GetGlobalVelocity(Vector3 velocity)
     {
         Vector3 localVel = CachedTransform.Basis.Inverse() * velocity;
         return localVel;
