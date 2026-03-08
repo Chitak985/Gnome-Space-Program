@@ -23,6 +23,7 @@ public partial class Conics : Node
     // Buncha constants
     public static readonly double GravConstant = 6.674e-11;
     public static readonly double EarthGravity = 9.80665;
+    public static readonly double Epsilon = 1e-08;
     
     // Functions to get points with Y as up rather than Z
     // To Be Eliminated
@@ -31,82 +32,85 @@ public partial class Conics : Node
         return new Vector3(inputVector.X,inputVector.Z,inputVector.Y);
     }
     
-    // Orbital Elements to Cartesian (relative to parent)
+    // Orbital Elements to Cartesian
     public static CartesianData ElemToCart(Orbit orbit)
     {
-        double MU = orbit.ComputeMU(); //GravConstant * parent.mass;
+        // yeah whatever the fRICK
+        double MU = orbit.ComputeMU();//GravConstant * parent.mass;
 
         // Compile our favourite Keplerian orbit elements
-        double semiMajorAxis = orbit.semiMajorAxis;
-        double eccentricity = orbit.eccentricity;
-        double inclination = orbit.inclination;
-        double argumentOfPeriapsis = orbit.argumentOfPeriapsis;
-        double longitudeOfAscendingNode = orbit.longitudeOfAscendingNode;
-        double trueAnomaly = orbit.trueAnomaly;
 
-        double semiLatusRectum = eccentricity != 1.0 ? semiMajorAxis * (1 - eccentricity * eccentricity) : 2 * semiMajorAxis;
-        double radius = semiLatusRectum / (1 + eccentricity * Math.Cos(trueAnomaly));
-        //double specificAngularMomemtum = Math.Sqrt(MU * semiLatusRectum);
+        double a = orbit.semiMajorAxis;
+        double e = orbit.eccentricity;
+        double i = orbit.inclination;
+        double omega = orbit.argumentOfPeriapsis;
+        double Omega = orbit.longitudeOfAscendingNode;
+        double truAN = orbit.trueAnomaly;
+
+        double p = e != 1.0 ? a * (1 - e * e) : 2 * a;
+        double r = p / (1 + e * Math.Cos(truAN));
 
         Vector3 rPQW = new(
-            radius * Math.Sin(trueAnomaly),
-            0,
-            radius * Math.Cos(trueAnomaly)
+            r * Math.Cos(truAN),
+            r * Math.Sin(truAN),
+            0
         );
 
         Vector3 vPQW = new(
-            Math.Sqrt(MU / semiLatusRectum) * (eccentricity + Math.Cos(trueAnomaly)),
-            0,
-            -Math.Sqrt(MU / semiLatusRectum) * Math.Sin(trueAnomaly)
+            -Math.Sqrt(MU / p) * Math.Sin(truAN),
+            Math.Sqrt(MU / p) * (e + Math.Cos(truAN)),
+            0
         );
 
         Basis R =
-            new Basis(Vector3.Up, (float)longitudeOfAscendingNode) * // Rotate around global Z
-            new Basis(Vector3.Right, (float)inclination) *           // Rotate by inclination
-            new Basis(Vector3.Up, (float)argumentOfPeriapsis);       // Rotate by argument of periapsis
+            new Basis(Vector3.Forward, -Omega) * // Rotate around global Z
+            new Basis(Vector3.Right, i) *           // Rotate by inclination
+            new Basis(Vector3.Forward, -omega);       // Rotate by argument of periapsis
 
-        CartesianData data = new()
-        {
-            position = R * rPQW,
-            velocity = R * vPQW
+        // Rotate position and velocity vectors
+        Vector3 position = R * rPQW;
+
+        Vector3 velocity = R * vPQW;
+
+        return new CartesianData() {
+            parent = orbit.parent,
+            position = new Vector3(position.X,position.Z,position.Y),
+            velocity = new Vector3(velocity.X,velocity.Z,velocity.Y)
         };
-
-        return data;
     }
 
-    // Converts position and velocity to classical Keplerian orbital elements.
-    // Formulas taken from Basilisk https://hanspeterschaub.info/basilisk/_modules/orbitalMotion.html#rv2elem
-    public static Orbit CartToElem(CartesianData data)
-    {
-        // define mu, vectors, and epsilon
-        double mu = GravConstant * data.parent.mass;
-        Vector3 rVec = new(data.position.Z, data.position.X, data.position.Y); // Just flip some numbers around and pray
-        Vector3 vVec = new(data.velocity.Z, data.velocity.X, data.velocity.Y);
-        double eps = 1e-8;
+    /* Cartesian to Orbital Elements
 
-        // Specific angular momentum and its magnitude
+        Lots of help from https://orbital-mechanics.space/classical-orbital-elements/orbital-elements-and-the-state-vector.html
+        And various other pages
+    */
+   public static Orbit CartToElem(CartesianData data)
+    {
+        // define mu, vectors
+        double mu = GravConstant * data.parent.mass;
+        Vector3 rVec = new(data.position.X, data.position.Z, data.position.Y); // Just flip some numbers around and pray
+        Vector3 vVec = new(data.velocity.X, data.velocity.Z, data.velocity.Y);
+        double r = rVec.Length();
+        double v = vVec.Length();
+
+        // Specific angular momentum
         Vector3 hVec = rVec.Cross(vVec);
         double h = hVec.Length();
         double p = h * h / mu;
 
-        // The line of nodes (??)
+        // Right Ascension of the Ascending Node
         // Back is (0, 0, 1)
         Vector3 nVec = Vector3.Back.Cross(hVec);
-        //Double3 nVec = Double3.Cross(new Double3(0,0,1), hVec);
-        double n = nVec.Length();
+        double N = nVec.Length();
 
-        // Orbit energy and eccentricity
-        double r = rVec.Length();
-        double v = vVec.Length();
-        Vector3 eVec = (v * v / mu - 1.0 / r) * rVec;
-        Vector3 v3 = rVec.Dot(vVec) / mu * vVec;
-        eVec = eVec - v3;
+        // Eccentricity
+        Vector3 eVec = vVec.Cross(hVec) / mu - rVec / r;
         double e = eVec.Length();
 
         // Semimajor axis
         double alpha = 2.0 / r - v * v / mu;
         double a;
-        if (Math.Abs(alpha) > eps)
+        if (Math.Abs(alpha) > Epsilon)
         {
             // elliptic or hyperbolic
             a = 1.0 / alpha;
@@ -118,30 +122,37 @@ public partial class Conics : Node
         // Inclination
         double i = Math.Acos(hVec.Z / h);
 
-        // The godless part.
-        double Omega = 0; // Ascending node
-        double omega = 0; // Arg. of periapsis
-        double truAN = 0;
+        // Acending node, argument of periapsis, true anomaly (respectively)
+        double Omega = 0;
+        double omega = 0;
+        double nu = 0;
         if (e >= 1e-11 && i >= 1e-11 && i <= Math.PI - 1e-11)
         {
             // Non circular inclined orbit
-            Omega = Math.Acos(nVec.X / n);
-            if (nVec.Y < 0.0)
-                Omega = 2.0 * Math.PI - Omega;
-            omega = Math.Acos(Math.Clamp(nVec.Dot(eVec) / n / e, -1.0, 1.0));
-            if (eVec.Z < 0.0)
-                omega = 2.0 * Math.PI - omega;
-            truAN = Math.Acos(Math.Clamp(eVec.Dot(rVec) / e / r, -1.0, 1.0));
-            if (rVec.Dot(vVec) < 0.0)
-                truAN = 2.0 * Math.PI - truAN;
+
+            // Ascending node
+            Omega = Math.Atan2(nVec.Y, nVec.X);
+            if (Omega < 0) Omega += 2 * Math.PI;
+
+            // Argument of periapsis
+            omega = Math.Atan2(nVec.Cross(eVec).Dot(Vector3.Back), nVec.Dot(eVec));
+            if (hVec.Z < 0) omega = 2 * Math.PI - omega;
+
+            // True anomaly
+            nu = Math.Atan2(
+                eVec.Cross(rVec).Dot(hVec) / (e * h * r),
+                eVec.Dot(rVec) / (e * r)
+            );
+            if (nu < 0) nu += 2 * Math.PI;
         }else if (e >= 1e-11 && (i < 1e-11 || i > Math.PI - 1e-11))
         {
             // Non circular equatorial orbit
-            // Equatorial orbit has no ascending node
-            Omega = 0.0;
-            // True longitude of periapsis
+
+            // Ascending node
+            Omega = 0;
+
             omega = Math.Acos(eVec.X / e);
-            // Handle cases where the orbit is retrograde
+            // Handle cases where the orbit is retrograde AND FIX THIS TO USE ATAN2
             if (i <= Math.PI - 1e-11)
             {
                 if (eVec.Y < 0.0)
@@ -151,35 +162,45 @@ public partial class Conics : Node
                     omega = 2.0 * Math.PI - omega;
             }
 
-            truAN = Math.Acos(Math.Clamp(eVec.Dot(rVec) / e / r, -1.0, 1.0));
-            if (rVec.Dot(vVec) < 0.0)
-                truAN = 2.0 * Math.PI - truAN;   
+            // True anomaly
+            nu = Math.Atan2(
+                eVec.Cross(rVec).Dot(hVec) / (e * h * r),
+                eVec.Dot(rVec) / (e * r)
+            );
+            if (nu < 0) nu += 2 * Math.PI;
         }else if (e < 1e-11 && i >= 1e-11)
         {
             // Circular inclined orbit
-            Omega = Math.Acos(nVec.X / n);
-            if (nVec.Y < 0.0)
-                Omega = 2.0 * Math.PI - Omega;
-            omega = 0.0;
-            truAN = Math.Acos(Math.Clamp(nVec.Dot(rVec) / n / r, -1.0, 1.0));
-            if (rVec.Z < 0.0)
-                truAN = 2.0 * Math.PI - truAN;
+
+            // Ascending node
+            Omega = Math.Atan2(nVec.Y, nVec.X);
+            if (Omega < 0) Omega += 2 * Math.PI;
+
+            // Argument of periapsis
+            omega = 0;
+
+            // True anomaly
+            nu = Math.Atan2(
+                nVec.Cross(rVec).Dot(hVec) / (N * h * r),
+                nVec.Dot(rVec) / (N * r)
+            );
+            if (nu < 0) nu += 2 * Math.PI;
         }else if (e < 1e-11 && i < 1e-11)
         {
             // Circular equatorial orbit
-            Omega = 0.0;
-            omega = 0.0;
-            truAN = Math.Acos(rVec.X / r);
+
+            // Ascending node
+            Omega = 0;
+
+            // Argument of periapsis
+            omega = 0;
+
+            // True anomaly (FIX TO USE ATAN2 I JUTS FORGOT)
+            nu = Math.Acos(rVec.X / r);
             if (rVec.Y < 0)
-                truAN = 2.0 * Math.PI - truAN;
+                nu = 2.0 * Math.PI - nu;
         }else{
             GD.PushError("Shit's fucked mate \n (Couldn't determine orbit type)");
-        }
-
-        if (e > 1.0 && Math.Abs(truAN) > Math.PI)
-        {
-            double twopiSigned = Math.CopySign(2.0 * Math.PI, truAN);
-            truAN -= twopiSigned;
         }
 
         Orbit newOrbit = new()
@@ -190,7 +211,7 @@ public partial class Conics : Node
             inclination = i,
             longitudeOfAscendingNode = Omega,
             argumentOfPeriapsis = omega,
-            trueAnomaly = truAN,
+            trueAnomaly = nu,
         };
 
         return newOrbit;

@@ -21,7 +21,7 @@ public partial class OrbitRendererManager : Node
     {
         OrbitRenderer renderer = (OrbitRenderer)rendererPrefab.Instantiate();
         orbitRenderers.Add(renderer);
-        renderer.orbit = cBody.OrbitDriver.orbit;
+        renderer.OrbitDriver = cBody.OrbitDriver;
         cBody.OrbitDriver.parent.mapObject.AddChild(renderer);
         renderer.enabled = true;
         return renderer;
@@ -32,7 +32,7 @@ public partial class OrbitRendererManager : Node
     {
         OrbitRenderer renderer = (OrbitRenderer)rendererPrefab.Instantiate();
         orbitRenderers.Add(renderer);
-        renderer.orbit = craft.OrbitDriver.orbit;
+        renderer.OrbitDriver = craft.OrbitDriver;
         craft.OrbitDriver.parent.mapObject.AddChild(renderer);
         renderer.enabled = true;
         return renderer;

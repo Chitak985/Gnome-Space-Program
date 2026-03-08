@@ -11,9 +11,6 @@ public partial class OrbitDriver : Node
     public Orbit orbit;
     public CartesianData cartesian;
 
-    // For stuff that wants indirectly track this orbit such as an orbit renderer
-    [Signal] public delegate void DriverUpdateEventHandler(OrbitDriver instance);
-
     public void Update()
     {
         if (orbit != null)
@@ -22,7 +19,5 @@ public partial class OrbitDriver : Node
         }
        
         cartesian.parent = parent;
-
-        EmitSignal(SignalName.DriverUpdate, this);
     }
 }

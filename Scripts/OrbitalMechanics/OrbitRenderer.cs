@@ -8,12 +8,13 @@ public partial class OrbitRenderer : Node3D
     [Export] private SubViewport viewport;
     [Export] private float margin = 1.1f;
 
-    public Orbit orbit;
+    public OrbitDriver OrbitDriver;
 
     public bool enabled;
 
     public void Update()
     {
+        Orbit orbit = OrbitDriver.orbit;
         //Logger.Print(GetViewport().GetVisibleRect().Size * vpSizeRatio);
 
         viewport.Size = (Vector2I) (MapView.Instance.Viewport.Size);

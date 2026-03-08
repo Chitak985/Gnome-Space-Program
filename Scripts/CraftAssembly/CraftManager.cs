@@ -70,6 +70,8 @@ public partial class CraftManager : Node
             cartesian = Conics.ElemToCart(orbit)
         };
 
+        Logger.Print(driver.cartesian.velocity);
+
         Craft craft = SpawnCraft(partData, driver, focus);
         return craft;
     }
