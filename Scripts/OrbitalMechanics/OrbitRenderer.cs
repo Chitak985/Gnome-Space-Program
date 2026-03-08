@@ -68,7 +68,7 @@ public partial class OrbitRenderer : Node3D
             }
         }
 
-        positions.Add(positions[0]);
+        if (positions.Count > 0) positions.Add(positions[0]);
 
         return positions;
     }

@@ -15,9 +15,9 @@
   "orbit": {
 	"parent": "Sun",
 	"semiMajorAxis": 14959800320,
-	"inclination": 0,
+	"inclination": 3.14159,
 	"eccentricity": 0.0167086,
-	"argumentOfPeriapsis": 325,
+	"argumentOfPeriapsis": 0,
 	"longitudeOfAscendingNode": 0,
 	"trueAnomalyAtEpoch": 0
   },

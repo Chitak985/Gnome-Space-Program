@@ -198,14 +198,12 @@ public partial class CelestialBody : Node3D
     // Gets the global position of a point on the planet (factoring in rotation)
     public Vector3 GetGlobalPositionOfPoint(Vector3 point)
     {
-        Transform3D trans = new()
-        {
-            Origin = point
-        };
+        return CachedTransform * point;
+    }
 
-        Transform3D finalTrans = CachedTransform * trans;
-
-        return finalTrans.Origin;
+    public Vector3 GetLocalPositionOfPoint(Vector3 point)
+    {
+        return CachedTransform.Inverse() * point;
     }
 
     // Returns the velocity vector of the planet's surface at that point IN THE GEOCENTRIC REFERENCE FRAME!!

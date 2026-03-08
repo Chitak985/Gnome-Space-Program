@@ -221,7 +221,8 @@ public partial class Craft : Node3D
 
         if (RealityTangler.Instance.activeReferenceFrame != null)
         {
-            //positionResult = OrbitDriver.cartesian.position + RealityTangler.Instance.activeReferenceFrame.GlobalPosition;
+            CelestialBody activeReference = RealityTangler.Instance.activeReferenceFrame;
+            positionResult = activeReference.GetLocalPositionOfPoint(OrbitDriver.cartesian.position);
         }
 
         Position = positionResult;

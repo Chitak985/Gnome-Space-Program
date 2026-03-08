@@ -200,7 +200,7 @@ public partial class Conics : Node
             if (rVec.Y < 0)
                 nu = 2.0 * Math.PI - nu;
         }else{
-            GD.PushError("Shit's fucked mate \n (Couldn't determine orbit type)");
+            Logger.Print("Shit's fucked mate \n (Couldn't determine orbit type)");
         }
 
         Orbit newOrbit = new()
