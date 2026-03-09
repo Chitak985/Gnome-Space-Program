@@ -24,6 +24,7 @@ public partial class RealityTangler : Node
     // Planets, crafts, and whatnot should like and subscribe to this
     [Signal] public delegate void OriginResetEventHandler();
     [Signal] public delegate void OrbitProcessEventHandler();
+    [Signal] public delegate void CameraProcessEventHandler();
     [Signal] public delegate void ScaledProcessEventHandler();
 
     public override void _Ready()
@@ -96,6 +97,7 @@ public partial class RealityTangler : Node
                 break;
         }
 
+        EmitSignal(SignalName.CameraProcess);
         //FlightCamera.Instance.Update();
         EmitSignal(SignalName.ScaledProcess);
 

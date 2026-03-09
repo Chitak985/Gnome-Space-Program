@@ -12,6 +12,8 @@ public partial class FlightCamera : CamControl
     public override void _Ready()
     {
         Instance = this;
+
+        RealityTangler.Instance.CameraProcess += Update;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -33,6 +35,6 @@ public partial class FlightCamera : CamControl
                 break;
         }
 
-        Update();
+        //Update();
     }
 }

@@ -37,6 +37,8 @@
 [ext_resource type="StyleBox" uid="uid://d2x1glka2wnkb" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_hover.tres" id="25_hx2xn"]
 [ext_resource type="Script" uid="uid://drlfgjufqytvn" path="res://Scripts/UserInterface/Windows/ResizeHandle.cs" id="26_287u4"]
 [ext_resource type="PackedScene" uid="uid://4gm81i1keb5p" path="res://Assets/Prefabs/UI/part_cat_button.tscn" id="30_d1dok"]
+[ext_resource type="Script" uid="uid://c21n1werdnvqr" path="res://Scripts/UserInterface/Flight/OrbitTracker.cs" id="30_kqsux"]
+[ext_resource type="Material" uid="uid://f7ph3sm1vmfr" path="res://Assets/Materials/navball.tres" id="30_ldaci"]
 [ext_resource type="Texture2D" uid="uid://bxe8uo40enbck" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/allIcon.svg" id="32_nej1p"]
 [ext_resource type="PackedScene" uid="uid://dbvfo1henkgx8" path="res://Assets/Prefabs/UI/MapView/MapIcon.tscn" id="32_ul3nw"]
 [ext_resource type="Texture2D" uid="uid://6gd5l8bljd83" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/launchbutton.svg" id="33_8ed1a"]
@@ -56,6 +58,8 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p24xc"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_oe5si"]
 
 [sub_resource type="Environment" id="Environment_h3s5b"]
 background_mode = 1
@@ -184,7 +188,7 @@ originResetThreshold = 10000000.0
 [node name="FlightCamera" type="Node3D" parent="." unique_id=1009889495 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
 script = ExtResource("6_0mdm0")
 multiplyScroll = true
-lerpSpeed = 10.0
+lerpSpeed = 0.25
 rotationAmnt = 0.5
 zoomAmnt = 1.1
 zoom = 2.0
@@ -628,6 +632,95 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
+[node name="FlightUI" type="Control" parent="UI" unique_id=2070060330]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="OrbitAndCartesian" type="Panel" parent="UI/FlightUI" unique_id=361601837]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -317.0
+offset_right = 560.0
+offset_bottom = -16.0
+grow_vertical = 0
+
+[node name="DifferentThingsPanel" type="Panel" parent="UI/FlightUI/OrbitAndCartesian" unique_id=737227993]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 11.0
+offset_right = -319.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="UI/FlightUI/OrbitAndCartesian/DifferentThingsPanel" unique_id=1979460983 node_paths=PackedStringArray("label")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("30_kqsux")
+label = NodePath("CraftOrbitData")
+
+[node name="CraftOrbitData" type="RichTextLabel" parent="UI/FlightUI/OrbitAndCartesian/DifferentThingsPanel/Control" unique_id=1269557056]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123"
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="UI/FlightUI/OrbitAndCartesian" unique_id=87912408]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 264.0
+offset_top = 17.0
+offset_right = -12.0
+offset_bottom = -17.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="UI/FlightUI/OrbitAndCartesian/SubViewportContainer" unique_id=1406651591]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(260, 267)
+render_target_update_mode = 4
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UI/FlightUI/OrbitAndCartesian/SubViewportContainer/SubViewport" unique_id=331086803]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0)
+material_override = ExtResource("30_ldaci")
+mesh = SubResource("SphereMesh_oe5si")
+
+[node name="Camera3D" type="Camera3D" parent="UI/FlightUI/OrbitAndCartesian/SubViewportContainer/SubViewport" unique_id=995235907]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.499157813288001)
+projection = 1
+
 [node name="ViewportWindows" type="Control" parent="." unique_id=1216988180]
 layout_mode = 3
 anchors_preset = 15
@@ -639,6 +732,7 @@ mouse_filter = 2
 theme = ExtResource("7_yxkbd")
 
 [node name="Map" type="Panel" parent="ViewportWindows" unique_id=1962789458]
+visible = false
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 1
 anchors_preset = 15
@@ -664,7 +758,7 @@ own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1920, 1080)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1582826098]
 environment = SubResource("Environment_h3s5b")
@@ -682,7 +776,7 @@ Viewport = NodePath("../..")
 [node name="MapCamera" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView" unique_id=1320007421 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
 script = ExtResource("12_ou012")
 multiplyScroll = true
-lerpSpeed = 10.0
+lerpSpeed = 0.25
 rotationAmnt = 0.5
 zoomAmnt = 1.1
 zoom = 2.0

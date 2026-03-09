@@ -28,43 +28,53 @@ public partial class Craft : Node3D
     // Whether or not the physical position of the CENTRAL part node should update orbital data
     private bool physicsUpdatesOrbit;
 
-    public override void _PhysicsProcess(double delta)
+    public void UpdateMap()
+    {
+        if (MapObject != null)
+        {
+            MapObject.truePosition = OrbitDriver.cartesian.position + OrbitDriver.parent.GlobalCartesianPosition;
+        }
+    }
+
+    public void UpdateOrbit()
     {
         // Loop over every part and apply a force towards the planet
         if (OrbitDriver.parent != null)
         {
             OrbitDriver.Update();
 
-            foreach (Part part in LoadedParts)
-            {
-                CelestialBody currentCBody = OrbitDriver.parent;
-
-                Vector3 center = currentCBody.GlobalPosition;
-                Vector3 direction = part.GlobalPosition.DirectionTo(center);
-
-                double distance = (center - part.GlobalPosition).Length();
-                double planetMass = currentCBody.mass;
-
-                double force = Conics.GravConstant * (planetMass * part.Mass / Mathf.Pow(distance, 2));
-
-                part.ApplyCentralForce(force*direction);
-            }
-
-            if (MapObject != null)
-            {
-                MapObject.truePosition = OrbitDriver.cartesian.position + OrbitDriver.parent.GlobalCartesianPosition;
-            }
-
             if (physicsUpdatesOrbit)
             {
+                foreach (Part part in LoadedParts)
+                {
+                    CelestialBody currentCBody = OrbitDriver.parent;
+
+                    Vector3 center = currentCBody.GlobalPosition;
+                    Vector3 direction = part.GlobalPosition.DirectionTo(center);
+
+                    double distance = (center - part.GlobalPosition).Length();
+                    double planetMass = currentCBody.mass;
+
+                    double force = Conics.GravConstant * (planetMass * part.Mass / Mathf.Pow(distance, 2));
+
+                    part.ApplyCentralForce(force*direction*ActiveSave.Instance.timeSpeed);
+                }
+
                 // Because cartesian position is relative to planet
                 Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.parent.GlobalPosition;
-                Vector3 globalPos = OrbitDriver.parent.GetGlobalPositionOfPoint(relativePos);
 
-                Vector3 globalVel = OrbitDriver.parent.GetGlobalVelocity(CentralPart.LinearVelocity + OrbitDriver.parent.GetSurfaceRotationVelocity(globalPos));
+                Vector3 finalPos = relativePos;
+                Vector3 finalVel = CentralPart.LinearVelocity;
 
-                OrbitDriver.cartesian.position = globalPos;
-                OrbitDriver.cartesian.velocity = globalVel; // Feels sloppy but all we can do is pray
+                if (RealityTangler.Instance.activeReferenceFrame != null)
+                {
+                    CelestialBody reference = RealityTangler.Instance.activeReferenceFrame;
+                    finalPos = reference.GetGlobalPositionOfPoint(relativePos);
+                    finalVel = reference.GetGlobalVelocity(CentralPart.LinearVelocity + reference.GetSurfaceRotationVelocity(finalPos));
+                }
+
+                OrbitDriver.cartesian.position = finalPos;
+                OrbitDriver.cartesian.velocity = finalVel; // Feels sloppy but all we can do is pray
 
                 OrbitDriver.orbit = Conics.CartToElem(OrbitDriver.cartesian);
             }
@@ -106,6 +116,9 @@ public partial class Craft : Node3D
         OrbitDriver = orbitDriver;
         AddChild(OrbitDriver); // Kidnap the orbit driver
         PartData = partData;
+
+        RealityTangler.Instance.OrbitProcess += UpdateOrbit;
+        RealityTangler.Instance.OrbitProcess += UpdateMap;
 
         // Create map object
         MapObject = new() { Name = $"{Name}_Map" };

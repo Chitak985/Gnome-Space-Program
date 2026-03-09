@@ -45,4 +45,9 @@ public class Orbit
         Logger.Print("MU: " + MU);
         Logger.Print("----------------------------------");
     }
+
+    public override string ToString()
+    {
+        return $"SMA: {Math.Round(semiMajorAxis, 2)}m \nECC: {Math.Round(eccentricity, 2)} \nINC: {Math.Round(inclination, 2)} \nARGP: {Math.Round(argumentOfPeriapsis, 2)} \nLONASC: {Math.Round(longitudeOfAscendingNode, 2)} \nTRUAN: {Math.Round(trueAnomaly, 2)} \nPERD: {Math.Round(period, 2)}";
+    }
 }

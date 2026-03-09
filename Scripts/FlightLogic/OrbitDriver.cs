@@ -20,4 +20,12 @@ public partial class OrbitDriver : Node
        
         cartesian.parent = parent;
     }
+
+    public override string ToString()
+    {
+        string referenceFrame = $"Reference: {parent}\n";
+        string cartesianText = $"\nState Vectors: \n\n{cartesian}\n";
+        string orbitText = $"\nOrbital Elements: \n\n{orbit}";
+        return referenceFrame + cartesianText + orbitText;
+    }
 }

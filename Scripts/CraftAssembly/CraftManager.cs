@@ -39,7 +39,7 @@ public partial class CraftManager : Node
         Craft craft = new();
         ActiveSave.Instance.localSpace.AddChild(craft);
 
-        //RealityTangler.Instance.SwitchReferenceFrame();
+        RealityTangler.Instance.SwitchReferenceFrame();
 
         craft.Initialize(driver, partData);
         craft.Load(true);

@@ -28,9 +28,9 @@ public partial class ActiveSave : Node3D
 	// In seconds
 	public double SaveTime { get; private set; }
 
-	public override void _Ready()
+    public override void _Ready()
 	{
-		Logger.Print($"{classTag} Active save starting...");
+        Logger.Print($"{classTag} Active save starting...");
 
 		Instance = this;
 		SingletonRegistry.Register(this); // Register self
@@ -105,6 +105,6 @@ public partial class ActiveSave : Node3D
 		SaveTime += delta * 1000 * timeSpeed / 1000;
 
 		// Set physics speed to match time speed
-		//Engine.TimeScale = timeSpeed;
+		Engine.TimeScale = timeSpeed;
 	}
 }

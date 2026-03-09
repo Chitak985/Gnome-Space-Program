@@ -23,7 +23,7 @@ public partial class OrbitRenderer : Node3D
 
         // Move the plane to match the orbit
         Scale = new Vector3(scale,scale,scale);
-        GlobalRotation = new Vector3(orbit.inclination, orbit.longitudeOfAscendingNode, 0);
+        GlobalRotation = new Vector3(-orbit.inclination, -orbit.longitudeOfAscendingNode, 0);
 
         List<Vector2> pointsList = SamplePoints(orbit);
         line2D.Points = [.. pointsList];

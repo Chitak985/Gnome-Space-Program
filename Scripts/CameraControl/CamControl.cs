@@ -34,7 +34,7 @@ public partial class CamControl : Node3D
 
     public void Update()
     {
-        float lerpy = lerpSpeed * (float)GetProcessDeltaTime();
+        float lerpy = lerpSpeed;
 
         rotNode_Y.RotationDegrees = rotNode_Y.RotationDegrees.Lerp(rotTargetY, lerpy);
         rotNode_X.RotationDegrees = rotNode_X.RotationDegrees.Lerp(rotTargetX, lerpy);
