@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://bb8qicqoqhnlo" path="res://Scripts/UserInterface/ButtonHandlers/TimewarpButton.cs" id="1_1yq6m"]
 
 [node name="TimewarpButton" type="Button" unique_id=193621940]
-custom_minimum_size = Vector2(36, 36)
+custom_minimum_size = Vector2(30, 25)
+offset_right = 20.0
+offset_bottom = 42.0
+theme_override_font_sizes/font_size = 20
+toggle_mode = true
 text = ">"
 script = ExtResource("1_1yq6m")

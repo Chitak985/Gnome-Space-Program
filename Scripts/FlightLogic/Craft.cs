@@ -26,7 +26,7 @@ public partial class Craft : Node3D
     public OrbitRenderer OrbitRenderer { get; private set; }
 
     // Whether or not the physical position of the CENTRAL part node should update orbital data
-    private bool physicsUpdatesOrbit;
+    public bool OnRailsOrbit { get; private set; }
 
     public void UpdateMap()
     {
@@ -43,7 +43,7 @@ public partial class Craft : Node3D
         {
             OrbitDriver.Update();
 
-            if (physicsUpdatesOrbit)
+            if (!OnRailsOrbit)
             {
                 // Because cartesian position is relative to planet
                 Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.parent.GlobalPosition;
@@ -71,7 +71,7 @@ public partial class Craft : Node3D
     public void Anchor(bool toggle)
     {
         Anchored = toggle;
-        physicsUpdatesOrbit = !toggle;
+        Logger.Print($"Setting anchor on craft {this} to {toggle}");
         foreach (Part part in LoadedParts)
         {
             part.Anchor(toggle);
@@ -111,6 +111,8 @@ public partial class Craft : Node3D
         MapView.Instance.AddMapIcon(MapObject);
 
         OrbitRenderer = OrbitRendererManager.Instance.CreateOrbitRenderer(this);
+
+        ActiveSave.Instance.TimeLevelChanged += OnTimeLevelChanged;
     }
 
     // Hiujjj??
@@ -237,5 +239,27 @@ public partial class Craft : Node3D
         Anchor(false);
         // Return the velocity lost from anchoring
         if(returnVelocity) SetVelocityFromCartesian();
+    }
+
+    private void ToggleOnRailsOrbit(bool toggle)
+    {
+        OnRailsOrbit = toggle;
+        Anchor(toggle);
+
+        // Return to every value we had previously
+        if (!toggle)
+        {
+            SetPositionFromCartesian();
+        }
+    }
+
+    private void OnTimeLevelChanged(int newTime)
+    {
+        if (newTime > ActiveSave.Instance.maxPhysicsSpeedLevel)
+        {
+            if (!OnRailsOrbit) ToggleOnRailsOrbit(true);
+        }else{
+            if (OnRailsOrbit) ToggleOnRailsOrbit(false);
+        }
     }
 }

@@ -9,7 +9,7 @@ public partial class TimewarpUI : Panel
     [Export] private bool addInReverse = true;
     [Export] private Container buttonContainer;
     [Export] private RichTextLabel indicator;
-    private List<TimewarpButton> buttons;
+    private List<TimewarpButton> buttons = [];
 
     public override void _Ready()
     {
@@ -32,6 +32,17 @@ public partial class TimewarpUI : Panel
     public override void _Process(double delta)
     {
         indicator.Text = $"x{Math.Round(ActiveSave.Instance.timeSpeed, 2).KiloFormat()}";
+
+        foreach (TimewarpButton button in buttons)
+        {
+            if (ActiveSave.Instance.timeSpeedLevels[button.level] <= ActiveSave.Instance.timeSpeed 
+                || ActiveSave.Instance.TimeSpeedLevel == button.level)
+            {
+                button.SetPressedNoSignal(true);
+            }else{
+                button.SetPressedNoSignal(false);
+            }
+        }
     }
 
     private void OnButtonPressed(int level)
@@ -45,5 +56,7 @@ public partial class TimewarpUI : Panel
         buttonContainer.AddChild(button);
         button.level = level;
         button.OnTimewarpClicked += OnButtonPressed;
+
+        buttons.Add(button);
     }
 }

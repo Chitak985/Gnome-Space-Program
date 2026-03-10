@@ -21,16 +21,20 @@ public partial class ActiveSave : Node3D
 
 	// Please NEVER include negative numbers
     [Export] public Godot.Collections.Array<double> timeSpeedLevels;
+    [Export] public int maxPhysicsSpeedLevel; // Maximum level where physics still applies
+    [Export] private double timeSpeedChangeDuration = 2.0;
+	// This should always be 1.0 upon loading!
+	[Export] public double timeSpeed = 1;
+    public int TimeSpeedLevel { get; private set; }
 
     // The great dictionary
     public Dictionary<string, Variant> saveParams;
 
-	// This should always be 1.0 upon loading!
-	[Export] public double timeSpeed = 1;
-    [Export] private double timeSpeedChangeDuration = 2.0;
-
     // In seconds
     public double SaveTime { get; private set; }
+
+    // Signals
+    [Signal] public delegate void TimeLevelChangedEventHandler(int level);
 
     public override void _EnterTree()
     {
@@ -117,8 +121,12 @@ public partial class ActiveSave : Node3D
 	// Level must be below the length of timeSpeedLevels
 	public void SetTimeSpeed(int level)
 	{
+        TimeSpeedLevel = level;
         Tween tween = CreateTween();
+
 		double targetTimeSpeed = timeSpeedLevels[level];
+        EmitSignal(SignalName.TimeLevelChanged, targetTimeSpeed);
+
         tween.SetIgnoreTimeScale(true);
         tween.SetTrans(Tween.TransitionType.Linear);
         tween.TweenProperty(this, "timeSpeed", targetTimeSpeed, timeSpeedChangeDuration);

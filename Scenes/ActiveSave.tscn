@@ -181,7 +181,8 @@ localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
 mapSpace = NodePath("ViewportWindows/Map/MapContainer/MapVP/MapView")
 timeSpeedLevels = Array[float]([1.0, 2.0, 3.0, 4.0, 5.0, 10.0, 50.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0])
-timeSpeedChangeDuration = 1.0
+maxPhysicsSpeedLevel = 3
+timeSpeedChangeDuration = 0.5
 
 [node name="StateManager" type="Node" parent="." unique_id=2074004250]
 script = ExtResource("2_wsyj0")

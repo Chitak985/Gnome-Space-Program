@@ -69,7 +69,7 @@ public partial class Part : RigidBody3D
             Vector3 center = orbitingBody.GlobalPosition;
             Vector3 direction = GlobalPosition.DirectionTo(center);
             double distance = (center - GlobalPosition).Length();
-            double force = Conics.GravConstant * (bodyMass * Mass / Mathf.Pow(distance, 2));
+            double force = Conics.GravConstant * bodyMass / Math.Pow(distance, 2);
 
             state.LinearVelocity += direction * force * GetProcessDeltaTime();
         }
