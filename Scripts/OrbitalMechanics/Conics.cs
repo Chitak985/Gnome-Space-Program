@@ -83,6 +83,11 @@ public partial class Conics : Node
 
         Lots of help from https://orbital-mechanics.space/classical-orbital-elements/orbital-elements-and-the-state-vector.html
         And various other pages
+
+        This method is incomplete! A decent chunk of stuff here is not using Atan2 when it should be
+        (owing to the fact that I don't really understand how to convert them to use Atan2)
+
+        
     */
    public static Orbit CartToElem(CartesianData data)
     {
@@ -123,36 +128,29 @@ public partial class Conics : Node
         double i = Math.Acos(hVec.Z / h);
 
         // Acending node, argument of periapsis, true anomaly (respectively)
-        double Omega = 0;
-        double omega = 0;
+        double Omega = 0; // Ascending node
+        double omega = 0; // Arg. of periapsis
         double nu = 0;
         if (e >= 1e-11 && i >= 1e-11 && i <= Math.PI - 1e-11)
         {
             // Non circular inclined orbit
-
-            // Ascending node
-            Omega = Math.Atan2(nVec.Y, nVec.X);
-            if (Omega < 0) Omega += 2 * Math.PI;
-
-            // Argument of periapsis
-            omega = Math.Atan2(nVec.Cross(eVec).Dot(Vector3.Back), nVec.Dot(eVec));
-            if (hVec.Z < 0) omega = 2 * Math.PI - omega;
-
-            // True anomaly
-            nu = Math.Atan2(
-                eVec.Cross(rVec).Dot(hVec) / (e * h * r),
-                eVec.Dot(rVec) / (e * r)
-            );
-            if (nu < 0) nu += 2 * Math.PI;
+            Omega = Math.Acos(nVec.X / N);
+            if (nVec.Y < 0.0)
+                Omega = 2.0 * Math.PI - Omega;
+            omega = Math.Acos(Math.Clamp(nVec.Dot(eVec) / N / e, -1.0, 1.0));
+            if (eVec.Z < 0.0)
+                omega = 2.0 * Math.PI - omega;
+            nu = Math.Acos(Math.Clamp(eVec.Dot(rVec) / e / r, -1.0, 1.0));
+            if (rVec.Dot(vVec) < 0.0)
+                nu = 2.0 * Math.PI - nu;
         }else if (e >= 1e-11 && (i < 1e-11 || i > Math.PI - 1e-11))
         {
             // Non circular equatorial orbit
-
-            // Ascending node
-            Omega = 0;
-
+            // Equatorial orbit has no ascending node
+            Omega = 0.0;
+            // True longitude of periapsis
             omega = Math.Acos(eVec.X / e);
-            // Handle cases where the orbit is retrograde AND FIX THIS TO USE ATAN2
+            // Handle cases where the orbit is retrograde
             if (i <= Math.PI - 1e-11)
             {
                 if (eVec.Y < 0.0)
@@ -162,40 +160,24 @@ public partial class Conics : Node
                     omega = 2.0 * Math.PI - omega;
             }
 
-            // True anomaly
-            nu = Math.Atan2(
-                eVec.Cross(rVec).Dot(hVec) / (e * h * r),
-                eVec.Dot(rVec) / (e * r)
-            );
-            if (nu < 0) nu += 2 * Math.PI;
+            nu = Math.Acos(Math.Clamp(eVec.Dot(rVec) / e / r, -1.0, 1.0));
+            if (rVec.Dot(vVec) < 0.0)
+                nu = 2.0 * Math.PI - nu;   
         }else if (e < 1e-11 && i >= 1e-11)
         {
             // Circular inclined orbit
-
-            // Ascending node
-            Omega = Math.Atan2(nVec.Y, nVec.X);
-            if (Omega < 0) Omega += 2 * Math.PI;
-
-            // Argument of periapsis
-            omega = 0;
-
-            // True anomaly
-            nu = Math.Atan2(
-                nVec.Cross(rVec).Dot(hVec) / (N * h * r),
-                nVec.Dot(rVec) / (N * r)
-            );
-            if (nu < 0) nu += 2 * Math.PI;
+            Omega = Math.Acos(nVec.X / N);
+            if (nVec.Y < 0.0)
+                Omega = 2.0 * Math.PI - Omega;
+            omega = 0.0;
+            nu = Math.Acos(Math.Clamp(nVec.Dot(rVec) / N / r, -1.0, 1.0));
+            if (rVec.Z < 0.0)
+                nu = 2.0 * Math.PI - nu;
         }else if (e < 1e-11 && i < 1e-11)
         {
             // Circular equatorial orbit
-
-            // Ascending node
-            Omega = 0;
-
-            // Argument of periapsis
-            omega = 0;
-
-            // True anomaly (FIX TO USE ATAN2 I JUTS FORGOT)
+            Omega = 0.0;
+            omega = 0.0;
             nu = Math.Acos(rVec.X / r);
             if (rVec.Y < 0)
                 nu = 2.0 * Math.PI - nu;

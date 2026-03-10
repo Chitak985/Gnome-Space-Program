@@ -39,6 +39,7 @@
 [ext_resource type="PackedScene" uid="uid://4gm81i1keb5p" path="res://Assets/Prefabs/UI/part_cat_button.tscn" id="30_d1dok"]
 [ext_resource type="Script" uid="uid://c21n1werdnvqr" path="res://Scripts/UserInterface/Flight/OrbitTracker.cs" id="30_kqsux"]
 [ext_resource type="Material" uid="uid://f7ph3sm1vmfr" path="res://Assets/Materials/navball.tres" id="30_ldaci"]
+[ext_resource type="StyleBox" uid="uid://clequcydisajd" path="res://Assets/Materials/GeneralUI/Misc/paddedPanel.tres" id="32_mtnyg"]
 [ext_resource type="Texture2D" uid="uid://bxe8uo40enbck" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/allIcon.svg" id="32_nej1p"]
 [ext_resource type="PackedScene" uid="uid://dbvfo1henkgx8" path="res://Assets/Prefabs/UI/MapView/MapIcon.tscn" id="32_ul3nw"]
 [ext_resource type="Texture2D" uid="uid://6gd5l8bljd83" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/launchbutton.svg" id="33_8ed1a"]
@@ -51,15 +52,12 @@
 [ext_resource type="Texture2D" uid="uid://3e0eh5stlfej" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/exitIcon.svg" id="38_byrdn"]
 [ext_resource type="Texture2D" uid="uid://x8kvw8eh51rl" path="res://Assets/Textures/dropdown_button_down.png" id="39_mbbrb"]
 [ext_resource type="Texture2D" uid="uid://cvu7pnyn48c8j" path="res://Assets/Textures/dropdown_button_right.png" id="40_ul3nw"]
+[ext_resource type="Script" uid="uid://dblpo740d2d4w" path="res://Scripts/UserInterface/Misc/TimewarpUI.cs" id="41_w8340"]
+[ext_resource type="Script" uid="uid://b4byh53dv8k5" path="res://Scripts/UserInterface/Misc/ClockUI.cs" id="42_6b1ya"]
+[ext_resource type="PackedScene" uid="uid://d1detwm4i50s7" path="res://Assets/Prefabs/UI/Buttons/timewarp_button.tscn" id="42_w8340"]
 [ext_resource type="PackedScene" uid="uid://dxhvfmveoa832" path="res://Assets/Prefabs/Debug/DebugGizmo.tscn" id="43_oe5si"]
 [ext_resource type="Script" uid="uid://drrsx2qsfqgck" path="res://Scripts/UserInterface/Windows/DraggablePanel.cs" id="49_oe5si"]
 [ext_resource type="PackedScene" uid="uid://bwoopux77w7qj" path="res://Assets/Prefabs/UI/Components/resize_handles.tscn" id="52_mtnyg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p24xc"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_oe5si"]
 
 [sub_resource type="Environment" id="Environment_h3s5b"]
 background_mode = 1
@@ -72,6 +70,12 @@ material = ExtResource("34_ou012")
 [sub_resource type="PlaneMesh" id="PlaneMesh_ou012"]
 material = ExtResource("34_ou012")
 flip_faces = true
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p24xc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_oe5si"]
 
 [sub_resource type="CSharpScript" id="CSharpScript_ou012"]
 script/source = "using Godot;
@@ -176,6 +180,8 @@ stateManager = NodePath("StateManager")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
 mapSpace = NodePath("ViewportWindows/Map/MapContainer/MapVP/MapView")
+timeSpeedLevels = Array[float]([1.0, 2.0, 3.0, 4.0, 5.0, 10.0, 50.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0])
+timeSpeedChangeDuration = 1.0
 
 [node name="StateManager" type="Node" parent="." unique_id=2074004250]
 script = ExtResource("2_wsyj0")
@@ -213,7 +219,7 @@ remote_path = NodePath("../../../../../RenderLayers/LocalContainer/LocalView/Cam
 remote_path = NodePath("../../../../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
 
 [node name="RenderLayers" type="Control" parent="." unique_id=980932977]
-z_index = -5
+z_index = -1000
 texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
@@ -233,7 +239,6 @@ grow_vertical = 2
 stretch = true
 
 [node name="ScaledView" type="SubViewport" parent="RenderLayers/ScaledContainer" unique_id=787600989]
-transparent_bg = true
 handle_input_locally = false
 msaa_3d = 2
 screen_space_aa = 1
@@ -285,441 +290,6 @@ Camera = NodePath("../Camera3D")
 Planets = NodePath("Planets")
 
 [node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace" unique_id=643920472]
-
-[node name="UI" type="Control" parent="." unique_id=6163037]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme = ExtResource("7_yxkbd")
-
-[node name="PartMenuHandler" type="Control" parent="UI" unique_id=1100265305 node_paths=PackedStringArray("contextMenus")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("15_cbqy2")
-contextMenus = NodePath("ContextMenus")
-menuPrefab = ExtResource("17_2vujl")
-buttonPrefab = ExtResource("19_cuu2x")
-
-[node name="ContextMenus" type="Control" parent="UI/PartMenuHandler" unique_id=302155286 node_paths=PackedStringArray("menus")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("15_ue2ba")
-menus = []
-
-[node name="BuildUI" type="Control" parent="UI" unique_id=1081851632 node_paths=PackedStringArray("partListContainer", "partList")]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("23_hx2xn")
-partListContainer = NodePath("Selector")
-partList = NodePath("Selector/PartSelector/SelectMenu")
-
-[node name="Selector" type="Control" parent="UI/BuildUI" unique_id=1973749377]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="PartSelector" type="Control" parent="UI/BuildUI/Selector" unique_id=686071424]
-custom_minimum_size = Vector2(288, 0)
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_left = 106.225
-offset_top = 45.0
-offset_right = 394.225
-offset_bottom = -45.0
-grow_vertical = 2
-
-[node name="SelectMenu" type="Panel" parent="UI/BuildUI/Selector/PartSelector" unique_id=24945644 node_paths=PackedStringArray("categoryList", "partPreviewContainer", "allButton")]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_bottom = -152.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("24_287u4")
-buttonPrefab = ExtResource("30_d1dok")
-categoryPrefab = ExtResource("25_51qm0")
-partSelector = ExtResource("23_vd1dx")
-categoryList = NodePath("../../PartCategories/ScrollContainer/CatList")
-partPreviewContainer = NodePath("../../PreviewContainer")
-allButton = NodePath("../../AllButton")
-
-[node name="PartModifiers" type="Panel" parent="UI/BuildUI/Selector/PartSelector" unique_id=1956750359]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -149.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ResizeHandles" type="Control" parent="UI/BuildUI/Selector/PartSelector" unique_id=1937592047]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="R" type="Button" parent="UI/BuildUI/Selector/PartSelector/ResizeHandles" unique_id=334656615]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 3.0
-offset_right = 13.0
-grow_horizontal = 0
-grow_vertical = 2
-mouse_default_cursor_shape = 10
-theme_override_styles/normal = ExtResource("23_2c3fv")
-theme_override_styles/pressed = ExtResource("24_vd1dx")
-theme_override_styles/hover = ExtResource("25_hx2xn")
-script = ExtResource("26_287u4")
-
-[node name="PartCategories" type="Panel" parent="UI/BuildUI/Selector" unique_id=1585859983]
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_left = 45.0
-offset_top = 106.0
-offset_right = 103.0
-offset_bottom = -45.0
-grow_vertical = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/Selector/PartCategories" unique_id=19543851]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="CatList" type="VBoxContainer" parent="UI/BuildUI/Selector/PartCategories/ScrollContainer" unique_id=1865035668]
-layout_mode = 2
-
-[node name="PreviewContainer" type="Control" parent="UI/BuildUI/Selector" unique_id=739324967]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="AllButton" type="Button" parent="UI/BuildUI/Selector" unique_id=1341906821]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 0
-offset_left = 45.0
-offset_top = 44.0
-offset_right = 103.0
-offset_bottom = 102.0
-
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Selector/AllButton" unique_id=1529589169]
-texture_filter = 4
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("32_nej1p")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Misc" type="Control" parent="UI/BuildUI" unique_id=388528411]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="SideButtons" type="Panel" parent="UI/BuildUI/Misc" unique_id=1590814448]
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -112.0
-offset_top = 47.0
-offset_right = -46.0
-offset_bottom = -45.0
-grow_horizontal = 0
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildUI/Misc/SideButtons" unique_id=711521208]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 4.0
-offset_top = 4.0
-offset_right = -4.0
-offset_bottom = -4.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="LaunchButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer" unique_id=1297648159 node_paths=PackedStringArray("contextMenus")]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-script = ExtResource("33_yged2")
-contextMenus = NodePath("../../../../ContextMenus")
-
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/LaunchButton" unique_id=787550104]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("33_8ed1a")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="ClearButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer" unique_id=262158221]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-script = ExtResource("35_p24xc")
-
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/ClearButton" unique_id=1452579439]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("36_7j3xb")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="ExitButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer" unique_id=244411074]
-custom_minimum_size = Vector2(58, 58)
-layout_mode = 2
-script = ExtResource("38_a66g2")
-
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/ExitButton" unique_id=216336462]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("38_byrdn")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="ContextMenus" type="Control" parent="UI/BuildUI" unique_id=226681809 node_paths=PackedStringArray("menus")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("15_ue2ba")
-menus = [NodePath("SiteSelector")]
-
-[node name="SiteSelector" type="Panel" parent="UI/BuildUI/ContextMenus" unique_id=1796948748 node_paths=PackedStringArray("buttonContainer")]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -374.0
-offset_top = 47.0
-offset_right = -120.0
-offset_bottom = 247.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("37_7j3xb")
-buttonContainer = NodePath("ScrollContainer/VBoxContainer")
-
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/ContextMenus/SiteSelector" unique_id=611963978]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 6.0
-offset_top = 6.0
-offset_right = -6.0
-offset_bottom = -6.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_p24xc")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_7j3xb")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer" unique_id=936868582]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Button" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=641567149]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "TestOption"
-
-[node name="Button2" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=223723964]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "TestOption"
-
-[node name="Button3" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1264546627]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "TestOption"
-
-[node name="Button4" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1743771517]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "TestOption"
-
-[node name="Button5" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=798699098]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "TestOption"
-
-[node name="Button6" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=796925157]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "TestOption"
-
-[node name="Button7" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1687754573]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "TestOption"
-
-[node name="Button8" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1312778502]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "TestOption"
-
-[node name="Button9" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1191022006]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "TestOption"
-
-[node name="Button10" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=639683005]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "TestOption"
-
-[node name="FlightUI" type="Control" parent="UI" unique_id=2070060330]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="OrbitAndCartesian" type="Panel" parent="UI/FlightUI" unique_id=361601837]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -317.0
-offset_right = 560.0
-offset_bottom = -16.0
-grow_vertical = 0
-
-[node name="DifferentThingsPanel" type="Panel" parent="UI/FlightUI/OrbitAndCartesian" unique_id=737227993]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 11.0
-offset_right = -319.0
-offset_bottom = -11.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Control" type="Control" parent="UI/FlightUI/OrbitAndCartesian/DifferentThingsPanel" unique_id=1979460983 node_paths=PackedStringArray("label")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("30_kqsux")
-label = NodePath("CraftOrbitData")
-
-[node name="CraftOrbitData" type="RichTextLabel" parent="UI/FlightUI/OrbitAndCartesian/DifferentThingsPanel/Control" unique_id=1269557056]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "orbit parameter: 123123123
-orbit parameter: 123123123
-orbit parameter: 123123123
-orbit parameter: 123123123
-orbit parameter: 123123123
-orbit parameter: 123123123
-orbit parameter: 123123123
-orbit parameter: 123123123
-orbit parameter: 123123123
-orbit parameter: 123123123"
-
-[node name="SubViewportContainer" type="SubViewportContainer" parent="UI/FlightUI/OrbitAndCartesian" unique_id=87912408]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 264.0
-offset_top = 17.0
-offset_right = -12.0
-offset_bottom = -17.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch = true
-
-[node name="SubViewport" type="SubViewport" parent="UI/FlightUI/OrbitAndCartesian/SubViewportContainer" unique_id=1406651591]
-own_world_3d = true
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(260, 267)
-render_target_update_mode = 4
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="UI/FlightUI/OrbitAndCartesian/SubViewportContainer/SubViewport" unique_id=331086803]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0)
-material_override = ExtResource("30_ldaci")
-mesh = SubResource("SphereMesh_oe5si")
-
-[node name="Camera3D" type="Camera3D" parent="UI/FlightUI/OrbitAndCartesian/SubViewportContainer/SubViewport" unique_id=995235907]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.499157813288001)
-projection = 1
 
 [node name="ViewportWindows" type="Control" parent="." unique_id=1216988180]
 layout_mode = 3
@@ -981,6 +551,564 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="UI" type="Control" parent="." unique_id=6163037]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("7_yxkbd")
+
+[node name="PartMenuHandler" type="Control" parent="UI" unique_id=1100265305 node_paths=PackedStringArray("contextMenus")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("15_cbqy2")
+contextMenus = NodePath("ContextMenus")
+menuPrefab = ExtResource("17_2vujl")
+buttonPrefab = ExtResource("19_cuu2x")
+
+[node name="ContextMenus" type="Control" parent="UI/PartMenuHandler" unique_id=302155286 node_paths=PackedStringArray("menus")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("15_ue2ba")
+menus = []
+
+[node name="BuildUI" type="Control" parent="UI" unique_id=1081851632 node_paths=PackedStringArray("partListContainer", "partList")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("23_hx2xn")
+partListContainer = NodePath("Selector")
+partList = NodePath("Selector/Control/PartSelector/SelectMenu")
+
+[node name="Selector" type="Control" parent="UI/BuildUI" unique_id=1973749377]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PreviewContainer" type="Control" parent="UI/BuildUI/Selector" unique_id=739324967]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Control" type="Control" parent="UI/BuildUI/Selector" unique_id=2029293806]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 22.0
+offset_right = 394.0
+offset_bottom = -16.0
+grow_vertical = 2
+
+[node name="PartSelector" type="Control" parent="UI/BuildUI/Selector/Control" unique_id=686071424]
+custom_minimum_size = Vector2(288, 0)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 61.0
+offset_right = 349.0
+grow_vertical = 2
+
+[node name="SelectMenu" type="Panel" parent="UI/BuildUI/Selector/Control/PartSelector" unique_id=24945644 node_paths=PackedStringArray("categoryList", "partPreviewContainer", "allButton")]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -152.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("24_287u4")
+buttonPrefab = ExtResource("30_d1dok")
+categoryPrefab = ExtResource("25_51qm0")
+partSelector = ExtResource("23_vd1dx")
+categoryList = NodePath("../../PartCategories/ScrollContainer/CatList")
+partPreviewContainer = NodePath("../../../PreviewContainer")
+allButton = NodePath("../../AllButton")
+
+[node name="PartModifiers" type="Panel" parent="UI/BuildUI/Selector/Control/PartSelector" unique_id=1956750359]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -149.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResizeHandles" type="Control" parent="UI/BuildUI/Selector/Control/PartSelector" unique_id=1937592047]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="R" type="Button" parent="UI/BuildUI/Selector/Control/PartSelector/ResizeHandles" unique_id=334656615]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_right = 13.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_default_cursor_shape = 10
+theme_override_styles/normal = ExtResource("23_2c3fv")
+theme_override_styles/pressed = ExtResource("24_vd1dx")
+theme_override_styles/hover = ExtResource("25_hx2xn")
+script = ExtResource("26_287u4")
+
+[node name="PartCategories" type="Panel" parent="UI/BuildUI/Selector/Control" unique_id=1585859983]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_top = 64.0
+offset_right = 58.0
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/Selector/Control/PartCategories" unique_id=19543851]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CatList" type="VBoxContainer" parent="UI/BuildUI/Selector/Control/PartCategories/ScrollContainer" unique_id=1865035668]
+layout_mode = 2
+
+[node name="AllButton" type="Button" parent="UI/BuildUI/Selector/Control" unique_id=1341906821]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 58.0
+
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Selector/Control/AllButton" unique_id=1529589169]
+texture_filter = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("32_nej1p")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Misc" type="Control" parent="UI/BuildUI" unique_id=388528411]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Buttons" type="Panel" parent="UI/BuildUI/Misc" unique_id=1590814448]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -204.0
+offset_top = -82.0
+offset_right = -14.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="VBoxContainer" type="HBoxContainer" parent="UI/BuildUI/Misc/Buttons" unique_id=1410406058]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 120.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LaunchButton" type="Button" parent="UI/BuildUI/Misc/Buttons/VBoxContainer" unique_id=1297648159 node_paths=PackedStringArray("contextMenus")]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 2
+script = ExtResource("33_yged2")
+contextMenus = NodePath("../../../../ContextMenus")
+
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/Buttons/VBoxContainer/LaunchButton" unique_id=787550104]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("33_8ed1a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ClearButton" type="Button" parent="UI/BuildUI/Misc/Buttons/VBoxContainer" unique_id=262158221]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 2
+script = ExtResource("35_p24xc")
+
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/Buttons/VBoxContainer/ClearButton" unique_id=1452579439]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("36_7j3xb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ExitButton" type="Button" parent="UI/BuildUI/Misc/Buttons/VBoxContainer" unique_id=244411074]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 2
+script = ExtResource("38_a66g2")
+
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/Buttons/VBoxContainer/ExitButton" unique_id=216336462]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("38_byrdn")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ContextMenus" type="Control" parent="UI/BuildUI" unique_id=226681809 node_paths=PackedStringArray("menus")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("15_ue2ba")
+menus = [NodePath("SiteSelector")]
+
+[node name="SiteSelector" type="Panel" parent="UI/BuildUI/ContextMenus" unique_id=1796948748 node_paths=PackedStringArray("buttonContainer")]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -269.0
+offset_top = 692.0
+offset_right = -15.0
+offset_bottom = 993.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("37_7j3xb")
+buttonContainer = NodePath("ScrollContainer/VBoxContainer")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/ContextMenus/SiteSelector" unique_id=611963978]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_p24xc")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7j3xb")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer" unique_id=936868582]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=641567149]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "TestOption"
+
+[node name="Button2" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=223723964]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "TestOption"
+
+[node name="Button3" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1264546627]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "TestOption"
+
+[node name="Button4" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1743771517]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "TestOption"
+
+[node name="Button5" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=798699098]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "TestOption"
+
+[node name="Button6" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=796925157]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "TestOption"
+
+[node name="Button7" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1687754573]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "TestOption"
+
+[node name="Button8" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1312778502]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "TestOption"
+
+[node name="Button9" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1191022006]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "TestOption"
+
+[node name="Button10" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=639683005]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "TestOption"
+
+[node name="FlightUI" type="Control" parent="UI" unique_id=2070060330]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Navball" type="Panel" parent="UI/FlightUI" unique_id=361601837]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 243.0
+offset_top = -258.0
+offset_right = 486.0
+offset_bottom = -16.0
+grow_vertical = 0
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="UI/FlightUI/Navball" unique_id=87912408]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="UI/FlightUI/Navball/SubViewportContainer" unique_id=1406651591]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(243, 242)
+render_target_update_mode = 4
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UI/FlightUI/Navball/SubViewportContainer/SubViewport" unique_id=331086803]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0)
+material_override = ExtResource("30_ldaci")
+mesh = SubResource("SphereMesh_oe5si")
+
+[node name="Camera3D" type="Camera3D" parent="UI/FlightUI/Navball/SubViewportContainer/SubViewport" unique_id=995235907]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.499157813288001)
+projection = 1
+
+[node name="OrbitInfo" type="Panel" parent="UI/FlightUI" unique_id=1078897937]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -350.0
+offset_right = 232.0
+offset_bottom = -16.0
+grow_vertical = 0
+
+[node name="DifferentThingsPanel" type="Panel" parent="UI/FlightUI/OrbitInfo" unique_id=626843282]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = -7.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="UI/FlightUI/OrbitInfo/DifferentThingsPanel" unique_id=1274491192 node_paths=PackedStringArray("label")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("30_kqsux")
+label = NodePath("CraftOrbitData")
+
+[node name="CraftOrbitData" type="RichTextLabel" parent="UI/FlightUI/OrbitInfo/DifferentThingsPanel/Control" unique_id=1584131148]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 14
+text = "orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123"
+
+[node name="UniversalUI" type="Control" parent="UI" unique_id=564722764]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Time" type="Control" parent="UI/UniversalUI" unique_id=482155313]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+
+[node name="Timewarp" type="Panel" parent="UI/UniversalUI/Time" unique_id=66221609 node_paths=PackedStringArray("buttonContainer", "indicator")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -365.0
+offset_top = 22.0
+offset_right = -274.0
+offset_bottom = 79.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("41_w8340")
+buttonPrefab = ExtResource("42_w8340")
+buttonContainer = NodePath("TimewarpButtons/Buttons")
+indicator = NodePath("Panel2/TimewarpLabel")
+
+[node name="Panel2" type="Panel" parent="UI/UniversalUI/Time/Timewarp" unique_id=1336735906]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.9580000000000001
+offset_left = 8.0
+offset_top = 9.0
+offset_right = -8.0
+offset_bottom = -6.606000000000002
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="TimewarpLabel" type="RichTextLabel" parent="UI/UniversalUI/Time/Timewarp/Panel2" unique_id=530298296]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "1.0B"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TimewarpButtons" type="PanelContainer" parent="UI/UniversalUI/Time/Timewarp" unique_id=1070911847]
+layout_direction = 3
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 96.0
+offset_right = 116.0
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("32_mtnyg")
+
+[node name="Buttons" type="HBoxContainer" parent="UI/UniversalUI/Time/Timewarp/TimewarpButtons" unique_id=1754673541]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+alignment = 2
+
+[node name="Display" type="Panel" parent="UI/UniversalUI/Time" unique_id=1743713297]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -270.0
+offset_top = 22.0
+offset_right = -19.0
+offset_bottom = 79.0
+
+[node name="Panel" type="Panel" parent="UI/UniversalUI/Time/Display" unique_id=1680445821 node_paths=PackedStringArray("label")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 9.0
+offset_right = -9.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("42_6b1ya")
+label = NodePath("TimeLabel")
+
+[node name="TimeLabel" type="RichTextLabel" parent="UI/UniversalUI/Time/Display/Panel" unique_id=561874543]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_right = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "999999999999999999999999999s"
+autowrap_mode = 0
+horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="PlanetSystem" type="Node3D" parent="." unique_id=13215807 node_paths=PackedStringArray("localCamera", "localSpace", "scaledSpace")]
 script = ExtResource("1_pocjb")

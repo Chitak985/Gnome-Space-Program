@@ -55,14 +55,24 @@ public partial class Part : RigidBody3D
         InputEvent += OnInputEvent;
         MouseEntered += OnMouseEnter;
         MouseExited += OnMouseExit;
+
+        CustomIntegrator = true;
     }
 
-    public override void _Process(double delta)
+    public override void _IntegrateForces(PhysicsDirectBodyState3D state)
     {
-        //if (PartMenuHandler.Instance != null && !overrideHover)
-        //{
-        //    Highlight(PartManager.Instance.hoveredPart == this, true); 
-        //}
+        if (parentThing is Craft craft)
+        {
+            CelestialBody orbitingBody = craft.OrbitDriver.parent;
+            double bodyMass = orbitingBody.mass;
+
+            Vector3 center = orbitingBody.GlobalPosition;
+            Vector3 direction = GlobalPosition.DirectionTo(center);
+            double distance = (center - GlobalPosition).Length();
+            double force = Conics.GravConstant * (bodyMass * Mass / Mathf.Pow(distance, 2));
+
+            state.LinearVelocity += direction * force / Engine.TimeScale;
+        }
     }
 
     private void OnInputEvent(Node camera, InputEvent @event, Vector3 eventPosition, Vector3 normal, long shapeIdx)

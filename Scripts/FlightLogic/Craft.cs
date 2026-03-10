@@ -45,21 +45,6 @@ public partial class Craft : Node3D
 
             if (physicsUpdatesOrbit)
             {
-                foreach (Part part in LoadedParts)
-                {
-                    CelestialBody currentCBody = OrbitDriver.parent;
-
-                    Vector3 center = currentCBody.GlobalPosition;
-                    Vector3 direction = part.GlobalPosition.DirectionTo(center);
-
-                    double distance = (center - part.GlobalPosition).Length();
-                    double planetMass = currentCBody.mass;
-
-                    double force = Conics.GravConstant * (planetMass * part.Mass / Mathf.Pow(distance, 2));
-
-                    part.ApplyCentralForce(force*direction*ActiveSave.Instance.timeSpeed);
-                }
-
                 // Because cartesian position is relative to planet
                 Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.parent.GlobalPosition;
 
@@ -137,7 +122,7 @@ public partial class Craft : Node3D
     public void Instantiate(Dictionary partData)
     {
         RealityTangler.Instance.OriginReset += ResetOrigin;
-        this.PartData = partData;
+        PartData = partData;
         AddPartFromData(partData, parentObject: this);
 
         CentralPart = LoadedParts[0];
@@ -153,6 +138,7 @@ public partial class Craft : Node3D
         string partName = (string)data["name"];
         CachedPart cachedPart = PartManager.Instance.partCache[partName];
         Part part = cachedPart.Instantiate(parentObject);
+        part.parentThing = this;
         part.Anchor(true); // Anchor it for now
         
         if (parentPart != null)

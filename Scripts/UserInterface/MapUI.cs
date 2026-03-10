@@ -21,12 +21,14 @@ public partial class MapUI : Control
         {
             dragPanel.Size = vpSize;
             dragPanel.Position = Vector2.Zero;
+            dragPanel.ZIndex = -10;
         }else{
             Vector2 undockedSize = dragPanel.Size;
             if (undockedSize == vpSize) undockedSize = GetViewport().GetVisibleRect().Size * undockMult;
 
             dragPanel.Size = undockedSize;
             dragPanel.Position = (vpSize - undockedSize) / 2;
+            dragPanel.ZIndex = 10;
         }
     }
 

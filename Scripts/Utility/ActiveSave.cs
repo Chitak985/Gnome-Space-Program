@@ -19,21 +19,27 @@ public partial class ActiveSave : Node3D
 	[Export] public ScaledSpace scaledSpace;
 	[Export] public MapView mapSpace;
 
+	// Please NEVER include negative numbers
+    [Export] public Godot.Collections.Array<double> timeSpeedLevels;
+
     // The great dictionary
     public Dictionary<string, Variant> saveParams;
 
 	// This should always be 1.0 upon loading!
 	[Export] public double timeSpeed = 1;
+    [Export] private double timeSpeedChangeDuration = 2.0;
 
-	// In seconds
-	public double SaveTime { get; private set; }
+    // In seconds
+    public double SaveTime { get; private set; }
+
+    public override void _EnterTree()
+    {
+        Instance = this;
+    }
 
     public override void _Ready()
 	{
         Logger.Print($"{classTag} Active save starting...");
-
-		Instance = this;
-		SingletonRegistry.Register(this); // Register self
 
 		foreach (KeyValuePair<string, Variant> param in saveParams)
 		{
@@ -104,7 +110,17 @@ public partial class ActiveSave : Node3D
 		// Increment time since save creation (for orbital calculations mostly)
 		SaveTime += delta * 1000 * timeSpeed / 1000;
 
-		// Set physics speed to match time speed
-		Engine.TimeScale = timeSpeed;
+        // Set physics speed to match time speed
+        Engine.TimeScale = timeSpeed;
 	}
+
+	// Level must be below the length of timeSpeedLevels
+	public void SetTimeSpeed(int level)
+	{
+        Tween tween = CreateTween();
+		double targetTimeSpeed = timeSpeedLevels[level];
+        tween.SetIgnoreTimeScale(true);
+        tween.SetTrans(Tween.TransitionType.Linear);
+        tween.TweenProperty(this, "timeSpeed", targetTimeSpeed, timeSpeedChangeDuration);
+    }
 }
