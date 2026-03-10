@@ -31,7 +31,7 @@ public partial class TimewarpUI : Panel
 
     public override void _Process(double delta)
     {
-        indicator.Text = $"x{ActiveSave.Instance.timeSpeed.KiloFormat()}";
+        indicator.Text = $"x{Math.Round(ActiveSave.Instance.timeSpeed, 2).KiloFormat()}";
     }
 
     private void OnButtonPressed(int level)
