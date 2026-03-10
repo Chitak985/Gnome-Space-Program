@@ -64,11 +64,11 @@ public partial class LaunchSite : PartModule
         Orbit orbit = new() {
             parent = cBody,
             semiMajorAxis = 7000000,
-            eccentricity = 0.8,
-            inclination = 12,
-            argumentOfPeriapsis = 32,
-            longitudeOfAscendingNode = 11,
-            trueAnomaly = 1,
+            eccentricity = 0,
+            inclination = 0,
+            argumentOfPeriapsis = 0,
+            longitudeOfAscendingNode = 0,
+            trueAnomaly = 0,
             trueAnomalyAtEpoch = 0
         };
 

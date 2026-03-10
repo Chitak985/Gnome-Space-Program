@@ -71,7 +71,7 @@ public partial class Part : RigidBody3D
             double distance = (center - GlobalPosition).Length();
             double force = Conics.GravConstant * (bodyMass * Mass / Mathf.Pow(distance, 2));
 
-            state.LinearVelocity += direction * force / Engine.TimeScale;
+            state.LinearVelocity += direction * force * GetProcessDeltaTime();
         }
     }
 

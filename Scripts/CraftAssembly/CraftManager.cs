@@ -55,7 +55,7 @@ public partial class CraftManager : Node
         }
 
         // Shoot out a signal for anyone who wants to know
-        EmitSignal(SignalName.CraftSpawned);
+        EmitSignal(SignalName.CraftSpawned, craft);
 
         return craft;
     }
