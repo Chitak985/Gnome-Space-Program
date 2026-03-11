@@ -181,7 +181,7 @@ localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
 mapSpace = NodePath("ViewportWindows/Map/MapContainer/MapVP/MapView")
 timeSpeedLevels = Array[float]([1.0, 2.0, 3.0, 4.0, 5.0, 10.0, 50.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0])
-maxPhysicsSpeedLevel = 3
+maxPhysicsSpeedLevel = 4
 timeSpeedChangeDuration = 0.5
 
 [node name="StateManager" type="Node" parent="." unique_id=2074004250]
@@ -1037,7 +1037,7 @@ indicator = NodePath("Panel2/TimewarpLabel")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.9580000000000001
+anchor_bottom = 0.958
 offset_left = 8.0
 offset_top = 9.0
 offset_right = -8.0

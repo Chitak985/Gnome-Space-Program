@@ -13,6 +13,9 @@ render_priority = 0
 shader = ExtResource("2_xjh6j")
 shader_parameter/tex = SubResource("ViewportTexture_7mng0")
 
+[sub_resource type="Gradient" id="Gradient_7mng0"]
+colors = PackedColorArray(0.38708586, 0.09734466, 0.16840798, 1, 0.38118628, 0.5981125, 0.9040796, 1)
+
 [node name="OrbitRendererEnclosure" type="Node3D" unique_id=382266954 node_paths=PackedStringArray("line2D", "viewport")]
 script = ExtResource("3_7mng0")
 line2D = NodePath("SubViewport/Line2D")
@@ -31,3 +34,4 @@ size = Vector2i(8192, 8192)
 
 [node name="Line2D" type="Line2D" parent="SubViewport" unique_id=1546271862]
 width = 3.0
+gradient = SubResource("Gradient_7mng0")

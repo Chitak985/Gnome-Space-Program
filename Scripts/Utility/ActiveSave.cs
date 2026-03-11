@@ -32,9 +32,13 @@ public partial class ActiveSave : Node3D
 
     // In seconds
     public double SaveTime { get; private set; }
+	public double UnscaledDelta { get; private set; }
 
     // Signals
     [Signal] public delegate void TimeLevelChangedEventHandler(int level);
+
+    private double previousEngineTime;
+	
 
     public override void _EnterTree()
     {
@@ -50,6 +54,20 @@ public partial class ActiveSave : Node3D
 			Logger.Print(param);
 		}
 		Logger.Print($"{classTag} Active save ready for init!");
+	}
+
+	public override void _Process(double delta)
+	{
+        // Custom delta ohh yeahh
+        double engineTime = Time.GetTicksUsec();
+        UnscaledDelta = (engineTime - previousEngineTime) / 1000000.0;
+        previousEngineTime = Time.GetTicksUsec();
+
+        // Increment time since save creation (for orbital calculations mostly)
+        SaveTime += UnscaledDelta * 1000 * timeSpeed / 1000;
+
+        // Set physics speed to match time speed
+        Engine.TimeScale = timeSpeed;
 	}
 
 	// Start up all vital systems such as the planet system and whatnot
@@ -108,15 +126,6 @@ public partial class ActiveSave : Node3D
         localSpace.Viewport.HandleInputLocally = false;
         localSpace.Viewport.HandleInputLocally = true;
     }
-
-	public override void _Process(double delta)
-	{
-		// Increment time since save creation (for orbital calculations mostly)
-		SaveTime += delta * 1000 * timeSpeed / 1000;
-
-        // Set physics speed to match time speed
-        Engine.TimeScale = timeSpeed;
-	}
 
 	// Level must be below the length of timeSpeedLevels
 	public void SetTimeSpeed(int level)

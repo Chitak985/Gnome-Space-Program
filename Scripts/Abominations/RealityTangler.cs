@@ -58,6 +58,7 @@ public partial class RealityTangler : Node
     // Eaten from OrbitManager.cs because we need all the syncing we can get
     private void Process()
     {
+        OrbitRendererManager.Instance.UpdateOrbitRenderers();
         // Orbits will not work unless you process them twice for some fucking reason
         EmitSignal(SignalName.OrbitProcess);
         switch (StateManager.Instance.gameState)
@@ -100,8 +101,6 @@ public partial class RealityTangler : Node
         EmitSignal(SignalName.CameraProcess);
         //FlightCamera.Instance.Update();
         EmitSignal(SignalName.ScaledProcess);
-
-        OrbitRendererManager.Instance.UpdateOrbitRenderers();
 
         UpdateRotatingFrame();
 

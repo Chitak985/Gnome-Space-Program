@@ -27,6 +27,8 @@ public partial class Craft : Node3D
 
     // Whether or not the physical position of the CENTRAL part node should update orbital data
     public bool OnRailsOrbit { get; private set; }
+    public double TimeAtRailsEntry { get; private set; }
+    public double TrueAnomalyAtRailsEntry { get; private set; }
 
     public void UpdateMap()
     {
@@ -62,6 +64,15 @@ public partial class Craft : Node3D
                 OrbitDriver.cartesian.velocity = finalVel; // Feels sloppy but all we can do is pray
 
                 OrbitDriver.orbit = Conics.CartToElem(OrbitDriver.cartesian);
+            }else{
+                // Propagate the true anomaly forwards in time
+                OrbitDriver.orbit.trueAnomaly = 
+                    TrueAnomalyAtRailsEntry + Conics.TimeToTrueAnomaly(OrbitDriver.orbit, ActiveSave.Instance.SaveTime, TimeAtRailsEntry);
+
+                // Simply follow the orbit
+                CartesianData newCartesian = Conics.ElemToCart(OrbitDriver.orbit);
+                GlobalPosition = newCartesian.position;
+                OrbitDriver.cartesian = newCartesian;
             }
         }
 
@@ -71,7 +82,6 @@ public partial class Craft : Node3D
     public void Anchor(bool toggle)
     {
         Anchored = toggle;
-        Logger.Print($"Setting anchor on craft {this} to {toggle}");
         foreach (Part part in LoadedParts)
         {
             part.Anchor(toggle);
@@ -243,12 +253,22 @@ public partial class Craft : Node3D
 
     private void ToggleOnRailsOrbit(bool toggle)
     {
+        Logger.Print($"Setting craft ({this}) on-rails orbit to ({toggle})");
+
         OnRailsOrbit = toggle;
         Anchor(toggle);
 
         // Return to every value we had previously
-        if (!toggle)
+        if (toggle)
         {
+            // Save what we had so the orbit can propagate properly (tm)
+            TrueAnomalyAtRailsEntry = OrbitDriver.orbit.trueAnomaly;
+            if (TrueAnomalyAtRailsEntry > Math.PI)
+            {
+                TrueAnomalyAtRailsEntry -= Math.PI * 2;
+            }
+            TimeAtRailsEntry = ActiveSave.Instance.SaveTime;
+        }else{
             SetPositionFromCartesian();
         }
     }
