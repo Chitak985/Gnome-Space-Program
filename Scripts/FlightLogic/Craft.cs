@@ -263,10 +263,6 @@ public partial class Craft : Node3D
         {
             // Save what we had so the orbit can propagate properly (tm)
             TrueAnomalyAtRailsEntry = OrbitDriver.orbit.trueAnomaly;
-            if (TrueAnomalyAtRailsEntry > Math.PI)
-            {
-                TrueAnomalyAtRailsEntry -= Math.PI * 2;
-            }
             TimeAtRailsEntry = ActiveSave.Instance.SaveTime;
         }else{
             SetPositionFromCartesian();
