@@ -25,11 +25,6 @@ public partial class Craft : Node3D
     public MapObject MapObject { get; private set; }
     public OrbitRenderer OrbitRenderer { get; private set; }
 
-    // Whether or not the physical position of the CENTRAL part node should update orbital data
-    public bool OnRailsOrbit { get; private set; }
-    public double TimeAtRailsEntry { get; private set; }
-    public double TrueAnomalyAtRailsEntry { get; private set; }
-
     public void UpdateMap()
     {
         if (MapObject != null)
@@ -43,9 +38,8 @@ public partial class Craft : Node3D
         // Loop over every part and apply a force towards the planet
         if (OrbitDriver.parent != null)
         {
-            OrbitDriver.Update();
-
-            if (!OnRailsOrbit)
+            // Copy root part's state to the driver's cartesian info if we're not on rails
+            if (!OrbitDriver.OnRails)
             {
                 // Because cartesian position is relative to planet
                 Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.parent.GlobalPosition;
@@ -62,18 +56,12 @@ public partial class Craft : Node3D
 
                 OrbitDriver.cartesian.position = finalPos;
                 OrbitDriver.cartesian.velocity = finalVel; // Feels sloppy but all we can do is pray
-
-                OrbitDriver.orbit = Conics.CartToElem(OrbitDriver.cartesian);
             }else{
-                // Propagate the true anomaly forwards in time
-                OrbitDriver.orbit.trueAnomaly = 
-                    TrueAnomalyAtRailsEntry + Conics.TimeToTrueAnomaly(OrbitDriver.orbit, ActiveSave.Instance.SaveTime, TimeAtRailsEntry);
-
-                // Simply follow the orbit
-                CartesianData newCartesian = Conics.ElemToCart(OrbitDriver.orbit);
-                GlobalPosition = newCartesian.position;
-                OrbitDriver.cartesian = newCartesian;
+                GlobalPosition = OrbitDriver.cartesian.position;
+                FixCraft();
             }
+
+            OrbitDriver.Update();
         }
 
         if(!Anchored) GlobalPosition = CentralPart.GlobalPosition;
@@ -109,6 +97,7 @@ public partial class Craft : Node3D
     public void Initialize(OrbitDriver orbitDriver, Dictionary partData)
     {
         OrbitDriver = orbitDriver;
+        OrbitDriver.ToggleOnRailsOrbit(false);
         AddChild(OrbitDriver); // Kidnap the orbit driver
         PartData = partData;
 
@@ -205,6 +194,20 @@ public partial class Craft : Node3D
         }
     }
 
+    // Returns all parts to their original position
+    public void FixCraft()
+    {
+        foreach (Part part in LoadedParts)
+        {
+            if (part.parentPart != null)
+            {
+                part.Position = part.parentNode.Position - part.usedNode.Position;
+            }else{
+                part.Position = Vector3.Zero;
+            }
+        }
+    }
+
     // Sets the velocity from the cartesian data
     public void SetVelocityFromCartesian()
     {
@@ -255,27 +258,27 @@ public partial class Craft : Node3D
     {
         Logger.Print($"Setting craft ({this}) on-rails orbit to ({toggle})");
 
-        OnRailsOrbit = toggle;
         Anchor(toggle);
-
+        OrbitDriver.ToggleOnRailsOrbit(toggle);
+        
         // Return to every value we had previously
         if (toggle)
         {
-            // Save what we had so the orbit can propagate properly (tm)
-            TrueAnomalyAtRailsEntry = OrbitDriver.orbit.trueAnomaly;
-            TimeAtRailsEntry = ActiveSave.Instance.SaveTime;
+            OrbitDriver.InitCraftPropagator();
         }else{
             SetPositionFromCartesian();
         }
+
+        
     }
 
     private void OnTimeLevelChanged(int newTime)
     {
         if (newTime > ActiveSave.Instance.maxPhysicsSpeedLevel)
         {
-            if (!OnRailsOrbit) ToggleOnRailsOrbit(true);
+            if (!OrbitDriver.OnRails) ToggleOnRailsOrbit(true);
         }else{
-            if (OnRailsOrbit) ToggleOnRailsOrbit(false);
+            if (OrbitDriver.OnRails) ToggleOnRailsOrbit(false);
         }
     }
 }

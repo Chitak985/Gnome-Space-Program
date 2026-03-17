@@ -85,16 +85,12 @@ public partial class CelestialBody : Node3D
     // Process the cBody orbital positioning calculations. Used by RealityTangler to "force" repositioning to avoid jitter.
     public void ProcessTransform()
     {
-        OrbitDriver.Update();
-
         // Okay so Godot automatically transforms the rotation and sometimes planets can end up being titled to some baffling degree so just do this and forget
         Rotation = Vector3.Zero;
 
         if (OrbitDriver.orbit != null)
         {
-            OrbitDriver.orbit.trueAnomaly = Conics.TimeToTrueAnomaly(OrbitDriver.orbit, ActiveSave.Instance.SaveTime, 0) + OrbitDriver.orbit.trueAnomalyAtEpoch;
-            CartesianData data = Conics.ElemToCart(OrbitDriver.orbit);
-            OrbitDriver.cartesian = data;
+            OrbitDriver.Update();
             GlobalCartesianPosition = OrbitDriver.cartesian.position + OrbitDriver.parent.OrbitDriver.cartesian.position;
             //cartesianData.position = data.position + orbit.parent.cartesianData.position;
             //cartesianData.velocity = data.position;

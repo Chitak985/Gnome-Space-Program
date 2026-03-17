@@ -46,7 +46,7 @@ public partial class CamControl : Node3D
         if (ground != null)
         {
             LookAt(ground.GlobalPosition, Vector3.Up);
-            Rotate(Vector3.Right, Math.PI / 2);
+            //Rotate(Vector3.Right, Math.PI / 2);
         }else{
             GlobalRotation = new Vector3(0, 0, 0);
         }

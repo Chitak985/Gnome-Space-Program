@@ -202,27 +202,51 @@ public partial class Conics : Node
     // Name is a bit confusing but all this does is convert time (t) to true anomaly (v)
     public static double TimeToTrueAnomaly(Orbit orbit, double t, double T)
     {
-        double MU = orbit.MU;
+        double MU = orbit.ComputeMU();
         double v = 0;
         if (orbit.eccentricity > 1)
         {
             // Hyperbolic case
             double n = Math.Sqrt(MU/Math.Pow(Math.Abs(orbit.semiMajorAxis),3));
-            double M = n*(t-T);
+            double M = orbit.meanAnomalyAtEpoch + n*(t-T);
             double EA = GetHyperbolicAnomaly(M,orbit.eccentricity);
 
             v = 2 * Math.Atan(Math.Sqrt((orbit.eccentricity + 1) / (orbit.eccentricity - 1)) * Math.Tanh(EA / 2));
         }else{
-            // Parabolic case
+            // Elliptical case
             double PRD = orbit.ComputePeriod();
             double n = Math.Sqrt(MU/Math.Pow(orbit.semiMajorAxis,3));
-            double M = n*(t-T);
+            double M = orbit.meanAnomalyAtEpoch + n*(t-T);
             double EA = GetEccentricAnomaly(M, orbit.eccentricity);
             
             v = Math.Atan2(Math.Sqrt(1-Math.Pow(orbit.eccentricity,2)) * Math.Sin(EA), Math.Cos(EA) - orbit.eccentricity);
         }
 
         return v;
+    }
+
+    public static double GetHyperbolicAnomalyFromTrueAnomaly(double v, double e)
+    {
+        return 2 * Math.Atanh(Math.Sqrt((e - 1) / (e + 1)) * Math.Tan(v / 2));
+    }
+
+    // https://en.wikipedia.org/wiki/Mean_anomaly
+    // Calculates the mean anomaly from the true anomaly and eccentricity
+    public static double TrueAnomalyToMeanAnomaly(double v, double e)
+    {
+        if (e > 1)
+        {
+            // Hyperbolic case
+            double H = GetHyperbolicAnomalyFromTrueAnomaly(v, e);
+            return e * Math.Sinh(H) - H;
+        }else if (e < 1){
+            // Elliptical case
+            // Pfft honestly bro I don't even really know bruh I just mangled some equations from wikipedia
+            return Math.Atan2(Math.Sqrt(1 - Math.Pow(e, 2)) * Math.Sin(v), e + Math.Cos(v)) - e * (Math.Sqrt(1 - Math.Pow(e, 2)) * Math.Sin(v) / (1 + e * Math.Cos(v)));
+        }else{
+            Logger.Print("OH HELL NAH THIS SHIT BROKEN AS FUH BRAH OHH HELLL NAW HOW DID YOU GET e = 1 BRUH BRUH NAWWWW");
+            return 0;
+        }
     }
 
     // Keplerian method of calculating eccentric anomaly apparently

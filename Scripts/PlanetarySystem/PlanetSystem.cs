@@ -245,7 +245,7 @@ public partial class PlanetSystem : Node3D
                 argumentOfPeriapsis = orbit.TryGetValue("argumentOfPeriapsis", out var arp) ? (double)arp : MissingNum(path, "orbit/argumentOfPeriapsis"),
                 longitudeOfAscendingNode = orbit.TryGetValue("longitudeOfAscendingNode", out var lon) ? (double)lon : MissingNum(path, "orbit/longitudeOfAscendingNode"),
                 trueAnomaly = orbit.TryGetValue("trueAnomaly", out var tra) ? (double)tra : 0,
-                trueAnomalyAtEpoch = orbit.TryGetValue("trueAnomalyAtEpoch", out var tre) ? (double)tre : MissingNum(path, "orbit/trueAnomalyAtEpoch"),
+                meanAnomalyAtEpoch = orbit.TryGetValue("meanAnomalyAtEpoch", out var tre) ? (double)tre : MissingNum(path, "orbit/meanAnomalyAtEpoch"),
                 sphereOfInfluence = orbit.TryGetValue("sphereOfInfluence", out var soi) ? (double)soi : -1,
             };
         }else{

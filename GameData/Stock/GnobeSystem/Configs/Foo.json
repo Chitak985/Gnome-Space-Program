@@ -19,7 +19,7 @@
 	"eccentricity": 0.0549,
 	"argumentOfPeriapsis": 0,
 	"longitudeOfAscendingNode": 0,
-	"trueAnomalyAtEpoch": 0
+	"meanAnomalyAtEpoch": 0
   },
   "pqs": {
 	"pqsMods": [

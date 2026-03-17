@@ -199,25 +199,27 @@ lerpSpeed = 0.25
 rotationAmnt = 0.5
 zoomAmnt = 1.1
 zoom = 2.0
-rotNode_Y = NodePath("Cam_Rot_Y")
-rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
-CamNode = NodePath("Cam_Rot_Y/Cam_Rot_X/RemoteCams")
+rotNode_Y = NodePath("RotateOffset/Cam_Rot_Y")
+rotNode_X = NodePath("RotateOffset/Cam_Rot_Y/Cam_Rot_X")
+CamNode = NodePath("RotateOffset/Cam_Rot_Y/Cam_Rot_X/RemoteCams")
 dragCam = &"secondary_interaction"
 zoomIn = &"zoom_in"
 zoomOut = &"zoom_out"
 
-[node name="Cam_Rot_Y" type="Node3D" parent="FlightCamera" unique_id=1913721891]
+[node name="RotateOffset" type="Node3D" parent="FlightCamera" unique_id=84863050]
 
-[node name="Cam_Rot_X" type="Node3D" parent="FlightCamera/Cam_Rot_Y" unique_id=1323953864]
+[node name="Cam_Rot_Y" type="Node3D" parent="FlightCamera/RotateOffset" unique_id=1913721891]
 
-[node name="RemoteCams" type="Node3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X" unique_id=1743440393]
+[node name="Cam_Rot_X" type="Node3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y" unique_id=1323953864]
+
+[node name="RemoteCams" type="Node3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y/Cam_Rot_X" unique_id=1743440393]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 
-[node name="Local" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=708775881]
-remote_path = NodePath("../../../../../RenderLayers/LocalContainer/LocalView/Camera3D")
+[node name="Local" type="RemoteTransform3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=708775881]
+remote_path = NodePath("../../../../../../RenderLayers/LocalContainer/LocalView/Camera3D")
 
-[node name="Scaled" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=1061326743]
-remote_path = NodePath("../../../../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
+[node name="Scaled" type="RemoteTransform3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=1061326743]
+remote_path = NodePath("../../../../../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
 
 [node name="RenderLayers" type="Control" parent="." unique_id=980932977]
 z_index = -1000

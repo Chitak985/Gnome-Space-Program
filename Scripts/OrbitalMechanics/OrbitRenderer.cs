@@ -47,7 +47,6 @@ public partial class OrbitRenderer : Node3D
             Orbit newOrbit = new()
             {
                 parent = orbit.parent,
-                MU = orbit.MU,
                 semiMajorAxis = orbit.semiMajorAxis,
                 eccentricity = orbit.eccentricity,
                 inclination = orbit.inclination,

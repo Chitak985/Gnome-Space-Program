@@ -6,7 +6,6 @@ public class Orbit
 {
     public CelestialBody parent;
     public CelestialBody cBody;
-    public double MU;
 
     public double semiMajorAxis;
     public double eccentricity;
@@ -14,21 +13,19 @@ public class Orbit
     public double argumentOfPeriapsis;
     public double longitudeOfAscendingNode;
     public double trueAnomaly;
-    public double trueAnomalyAtEpoch;
+    public double meanAnomalyAtEpoch;
     public double sphereOfInfluence;
 
     public double period;
 
     public double ComputeMU()
     {
-        MU = Conics.GravConstant * parent.mass;
-        return MU;
+        return Conics.GravConstant * parent.mass;
     }
 
     public double ComputePeriod()
     {
-        period = 2 * Math.PI * Math.Sqrt(semiMajorAxis * semiMajorAxis * semiMajorAxis / MU); //Orbital period
-        return period;
+        return 2 * Math.PI * Math.Sqrt(semiMajorAxis * semiMajorAxis * semiMajorAxis / ComputeMU());
     }
 
     // Dump all orbit parameters to the console
@@ -42,7 +39,6 @@ public class Orbit
         Logger.Print("Longitude of Ascending Node: " + longitudeOfAscendingNode);
         Logger.Print("True Anomaly: " + trueAnomaly);
         Logger.Print("Period: " + period);
-        Logger.Print("MU: " + MU);
         Logger.Print("----------------------------------");
     }
 
