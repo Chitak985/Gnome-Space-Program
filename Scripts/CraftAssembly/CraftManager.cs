@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public partial class CraftManager : Node
 {
     public static readonly string classTag = "([color=#5f9fdf]CraftManager[color=white])";
+
+    [Export] public double TimeEaseDuration = 1; // How long a craft must wait before reenabling its physics sim post time-accel
     public static CraftManager Instance { get; private set; }
 
     // List of all crafts currently instantiated with physics (NOT imaginary craft!)

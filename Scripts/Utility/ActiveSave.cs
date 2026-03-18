@@ -26,6 +26,11 @@ public partial class ActiveSave : Node3D
 	// This should always be 1.0 upon loading!
 	[Export] public double timeSpeed = 1;
     public int TimeSpeedLevel { get; private set; }
+    public bool TimeSpeedAtSafeLevel { get; private set; } = true;
+
+    // Inputs
+    [Export] private StringName accelTimeEvent;
+    [Export] private StringName deccelTimeEvent;
 
     // The great dictionary
     public Dictionary<string, Variant> saveParams;
@@ -36,6 +41,7 @@ public partial class ActiveSave : Node3D
 
     // Signals
     [Signal] public delegate void TimeLevelChangedEventHandler(int level);
+    [Signal] public delegate void TimeLevelSafeStateEventHandler(); // Emits when the time level is safe enough to return to normal physics sim
 
     private double previousEngineTime;
 	
@@ -68,7 +74,16 @@ public partial class ActiveSave : Node3D
 
         // Set physics speed to match time speed
         Engine.TimeScale = timeSpeed;
-	}
+
+        // For craft easing
+        if (!TimeSpeedAtSafeLevel && timeSpeed <= timeSpeedLevels[maxPhysicsSpeedLevel])
+        {
+            TimeSpeedAtSafeLevel = true;
+            EmitSignal(SignalName.TimeLevelSafeState);
+        }else if (timeSpeed > timeSpeedLevels[maxPhysicsSpeedLevel]){
+            TimeSpeedAtSafeLevel = false;
+        }
+    }
 
 	// Start up all vital systems such as the planet system and whatnot
 	public void InitSave()
@@ -139,5 +154,24 @@ public partial class ActiveSave : Node3D
         tween.SetIgnoreTimeScale(true);
         tween.SetTrans(Tween.TransitionType.Linear);
         tween.TweenProperty(this, "timeSpeed", targetTimeSpeed, timeSpeedChangeDuration);
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        // Time accel keys
+        if (@event.IsActionPressed(accelTimeEvent))
+        {
+            if (TimeSpeedLevel < timeSpeedLevels.Count)
+            {
+                SetTimeSpeed(TimeSpeedLevel + 1);
+            }
+        }
+        if (@event.IsActionPressed(deccelTimeEvent))
+        {
+            if (TimeSpeedLevel > 0)
+            {
+                SetTimeSpeed(TimeSpeedLevel - 1);
+            }
+        }
     }
 }

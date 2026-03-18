@@ -3,6 +3,7 @@ using Godot.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 /*
     This object is a little bit baffling so here's my best attempt at explaining it:
@@ -112,6 +113,7 @@ public partial class Craft : Node3D
         OrbitRenderer = OrbitRendererManager.Instance.CreateOrbitRenderer(this);
 
         ActiveSave.Instance.TimeLevelChanged += OnTimeLevelChanged;
+        ActiveSave.Instance.TimeLevelSafeState += OnTimeLevelSafe;
     }
 
     // Hiujjj??
@@ -268,8 +270,14 @@ public partial class Craft : Node3D
         }else{
             SetPositionFromCartesian();
         }
+    }
 
-        
+    private void OnTimeLevelSafe()
+    {
+        Task.Delay(TimeSpan.FromSeconds(CraftManager.Instance.TimeEaseDuration)).ContinueWith(_ =>
+        {
+            if (OrbitDriver.OnRails) CallDeferred(nameof(ToggleOnRailsOrbit), false);
+        });
     }
 
     private void OnTimeLevelChanged(int newTime)
@@ -277,8 +285,6 @@ public partial class Craft : Node3D
         if (newTime > ActiveSave.Instance.maxPhysicsSpeedLevel)
         {
             if (!OrbitDriver.OnRails) ToggleOnRailsOrbit(true);
-        }else{
-            if (OrbitDriver.OnRails) ToggleOnRailsOrbit(false);
         }
     }
 }
