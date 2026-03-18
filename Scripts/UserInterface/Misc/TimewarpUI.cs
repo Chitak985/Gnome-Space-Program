@@ -50,6 +50,11 @@ public partial class TimewarpUI : Panel
         ActiveSave.Instance.SetTimeSpeed(level);
     }
 
+    private void OnPauseButtonPressed(bool toggle)
+    {
+        ActiveSave.Instance.Pause(toggle);
+    }
+
     private void AddButton(int level)
     {
         TimewarpButton button = (TimewarpButton)buttonPrefab.Instantiate();

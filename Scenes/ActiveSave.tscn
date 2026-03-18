@@ -1027,7 +1027,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -365.0
+offset_left = -417.0
 offset_top = 22.0
 offset_right = -274.0
 offset_bottom = 79.0
@@ -1043,7 +1043,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.958
-offset_left = 8.0
+offset_left = 53.0
 offset_top = 9.0
 offset_right = -8.0
 offset_bottom = -6.606000000000002
@@ -1055,6 +1055,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
@@ -1067,8 +1068,8 @@ layout_direction = 3
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = 96.0
-offset_right = 116.0
+offset_left = 147.0
+offset_right = 167.0
 grow_vertical = 2
 theme_override_styles/panel = ExtResource("32_mtnyg")
 
@@ -1077,6 +1078,20 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 alignment = 2
+
+[node name="PauseButton" type="Button" parent="UI/UniversalUI/Time/Timewarp" unique_id=728316474]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 9.0
+offset_right = -94.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+toggle_mode = true
+text = "►"
 
 [node name="Display" type="Panel" parent="UI/UniversalUI/Time" unique_id=1743713297]
 layout_mode = 1
@@ -1177,3 +1192,4 @@ directional_shadow_max_distance = 8192.0
 
 [connection signal="pressed" from="ViewportWindows/Map/MapUI/Topbar/UndockButton" to="ViewportWindows/Map/MapUI" method="OnDockButtonPressed"]
 [connection signal="pressed" from="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/EnterButton" to="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu" method="EnterButtonPressed"]
+[connection signal="toggled" from="UI/UniversalUI/Time/Timewarp/PauseButton" to="UI/UniversalUI/Time/Timewarp" method="OnPauseButtonPressed"]

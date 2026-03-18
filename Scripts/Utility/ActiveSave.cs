@@ -27,6 +27,7 @@ public partial class ActiveSave : Node3D
 	[Export] public double timeSpeed = 1;
     public int TimeSpeedLevel { get; private set; }
     public bool TimeSpeedAtSafeLevel { get; private set; } = true;
+    public bool TimePaused { get; private set; }
 
     // Inputs
     [Export] private StringName accelTimeEvent;
@@ -69,11 +70,14 @@ public partial class ActiveSave : Node3D
         UnscaledDelta = (engineTime - previousEngineTime) / 1000000.0;
         previousEngineTime = Time.GetTicksUsec();
 
+        double trueTimeSpeed = timeSpeed;
+        if (TimePaused) trueTimeSpeed = 0;
+
         // Increment time since save creation (for orbital calculations mostly)
-        SaveTime += UnscaledDelta * 1000 * timeSpeed / 1000;
+        SaveTime += UnscaledDelta * 1000 * trueTimeSpeed / 1000;
 
         // Set physics speed to match time speed
-        Engine.TimeScale = timeSpeed;
+        Engine.TimeScale = trueTimeSpeed;
 
         // For craft easing
         if (!TimeSpeedAtSafeLevel && timeSpeed <= timeSpeedLevels[maxPhysicsSpeedLevel])
@@ -143,17 +147,26 @@ public partial class ActiveSave : Node3D
     }
 
 	// Level must be below the length of timeSpeedLevels
-	public void SetTimeSpeed(int level)
+	public void SetTimeSpeed(int level, double duration)
 	{
         TimeSpeedLevel = level;
-        Tween tween = CreateTween();
-
-		double targetTimeSpeed = timeSpeedLevels[level];
+        double targetTimeSpeed = timeSpeedLevels[level];
         EmitSignal(SignalName.TimeLevelChanged, targetTimeSpeed);
 
+        Tween tween = CreateTween();
         tween.SetIgnoreTimeScale(true);
         tween.SetTrans(Tween.TransitionType.Linear);
-        tween.TweenProperty(this, "timeSpeed", targetTimeSpeed, timeSpeedChangeDuration);
+        tween.TweenProperty(this, "timeSpeed", targetTimeSpeed, duration);
+    }
+
+    public void SetTimeSpeed(int level)
+    {
+        SetTimeSpeed(level, timeSpeedChangeDuration);
+    }
+
+    public void Pause(bool toggle)
+    {
+        TimePaused = toggle;
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -163,14 +176,14 @@ public partial class ActiveSave : Node3D
         {
             if (TimeSpeedLevel < timeSpeedLevels.Count)
             {
-                SetTimeSpeed(TimeSpeedLevel + 1);
+                SetTimeSpeed(TimeSpeedLevel + 1, 0.01);
             }
         }
         if (@event.IsActionPressed(deccelTimeEvent))
         {
             if (TimeSpeedLevel > 0)
             {
-                SetTimeSpeed(TimeSpeedLevel - 1);
+                SetTimeSpeed(TimeSpeedLevel - 1, 0.01);
             }
         }
     }
