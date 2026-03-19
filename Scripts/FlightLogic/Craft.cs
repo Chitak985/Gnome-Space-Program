@@ -180,8 +180,8 @@ public partial class Craft : Node3D
     // Middle-man function in case we want something special to happen
     public void SnatchFocus()
     {
-        StateManager.Instance.gameState = StateManager.GameState.Flight;
-        StateManager.Instance.flightState.activeCraft = this;
+        StateManager.Instance.ChangeGameState(StateManager.GameState.Flight);
+        StateManager.Instance.ChangeFlightState(new StateManager.FlightState() {activeCraft = this});
         FlightCamera.Instance.TargetObject(this, 100, 1, 10000);
 
         //RealityTangler.Instance.SwitchReferenceFrame();
@@ -189,7 +189,7 @@ public partial class Craft : Node3D
 
     public void ResetOrigin()
     {
-        if (StateManager.Instance.flightState.activeCraft == this)
+        if (StateManager.Instance.CurrentFlightState.activeCraft == this)
         {
             Logger.Print("RESET");
             GlobalPosition = Vector3.Zero;

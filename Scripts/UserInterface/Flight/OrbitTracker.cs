@@ -9,7 +9,7 @@ public partial class OrbitTracker : Control
     {
         if (label.IsVisibleInTree())
         {
-            Craft craft = StateManager.Instance.flightState.activeCraft;
+            Craft craft = StateManager.Instance.CurrentFlightState.activeCraft;
             if (craft != null)
             {
                 label.Text = craft.OrbitDriver.ToString();

@@ -66,13 +66,13 @@ public partial class TerrainGen : Node3D
 
     public override void _Process(double delta)
     {
-        switch (StateManager.Instance.gameState)
+        switch (StateManager.Instance.CurrentGameState)
         {
             case StateManager.GameState.Flight:
-                player = StateManager.Instance.flightState.activeCraft;
+                player = StateManager.Instance.CurrentFlightState.activeCraft;
                 break;
             case StateManager.GameState.Colony:
-                player = StateManager.Instance.colonyState.activeColony;
+                player = StateManager.Instance.CurrentColonyState.activeColony;
                 break;
             default:
                 playerPos = Vector3.Zero; // We panic and make the player's position 0

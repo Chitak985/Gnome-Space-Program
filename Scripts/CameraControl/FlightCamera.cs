@@ -19,15 +19,15 @@ public partial class FlightCamera : CamControl
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
-        StateManager.GameState gameState = StateManager.Instance.gameState;
+        StateManager.GameState gameState = StateManager.Instance.CurrentGameState;
 
         switch (gameState)
         {
             case StateManager.GameState.Flight:
-                ground = StateManager.Instance.flightState.activeCraft.OrbitDriver.parent;
+                ground = StateManager.Instance.CurrentFlightState.activeCraft.OrbitDriver.parent;
                 break;
             case StateManager.GameState.Colony:
-                Colony colony = StateManager.Instance.colonyState.activeColony;
+                Colony colony = StateManager.Instance.CurrentColonyState.activeColony;
                 // Check if colony is null to prevent nullrefs
                 ground = colony?.parentBody;
                 break;

@@ -61,10 +61,10 @@ public partial class RealityTangler : Node
         OrbitRendererManager.Instance.UpdateOrbitRenderers();
         // Orbits will not work unless you process them twice for some fucking reason
         EmitSignal(SignalName.OrbitProcess);
-        switch (StateManager.Instance.gameState)
+        switch (StateManager.Instance.CurrentGameState)
         {
             case StateManager.GameState.Flight:
-                Craft activeCraft = StateManager.Instance.flightState.activeCraft;
+                Craft activeCraft = StateManager.Instance.CurrentFlightState.activeCraft;
                 if (activeCraft != null)
                 {
                     // We don't need the square root of this anyways
@@ -82,9 +82,9 @@ public partial class RealityTangler : Node
                 break;
             case StateManager.GameState.Colony:
                 // Just recenter based off the colony's parent position
-                if (StateManager.Instance.colonyState.activeColony != null)
+                if (StateManager.Instance.CurrentColonyState.activeColony != null)
                 {
-                    Colony colony = StateManager.Instance.colonyState.activeColony;
+                    Colony colony = StateManager.Instance.CurrentColonyState.activeColony;
                     CelestialBody cBody = colony.parentBody;
 
                     PlanetaryOffset = cBody.OrbitDriver.cartesian.position;

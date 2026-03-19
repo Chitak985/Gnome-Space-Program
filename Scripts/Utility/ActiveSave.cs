@@ -41,6 +41,7 @@ public partial class ActiveSave : Node3D
 	public double UnscaledDelta { get; private set; }
 
     // Signals
+    [Signal] public delegate void GameInitCompleteEventHandler();
     [Signal] public delegate void TimeLevelChangedEventHandler(int level);
     [Signal] public delegate void TimeLevelSafeStateEventHandler(); // Emits when the time level is safe enough to return to normal physics sim
 
@@ -92,7 +93,11 @@ public partial class ActiveSave : Node3D
 	// Start up all vital systems such as the planet system and whatnot
 	public void InitSave()
 	{
-		// We first initialize the planets
+        // Initialize game state
+        Logger.Print($"{classTag} Starting StateManager");
+        stateManager.Initialize();
+
+		// Initialize the planets
 		Logger.Print($"{classTag} Starting PlanetSystem");
 		Dictionary<string, PlanetPack> planetPacks = SaveManager.GetPlanetPacks();
 		string chosenRootSystem = (string)saveParams["Celestial Bodies/Root System"];
@@ -125,9 +130,6 @@ public partial class ActiveSave : Node3D
 		Logger.Print($"{classTag} Starting ColonyManager");
         colonyManager.Initialize(planetPacks);
 
-        // Initialize game state
-        stateManager.Initialize();
-
         // Loop over all the sweet new colonies we just got
         foreach (Colony colony in colonyManager.colonies)
 		{
@@ -144,6 +146,8 @@ public partial class ActiveSave : Node3D
 		// Activate local input after the game starts because it doesn't take effect if enabled by default in the editor for some reason
         localSpace.Viewport.HandleInputLocally = false;
         localSpace.Viewport.HandleInputLocally = true;
+
+        EmitSignal(SignalName.GameInitComplete);
     }
 
 	// Level must be below the length of timeSpeedLevels

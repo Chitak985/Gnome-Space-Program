@@ -71,7 +71,7 @@ public partial class Colony : Node3D
     // Wrangles control of the game and "enters" the colony
     public void Enter()
     {
-        StateManager.Instance.colonyState.activeColony = this;
+        StateManager.Instance.ChangeColonyState(new StateManager.ColonyState() {activeColony = this});
 
         // Wrangle the reference frame
         RealityTangler.Instance.SwitchReferenceFrame(parentBody);
