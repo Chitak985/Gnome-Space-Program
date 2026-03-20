@@ -8,7 +8,7 @@
 	"inverseRotAltitude": 100000
   },
   "rotation": {
-	"initial": 0,
+	"initial": -1.57,
 	"period": 36000,
 	"tilt": [0, 0, 20],
   },

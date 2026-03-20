@@ -41,7 +41,7 @@ public partial class CraftManager : Node
         Craft craft = new();
         ActiveSave.Instance.localSpace.AddChild(craft);
 
-        RealityTangler.Instance.SwitchReferenceFrame();
+        RealityTangler.Instance.SwitchReferenceFrame(driver.parent);
 
         craft.Initialize(driver, partData);
         craft.Load(true);
@@ -84,7 +84,7 @@ public partial class CraftManager : Node
         OrbitDriver driver = new()
         {
             parent = cartesian.parent,
-            orbit = new(), // TODO: Make function for converting cartesian elements to orbital elements!!!
+            orbit = Conics.CartToElem(cartesian),
             cartesian = cartesian
         };
 

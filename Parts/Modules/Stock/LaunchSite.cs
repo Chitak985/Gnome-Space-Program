@@ -28,16 +28,20 @@ public partial class LaunchSite : PartModule
         siteName = (string)configData["siteName"];
     }
 
+    // Returns a LOCAL position, this will have to be converted to an inertial frame later!
     public Vector3 GetLaunchPosition()
     {
         // Pull a position out of this heap of trash
-        Vector3 parentPosition = Vector3.Zero;
+        Vector3 result = Vector3.Zero;
+
         if (part.parentThing is Colony colony)
         {
-            parentPosition = colony.position;
-        }
+            CelestialBody cBody = colony.parentBody;
 
-        Vector3 result = spawnNode.GlobalPosition + parentPosition;
+            Vector3 parentPosition = colony.position;
+
+            result = spawnNode.GlobalPosition + parentPosition;
+        }
 
         return result;
     }
@@ -57,8 +61,8 @@ public partial class LaunchSite : PartModule
         CartesianData cartesianData = new()
         {
             parent = cBody,
-            position = originPos,
-            velocity = cBody.GetSurfaceRotationVelocity(originPos)
+            position = cBody.GetGlobalPositionOfPoint(originPos),
+            velocity = cBody.GetSurfaceRotationVelocity(cBody.GetGlobalPositionOfPoint(originPos))
         };
 
         //Orbit orbit = new() {
@@ -72,14 +76,14 @@ public partial class LaunchSite : PartModule
         //    trueAnomalyAtEpoch = 0
         //};
 
-        Orbit orbit = Conics.CartToElem(new CartesianData(){
-            position = new Vector3(700000, 0, 0),
-            velocity = new Vector3(0, 0, 3000),
-            parent = cBody
-        });
+        //Orbit orbit = Conics.CartToElem(new CartesianData(){
+        //    position = new Vector3(700000, 0, 0),
+        //    velocity = new Vector3(0, 0, 3000),
+        //    parent = cBody
+        //});
 
         // Send this to craft manager
-        Craft craft = CraftManager.Instance.SpawnCraft(partData, orbit, focus);
+        Craft craft = CraftManager.Instance.SpawnCraft(partData, cartesianData, focus);
 
         return craft;
     }

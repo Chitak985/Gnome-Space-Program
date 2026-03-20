@@ -10,7 +10,7 @@ public partial class CelestialBody : Node3D
     public double mass;
     public double geeASL;
     public double radius;
-    public Vector3 originPos;
+    public double inverseRotAltitude;
 
     // Rotation info
     public double initialRot;
@@ -98,6 +98,7 @@ public partial class CelestialBody : Node3D
             //GD.Print($"{cartesianData.position.X}, {cartesianData.position.Y}, {cartesianData.position.Z}");
         }
 
+        Vector3 originPos;
         // Uh
         if (RealityTangler.Instance.activeReferenceFrame == this)
         {
@@ -116,7 +117,7 @@ public partial class CelestialBody : Node3D
         mapObject.Rotation = CachedTransform.Basis.GetEuler();
 
         // Update rotation
-        rot = Math.Tau * (ActiveSave.Instance.SaveTime / rotPeriod); //ActiveSave.Instance.saveTime * rotPeriod;
+        rot = initialRot + Math.Tau * (ActiveSave.Instance.SaveTime / rotPeriod); //ActiveSave.Instance.saveTime * rotPeriod;
 
         Transform3D trans = new()
         {

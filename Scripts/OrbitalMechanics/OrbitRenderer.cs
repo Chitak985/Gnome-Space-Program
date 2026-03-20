@@ -15,18 +15,22 @@ public partial class OrbitRenderer : Node3D
     public void Update()
     {
         Orbit orbit = OrbitDriver.orbit;
-        //Logger.Print(GetViewport().GetVisibleRect().Size * vpSizeRatio);
 
-        viewport.Size = (Vector2I) (MapView.Instance.Viewport.Size);
-        //camDist = GetViewport().GetCamera3D().GlobalPosition.DistanceTo(GlobalPosition);
-        double scale = orbit.semiMajorAxis * (1 + orbit.eccentricity) * margin;
+        if (orbit != null)
+        {
+            //Logger.Print(GetViewport().GetVisibleRect().Size * vpSizeRatio);
 
-        // Move the plane to match the orbit
-        Scale = new Vector3(scale,scale,scale);
-        GlobalRotation = new Vector3(-orbit.inclination, -orbit.longitudeOfAscendingNode, 0);
+            viewport.Size = (Vector2I)MapView.Instance.Viewport.Size;
+            //camDist = GetViewport().GetCamera3D().GlobalPosition.DistanceTo(GlobalPosition);
+            double scale = orbit.semiMajorAxis * (1 + orbit.eccentricity) * margin;
 
-        List<Vector2> pointsList = SamplePoints(orbit);
-        line2D.Points = [.. pointsList];
+            // Move the plane to match the orbit
+            Scale = new Vector3(scale,scale,scale);
+            GlobalRotation = new Vector3(-orbit.inclination, -orbit.longitudeOfAscendingNode, 0);
+
+            List<Vector2> pointsList = SamplePoints(orbit);
+            line2D.Points = [.. pointsList];
+        }
     }
 
     // Sample multiple points in orbit

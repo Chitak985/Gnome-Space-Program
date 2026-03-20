@@ -192,6 +192,7 @@ public partial class PlanetSystem : Node3D
             cBody.mass = properties.TryGetValue("mass", out var mass) ? (double)mass : -1;
             cBody.geeASL = properties.TryGetValue("geeASL", out var geeASL) ? (double)geeASL : -1;
             cBody.radius = properties.TryGetValue("radius", out var radius) ? (double)radius : MissingNum(path, "radius");
+            cBody.inverseRotAltitude = properties.TryGetValue("inverseRotAltitude", out var inverseRotAltitude) ? (double)inverseRotAltitude : MissingNum(path, "inverseRotAltitude");
 
             if (cBody.mass < 0)
             {

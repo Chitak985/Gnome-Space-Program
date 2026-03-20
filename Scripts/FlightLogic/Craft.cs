@@ -58,7 +58,15 @@ public partial class Craft : Node3D
                 OrbitDriver.cartesian.position = finalPos;
                 OrbitDriver.cartesian.velocity = finalVel; // Feels sloppy but all we can do is pray
             }else{
-                GlobalPosition = OrbitDriver.cartesian.position;
+                Vector3 finalPos = OrbitDriver.cartesian.position;
+
+                if (RealityTangler.Instance.activeReferenceFrame != null)
+                {
+                    CelestialBody reference = RealityTangler.Instance.activeReferenceFrame;
+                    finalPos = reference.GetLocalPositionOfPoint(finalPos);
+                }
+
+                GlobalPosition = finalPos;
                 FixCraft();
             }
 
@@ -66,6 +74,22 @@ public partial class Craft : Node3D
         }
 
         if(!Anchored) GlobalPosition = CentralPart.GlobalPosition;
+
+
+        // UHHH FUCK
+        double altitude = OrbitDriver.parent.radius - OrbitDriver.cartesian.position.DistanceTo(Vector3.Zero);
+
+        if (altitude > OrbitDriver.parent.inverseRotAltitude)
+        {
+            if (RealityTangler.Instance.activeReferenceFrame != null) RealityTangler.Instance.SwitchReferenceFrame(null);
+        }else{
+            if (RealityTangler.Instance.activeReferenceFrame != OrbitDriver.parent)
+            {
+                RealityTangler.Instance.SwitchReferenceFrame(OrbitDriver.parent);
+                SetPositionFromCartesian();
+            } 
+           
+        }
     }
 
     public void Anchor(bool toggle)
@@ -229,6 +253,7 @@ public partial class Craft : Node3D
         }
     }
 
+    // For easy use with the physics sim, it's safe to set the position of the node if the craft is anchored.
     public void SetPositionFromCartesian(bool returnVelocity = true)
     {
         Anchor(true);

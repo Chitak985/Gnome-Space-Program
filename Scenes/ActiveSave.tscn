@@ -53,6 +53,8 @@
 [ext_resource type="Texture2D" uid="uid://x8kvw8eh51rl" path="res://Assets/Textures/dropdown_button_down.png" id="39_mbbrb"]
 [ext_resource type="Script" uid="uid://ddw6dgxoyosje" path="res://Scripts/UserInterface/Flight/FlightUI.cs" id="39_tucam"]
 [ext_resource type="Texture2D" uid="uid://cvu7pnyn48c8j" path="res://Assets/Textures/dropdown_button_right.png" id="40_ul3nw"]
+[ext_resource type="Script" uid="uid://cstbvsefoxhk2" path="res://Scripts/UserInterface/Flight/Altimeter.cs" id="40_wkwvl"]
+[ext_resource type="Script" uid="uid://d2561kxnruepq" path="res://Scripts/UserInterface/Flight/Speedometer.cs" id="41_cw7fe"]
 [ext_resource type="Script" uid="uid://dblpo740d2d4w" path="res://Scripts/UserInterface/Misc/TimewarpUI.cs" id="41_w8340"]
 [ext_resource type="Script" uid="uid://b4byh53dv8k5" path="res://Scripts/UserInterface/Misc/ClockUI.cs" id="42_6b1ya"]
 [ext_resource type="PackedScene" uid="uid://d1detwm4i50s7" path="res://Assets/Prefabs/UI/Buttons/timewarp_button.tscn" id="42_w8340"]
@@ -921,54 +923,176 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("39_tucam")
 
-[node name="Navball" type="Panel" parent="UI/FlightUI" unique_id=361601837]
+[node name="BottomLeft" type="Panel" parent="UI/FlightUI" unique_id=748240319]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 243.0
-offset_top = -258.0
-offset_right = 486.0
-offset_bottom = -16.0
+offset_left = 23.0
+offset_top = -284.0
+offset_right = 493.0
+offset_bottom = -20.0
 grow_vertical = 0
+theme_type_variation = &"CurvedSidePanel"
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="UI/FlightUI/Navball" unique_id=87912408]
+[node name="Altimeter" type="Panel" parent="UI/FlightUI/BottomLeft" unique_id=1640216627 node_paths=PackedStringArray("label")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -71.0
+offset_right = 227.0
+offset_bottom = -11.0
+theme_type_variation = &"CornerPanel"
+script = ExtResource("40_wkwvl")
+label = NodePath("Switch/RichTextLabel")
+
+[node name="Switch" type="Button" parent="UI/FlightUI/BottomLeft/Altimeter" unique_id=1728877110]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.976
+offset_left = 5.0
+offset_top = 23.0
+offset_right = -6.0
+offset_bottom = -3.5600000000000023
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/FlightUI/BottomLeft/Altimeter/Switch" unique_id=101854120]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+text = "ALTITUDE M"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Indicator" type="RichTextLabel" parent="UI/FlightUI/BottomLeft/Altimeter" unique_id=1631942046]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 4.0
+offset_right = -17.0
+offset_bottom = -39.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 14
+text = "SEA LEVEL"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Speedometer" type="Panel" parent="UI/FlightUI/BottomLeft" unique_id=743718988 node_paths=PackedStringArray("label", "typeLabel")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -137.0
+offset_right = 197.0
+offset_bottom = -77.0
+theme_type_variation = &"CornerPanel"
+script = ExtResource("41_cw7fe")
+label = NodePath("Switch/RichTextLabel")
+typeLabel = NodePath("Indicator")
+
+[node name="Switch" type="Button" parent="UI/FlightUI/BottomLeft/Speedometer" unique_id=1055013222]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.976
+offset_left = 5.0
+offset_top = 23.0
+offset_right = -6.0
+offset_bottom = -3.5600000000000023
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/FlightUI/BottomLeft/Speedometer/Switch" unique_id=1308315951]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+text = "VELOCITY M/S"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Indicator" type="RichTextLabel" parent="UI/FlightUI/BottomLeft/Speedometer" unique_id=28170327]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 4.0
+offset_right = -17.0
+offset_bottom = -39.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 14
+text = "ORBIT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Navball" type="Panel" parent="UI/FlightUI/BottomLeft" unique_id=361601837]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -248.0
+offset_top = -117.0
+offset_right = -14.0
+offset_bottom = 117.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_type_variation = &"CircularPanel"
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="UI/FlightUI/BottomLeft/Navball" unique_id=87912408]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 11.045454545454561
+offset_top = 11.0
+offset_right = -11.045454545454561
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 2
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="UI/FlightUI/Navball/SubViewportContainer" unique_id=1406651591]
+[node name="SubViewport" type="SubViewport" parent="UI/FlightUI/BottomLeft/Navball/SubViewportContainer" unique_id=1406651591]
 own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(243, 242)
+size = Vector2i(211, 212)
 render_target_update_mode = 0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="UI/FlightUI/Navball/SubViewportContainer/SubViewport" unique_id=331086803]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UI/FlightUI/BottomLeft/Navball/SubViewportContainer/SubViewport" unique_id=331086803]
 transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0)
 material_override = ExtResource("30_ldaci")
 mesh = SubResource("SphereMesh_oe5si")
 
-[node name="Camera3D" type="Camera3D" parent="UI/FlightUI/Navball/SubViewportContainer/SubViewport" unique_id=995235907]
+[node name="Camera3D" type="Camera3D" parent="UI/FlightUI/BottomLeft/Navball/SubViewportContainer/SubViewport" unique_id=995235907]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.499157813288001)
 projection = 1
 
-[node name="OrbitInfo" type="Panel" parent="UI/FlightUI" unique_id=1078897937]
+[node name="OrbitInfo" type="Panel" parent="UI/FlightUI/BottomLeft" unique_id=1078897937]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -350.0
-offset_right = 232.0
-offset_bottom = -16.0
+offset_left = 12.0
+offset_top = -250.0
+offset_right = 180.0
+offset_bottom = -146.0
 grow_vertical = 0
 
-[node name="DifferentThingsPanel" type="Panel" parent="UI/FlightUI/OrbitInfo" unique_id=626843282]
+[node name="DifferentThingsPanel" type="Panel" parent="UI/FlightUI/BottomLeft/OrbitInfo" unique_id=626843282]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -980,7 +1104,7 @@ offset_bottom = -7.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Control" type="Control" parent="UI/FlightUI/OrbitInfo/DifferentThingsPanel" unique_id=1274491192 node_paths=PackedStringArray("label")]
+[node name="Control" type="Control" parent="UI/FlightUI/BottomLeft/OrbitInfo/DifferentThingsPanel" unique_id=1274491192 node_paths=PackedStringArray("label")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -990,7 +1114,7 @@ grow_vertical = 2
 script = ExtResource("30_kqsux")
 label = NodePath("CraftOrbitData")
 
-[node name="CraftOrbitData" type="RichTextLabel" parent="UI/FlightUI/OrbitInfo/DifferentThingsPanel/Control" unique_id=1584131148]
+[node name="CraftOrbitData" type="RichTextLabel" parent="UI/FlightUI/BottomLeft/OrbitInfo/DifferentThingsPanel/Control" unique_id=1584131148]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1195,4 +1319,5 @@ directional_shadow_max_distance = 8192.0
 
 [connection signal="pressed" from="ViewportWindows/Map/MapUI/Topbar/UndockButton" to="ViewportWindows/Map/MapUI" method="OnDockButtonPressed"]
 [connection signal="pressed" from="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/EnterButton" to="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu" method="EnterButtonPressed"]
+[connection signal="pressed" from="UI/FlightUI/BottomLeft/Speedometer/Switch" to="UI/FlightUI/BottomLeft/Speedometer" method="OnSwitchPressed"]
 [connection signal="toggled" from="UI/UniversalUI/Time/Timewarp/PauseButton" to="UI/UniversalUI/Time/Timewarp" method="OnPauseButtonPressed"]

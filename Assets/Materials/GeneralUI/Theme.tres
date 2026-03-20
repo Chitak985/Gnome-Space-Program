@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=20 format=3 uid="uid://b4ia03110swah"]
+[gd_resource type="Theme" format=3 uid="uid://b4ia03110swah"]
 
 [ext_resource type="StyleBox" uid="uid://bex3aipdq6gde" path="res://Assets/Materials/GeneralUI/label.tres" id="1_mwhhf"]
 [ext_resource type="FontVariation" uid="uid://ckkhw5pqir4c7" path="res://Assets/Fonts/VCR_OST_HighMargin.tres" id="1_yryix"]
@@ -20,6 +20,53 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5fwyf"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x8qab"]
+bg_color = Color(0, 0.0156863, 0.0431373, 0.784314)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.172549, 0.0823529, 0.14902, 1)
+corner_radius_top_left = 99999
+corner_radius_top_right = 99999
+corner_radius_bottom_right = 99999
+corner_radius_bottom_left = 99999
+corner_detail = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avm1a"]
+bg_color = Color(0, 0.0156863, 0.0431373, 0.784314)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.172549, 0.0823529, 0.14902, 1)
+corner_radius_top_right = 16
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3f3uh"]
+bg_color = Color(0, 0.0156863, 0.0431373, 0.784314)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.172549, 0.0823529, 0.14902, 1)
+corner_radius_top_right = 99999
+corner_radius_bottom_right = 99999
+corner_detail = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_waxdb"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 16
+border_width_top = 16
+border_width_right = 16
+border_width_bottom = 16
+border_color = Color(1, 0.26140147, 0.5494678, 1)
+corner_radius_top_left = 99999
+corner_radius_top_right = 99999
+corner_radius_bottom_right = 99999
+corner_radius_bottom_left = 99999
+corner_detail = 20
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x8qab"]
 
 [resource]
@@ -34,6 +81,12 @@ CheckButton/styles/hover = ExtResource("2_dirlc")
 CheckButton/styles/hover_pressed = ExtResource("2_dirlc")
 CheckButton/styles/normal = ExtResource("4_27f02")
 CheckButton/styles/pressed = ExtResource("3_hqfxh")
+CircularPanel/base_type = &"Panel"
+CircularPanel/styles/panel = SubResource("StyleBoxFlat_x8qab")
+CornerPanel/base_type = &"Panel"
+CornerPanel/styles/panel = SubResource("StyleBoxFlat_avm1a")
+CurvedSidePanel/base_type = &"Panel"
+CurvedSidePanel/styles/panel = SubResource("StyleBoxFlat_3f3uh")
 Label/fonts/font = ExtResource("1_yryix")
 Label/styles/normal = ExtResource("1_mwhhf")
 LineEdit/fonts/font = ExtResource("1_yryix")
@@ -57,6 +110,8 @@ ProgressBar/styles/background = ExtResource("6_xkgf2")
 ProgressBar/styles/fill = ExtResource("6_ifukn")
 RichTextLabel/fonts/normal_font = ExtResource("15_x8qab")
 ScrollContainer/styles/panel = ExtResource("10_hqfxh")
+Throttle/base_type = &"Panel"
+Throttle/styles/panel = SubResource("StyleBoxFlat_waxdb")
 Tree/fonts/font = ExtResource("1_yryix")
 Tree/styles/button_hover = ExtResource("2_dirlc")
 Tree/styles/focus = SubResource("StyleBoxEmpty_x8qab")
