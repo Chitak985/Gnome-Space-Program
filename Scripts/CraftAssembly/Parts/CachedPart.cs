@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
+
 public partial class CachedPart
 {
     public string name;
@@ -9,19 +10,17 @@ public partial class CachedPart
     public string pckFile;
     public string scenePath;
     public bool listedInSelector = true;
-
     public Dictionary config;
 
     // Dynamic stuff - self assigned
-    public PackedScene partScene;
-
-    public List<PartModule> modules;
+    public PackedScene PartScene { get; private set; }
+    public Aabb PartAABB { get; private set; }
 
     // Run this ONLY ONCE per part!
     public void LoadAssets()
     {
-        // Dangerous operation. This will actively "install" resources into the game. 
-        // Follow the part modding convention! 
+        // This will actively "install" resources into the game. 
+        // Follow the part modding convention PLEASE!!!!! 
         bool success = ProjectSettings.LoadResourcePack($"{ConfigUtility.GameData}/{pckFile}");
 
         if (!success)
@@ -34,22 +33,25 @@ public partial class CachedPart
         PackedScene scene = (PackedScene)ResourceLoader.Load(scenePath);
         if (scene != null)
         {
-            partScene = scene;
+            PartScene = scene;
             Logger.Print($"(Cached {name}) Scene loading success!");
         }else{
             Logger.Print($"(Cached {name}) Could not load part.");
         }
+
+        GetSceneData();
     }
 
-    public void LoadModules()
-    {
+    // ermm......... erm.....!!!! this was meant to do something for sure
+    //public void LoadModules()
+    //{
         
-    }
+    //}
 
     public Part Instantiate(Node parent, bool inEditor = false, bool anchored = false)
     {
         Logger.Print($"(Cached {name}) Instantiating...");
-        Part part = (Part)partScene.Instantiate();
+        Part part = (Part)PartScene.Instantiate();
         part.inEditor = inEditor;
         part.Anchor(anchored); // Anchor if we need to
         part.Name = $"{name}_{part.GetInstanceId()}";
@@ -69,5 +71,17 @@ public partial class CachedPart
         */
 
         return part;
+    }
+
+    // Instantiates a temporary part to get various information out of the scene
+    private void GetSceneData()
+    {
+        Logger.Print($"(Cached {name}) Instantiating temporary extraction part");
+        Part part = Instantiate(PartManager.Instance.temporaryPartDump, anchored: true);
+
+        PartAABB = part.GetAABB();
+
+        // We're done here.
+        part.QueueFree();
     }
 }

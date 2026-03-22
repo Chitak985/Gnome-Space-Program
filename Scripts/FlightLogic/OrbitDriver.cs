@@ -7,6 +7,7 @@ using Godot;
 
 public partial class OrbitDriver : Node
 {
+    public bool enabled = true;
     public CelestialBody parent;
     public Orbit orbit;
     public CartesianData cartesian;
@@ -20,16 +21,19 @@ public partial class OrbitDriver : Node
 
     public void Update()
     {
-        cartesian.parent = parent;
-        if (orbit != null)
+        if (enabled)
         {
-            orbit.parent = parent;
-
-            if (!OnRails)
+            cartesian.parent = parent;
+            if (orbit != null)
             {
-                GenerateOrbit();
-            }else{
-                PropagateOrbit();
+                orbit.parent = parent;
+
+                if (!OnRails)
+                {
+                    GenerateOrbit();
+                }else{
+                    PropagateOrbit();
+                }
             }
         }
     }

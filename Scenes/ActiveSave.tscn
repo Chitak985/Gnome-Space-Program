@@ -1057,9 +1057,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 11.045454545454561
+offset_left = 11.04545454545456
 offset_top = 11.0
-offset_right = -11.045454545454561
+offset_right = -11.04545454545456
 offset_bottom = -11.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -1267,9 +1267,12 @@ localSpace = NodePath("../RenderLayers/LocalContainer/LocalView/LocalSpace")
 scaledSpace = NodePath("../RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
 DEBUG_GizmoPrefab = ExtResource("43_oe5si")
 
-[node name="PartManager" type="Node" parent="." unique_id=1645644584]
+[node name="PartManager" type="Node" parent="." unique_id=1645644584 node_paths=PackedStringArray("temporaryPartDump")]
 process_priority = 3290
 script = ExtResource("6_2c3j4")
+temporaryPartDump = NodePath("TemporaryPartDump")
+
+[node name="TemporaryPartDump" type="Node3D" parent="PartManager" unique_id=254446572]
 
 [node name="CraftManager" type="Node" parent="." unique_id=837445787]
 script = ExtResource("6_ijjgm")

@@ -36,59 +36,64 @@ public partial class Craft : Node3D
 
     public void UpdateOrbit()
     {
-        // Loop over every part and apply a force towards the planet
-        if (OrbitDriver.parent != null)
+        if (OrbitDriver != null)
         {
-            // Copy root part's state to the driver's cartesian info if we're not on rails
-            if (!OrbitDriver.OnRails)
+            // Loop over every part and apply a force towards the planet
+            if (OrbitDriver.parent != null)
             {
-                // Because cartesian position is relative to planet
-                Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.parent.GlobalPosition;
-
-                Vector3 finalPos = relativePos;
-                Vector3 finalVel = CentralPart.LinearVelocity;
-
-                if (RealityTangler.Instance.activeReferenceFrame != null)
+                // Copy root part's state to the driver's cartesian info if we're not on rails
+                if (!OrbitDriver.OnRails)
                 {
-                    CelestialBody reference = RealityTangler.Instance.activeReferenceFrame;
-                    finalPos = reference.GetGlobalPositionOfPoint(relativePos);
-                    finalVel = reference.GetGlobalVelocity(CentralPart.LinearVelocity + reference.GetSurfaceRotationVelocity(finalPos));
+                    // Because cartesian position is relative to planet
+                    Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.parent.GlobalPosition;
+
+                    Vector3 finalPos = relativePos;
+                    Vector3 finalRot = CentralPart.Rotation;
+                    Vector3 finalVel = CentralPart.LinearVelocity;
+
+                    if (RealityTangler.Instance.activeReferenceFrame != null)
+                    {
+                        CelestialBody reference = RealityTangler.Instance.activeReferenceFrame;
+                        finalPos = reference.GetGlobalPositionOfPoint(relativePos);
+                        finalVel = reference.GetGlobalVelocity(CentralPart.LinearVelocity + reference.GetSurfaceRotationVelocity(finalPos));
+                    }
+
+                    OrbitDriver.cartesian.position = finalPos;
+                    OrbitDriver.cartesian.rotation = finalRot;
+                    OrbitDriver.cartesian.velocity = finalVel; // Feels sloppy but all we can do is pray
+                }else{
+                    Vector3 finalPos = OrbitDriver.cartesian.position;
+
+                    if (RealityTangler.Instance.activeReferenceFrame != null)
+                    {
+                        CelestialBody reference = RealityTangler.Instance.activeReferenceFrame;
+                        finalPos = reference.GetLocalPositionOfPoint(finalPos);
+                    }
+
+                    GlobalPosition = finalPos;
+                    FixCraft();
                 }
 
-                OrbitDriver.cartesian.position = finalPos;
-                OrbitDriver.cartesian.velocity = finalVel; // Feels sloppy but all we can do is pray
-            }else{
-                Vector3 finalPos = OrbitDriver.cartesian.position;
-
-                if (RealityTangler.Instance.activeReferenceFrame != null)
-                {
-                    CelestialBody reference = RealityTangler.Instance.activeReferenceFrame;
-                    finalPos = reference.GetLocalPositionOfPoint(finalPos);
-                }
-
-                GlobalPosition = finalPos;
-                FixCraft();
+                OrbitDriver.Update();
             }
 
-            OrbitDriver.Update();
-        }
-
-        if(!Anchored) GlobalPosition = CentralPart.GlobalPosition;
+            if(!Anchored) GlobalPosition = CentralPart.GlobalPosition;
 
 
-        // UHHH FUCK
-        double altitude = OrbitDriver.parent.radius - OrbitDriver.cartesian.position.DistanceTo(Vector3.Zero);
+            // UHHH FUCK
+            double altitude = OrbitDriver.parent.radius - OrbitDriver.cartesian.position.DistanceTo(Vector3.Zero);
 
-        if (altitude > OrbitDriver.parent.inverseRotAltitude)
-        {
-            if (RealityTangler.Instance.activeReferenceFrame != null) RealityTangler.Instance.SwitchReferenceFrame(null);
-        }else{
-            if (RealityTangler.Instance.activeReferenceFrame != OrbitDriver.parent)
+            if (altitude > OrbitDriver.parent.inverseRotAltitude)
             {
-                RealityTangler.Instance.SwitchReferenceFrame(OrbitDriver.parent);
-                SetPositionFromCartesian();
-            } 
-           
+                if (RealityTangler.Instance.activeReferenceFrame != null) RealityTangler.Instance.SwitchReferenceFrame(null);
+            }else{
+                if (RealityTangler.Instance.activeReferenceFrame != OrbitDriver.parent)
+                {
+                    RealityTangler.Instance.SwitchReferenceFrame(OrbitDriver.parent);
+                    SetTransformFromCartesian();
+                } 
+            
+            }
         }
     }
 
@@ -99,60 +104,6 @@ public partial class Craft : Node3D
         {
             part.Anchor(toggle);
         }
-    }
-
-    // Hopefully loads the craft in the correct position/orientation
-    public void Load(bool toggle)
-    {
-        Loaded = toggle;
-
-        if (toggle)
-        {
-            // Load craft
-            Instantiate(PartData);
-            CraftManager.Instance.RegisterLoadedCraft(this);
-        }else{
-            // Unload craft
-            throw new NotImplementedException();
-        }
-    }
-
-    // Create the abstract idea of a craft
-    // DOES NOT INSTANTIATE IT!
-    public void Initialize(OrbitDriver orbitDriver, Dictionary partData)
-    {
-        OrbitDriver = orbitDriver;
-        OrbitDriver.ToggleOnRailsOrbit(false);
-        AddChild(OrbitDriver); // Kidnap the orbit driver
-        PartData = partData;
-
-        RealityTangler.Instance.OrbitProcess += UpdateOrbit;
-        RealityTangler.Instance.OrbitProcess += UpdateMap;
-
-        // Create map object
-        MapObject = new() { Name = $"{Name}_Map" };
-        MapView.Instance.AddChild(MapObject);
-        MapView.Instance.AddMapIcon(MapObject);
-
-        OrbitRenderer = OrbitRendererManager.Instance.CreateOrbitRenderer(this);
-
-        ActiveSave.Instance.TimeLevelChanged += OnTimeLevelChanged;
-        ActiveSave.Instance.TimeLevelSafeState += OnTimeLevelSafe;
-    }
-
-    // Hiujjj??
-    public void Instantiate()
-    {
-        Instantiate(PartData);
-    }
-
-    public void Instantiate(Dictionary partData)
-    {
-        RealityTangler.Instance.OriginReset += ResetOrigin;
-        PartData = partData;
-        AddPartFromData(partData, parentObject: this);
-
-        CentralPart = LoadedParts[0];
     }
 
     // Recursive function to reconstruct a bunch of parts from given part data
@@ -167,7 +118,8 @@ public partial class Craft : Node3D
         Part part = cachedPart.Instantiate(parentObject);
         part.parentThing = this;
         part.Anchor(true); // Anchor it for now
-        
+        part.cachedPart = cachedPart;
+
         if (parentPart != null)
         {
             // Handle attachments (pray that nothing goes wrong at this step)
@@ -254,11 +206,14 @@ public partial class Craft : Node3D
     }
 
     // For easy use with the physics sim, it's safe to set the position of the node if the craft is anchored.
-    public void SetPositionFromCartesian(bool returnVelocity = true)
+    public void SetTransformFromCartesian(bool returnVelocity = true)
     {
+        Logger.Print($"GOING TO FUCK ALL {OrbitDriver.cartesian.position}");
+
         Anchor(true);
 
         Vector3 positionResult = OrbitDriver.cartesian.position;
+        Vector3 rotationResult = OrbitDriver.cartesian.rotation;
 
         if (RealityTangler.Instance.activeReferenceFrame != null)
         {
@@ -267,6 +222,9 @@ public partial class Craft : Node3D
         }
 
         Position = positionResult;
+        // Let Godot do the rotating for us
+        GlobalRotation = rotationResult;
+
         foreach (Part part in LoadedParts)
         {
             if (part.parentPart != null)
@@ -276,7 +234,9 @@ public partial class Craft : Node3D
                 part.Position = Vector3.Zero;
             }
         }
+
         Anchor(false);
+        
         // Return the velocity lost from anchoring
         if(returnVelocity) SetVelocityFromCartesian();
     }
@@ -293,7 +253,7 @@ public partial class Craft : Node3D
         {
             OrbitDriver.InitCraftPropagator();
         }else{
-            SetPositionFromCartesian();
+            SetTransformFromCartesian();
         }
     }
 

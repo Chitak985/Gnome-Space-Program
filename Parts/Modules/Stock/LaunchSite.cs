@@ -1,6 +1,5 @@
 using Godot;
 using Godot.Collections;
-using System;
 
 /*
     This part module is BUILT IN to GSP.
@@ -62,29 +61,10 @@ public partial class LaunchSite : PartModule
         {
             parent = cBody,
             position = cBody.GetGlobalPositionOfPoint(originPos),
-            velocity = cBody.GetSurfaceRotationVelocity(cBody.GetGlobalPositionOfPoint(originPos))
+            rotation = spawnNode.GlobalRotation,
+            velocity = Vector3.Zero //cBody.GetSurfaceRotationVelocity(cBody.GetGlobalPositionOfPoint(originPos))
         };
 
-        //Orbit orbit = new() {
-        //    parent = cBody,
-        //    semiMajorAxis = 650000,
-        //    eccentricity = 0,
-        //    inclination = 0,
-        //    argumentOfPeriapsis = 0,
-        //    longitudeOfAscendingNode = 0,
-        //    trueAnomaly = 0,
-        //    trueAnomalyAtEpoch = 0
-        //};
-
-        //Orbit orbit = Conics.CartToElem(new CartesianData(){
-        //    position = new Vector3(700000, 0, 0),
-        //    velocity = new Vector3(0, 0, 3000),
-        //    parent = cBody
-        //});
-
-        // Send this to craft manager
-        Craft craft = CraftManager.Instance.SpawnCraft(partData, cartesianData, focus);
-
-        return craft;
+        return null;
     }
 }

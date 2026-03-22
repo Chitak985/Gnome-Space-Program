@@ -7,8 +7,8 @@ using System.Reflection;
 // This sucks
 public partial class PartManager : Node
 {
-    [Export] public PartMenuHandler partMenus;
     [Export] public float rayLength = 1000;
+    [Export] public Node3D temporaryPartDump;
     public static readonly string classTag = "([color=pink]PartManager[color=white])";
     public static PartManager Instance { get; private set; }
 

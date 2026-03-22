@@ -50,6 +50,8 @@ public partial class Part : RigidBody3D
 
     public bool overrideHover = false;
 
+    public Vector3 ActiveForce { get; private set; }
+
     public override void _Ready()
     {
         InputEvent += OnInputEvent;
@@ -72,6 +74,26 @@ public partial class Part : RigidBody3D
             double force = Conics.GravConstant * bodyMass / Math.Pow(distance, 2);
 
             state.LinearVelocity += direction * force * GetProcessDeltaTime();
+            state.LinearVelocity += ActiveForce * GetProcessDeltaTime();
+            ActiveForce = Vector3.Zero; // Reset force
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        UpdatePartModules();
+    }
+
+    public void AddForce(Vector3 force, Vector3 position)
+    {
+        ActiveForce = force;
+    }
+
+    private void UpdatePartModules()
+    {
+        foreach (PartModule module in partModules)
+        {
+            module.PartProcess();
         }
     }
 
@@ -128,10 +150,12 @@ public partial class Part : RigidBody3D
     public void InitPart()
     {
         contextMenu = PartMenuHandler.Instance.CreateMenu(this);
+
         Godot.Collections.Array moduleData = (Godot.Collections.Array)cachedPart.config["modules"];
         Logger.Print($"(Instance {Name}) Creating part modules...");
         partModules = CreateModules(moduleData);
         Logger.Print($"(Instance {Name}) Got all part modules! Count: {partModules.Count}");
+        
         //InitModules();
     }
     
