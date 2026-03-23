@@ -330,8 +330,7 @@ public partial class Part : RigidBody3D
 
         foreach (MeshInstance3D mesh in meshList)
         {
-            //Logger.Print($"{Name} {mesh.GetAabb()}");
-            aabb.Merge(mesh.GetAabb());
+            aabb = aabb.Merge(mesh.GlobalTransform * mesh.GetAabb());
         }
 
         return aabb;

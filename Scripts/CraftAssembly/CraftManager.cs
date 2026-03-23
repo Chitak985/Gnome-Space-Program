@@ -19,4 +19,20 @@ public partial class CraftManager : Node
     {
         Instance = this;
     }
+
+    public Craft CreateCraft(Dictionary partData)
+    {
+        Craft craft = new();
+        ActiveSave.Instance.localSpace.AddChild(craft);
+        craft.Init(partData);
+
+        return craft;
+    }
+
+    public void PlaceCraftAtPoint(Craft craft, OrbitDriver driver)
+    {
+        driver.ToggleOnRailsOrbit(false);
+        craft.SetOrbitDriver(driver);
+        craft.SetTransformFromCartesian();
+    }
 }

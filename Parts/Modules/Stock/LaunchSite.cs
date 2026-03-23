@@ -57,14 +57,30 @@ public partial class LaunchSite : PartModule
             originPos = GetLaunchPosition();
         }
 
+        Craft craft = CraftManager.Instance.CreateCraft(partData);
+
+        Aabb craftAABB = craft.GetAABB();
+
         CartesianData cartesianData = new()
         {
             parent = cBody,
-            position = cBody.GetGlobalPositionOfPoint(originPos),
+            position = cBody.GetGlobalPositionOfPoint(originPos + cBody.GlobalPosition.DirectionTo(originPos) * craftAABB.Size.Y),
             rotation = spawnNode.GlobalRotation,
-            velocity = Vector3.Zero //cBody.GetSurfaceRotationVelocity(cBody.GetGlobalPositionOfPoint(originPos))
+            velocity = cBody.GetSurfaceRotationVelocity(cBody.GetGlobalPositionOfPoint(originPos))
         };
 
-        return null;
+        OrbitDriver driver = new()
+        {
+            parent = cBody,
+            orbit = Conics.CartToElem(cartesianData),
+            cartesian = cartesianData
+        };
+
+        CraftManager.Instance.PlaceCraftAtPoint(craft, driver);
+
+        BuildingManager.Instance.ExitBuildMode(false);
+        craft.SnatchFocus();
+
+        return craft;
     }
 }

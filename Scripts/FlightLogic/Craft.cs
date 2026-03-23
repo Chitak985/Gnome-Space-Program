@@ -26,9 +26,44 @@ public partial class Craft : Node3D
     public MapObject MapObject { get; private set; }
     public OrbitRenderer OrbitRenderer { get; private set; }
 
+    public void Init(Dictionary partData)
+    {
+        // Connect signals
+        RealityTangler.Instance.OrbitProcess += UpdateOrbit;
+        RealityTangler.Instance.OrbitProcess += UpdateMap;
+        ActiveSave.Instance.TimeLevelChanged += OnTimeLevelChanged;
+        ActiveSave.Instance.TimeLevelSafeState += OnTimeLevelSafe;
+
+        PartData = partData;
+
+        // Add map object
+        MapObject = MapView.Instance.AddMapObject(Name);
+        MapView.Instance.AddMapIcon(MapObject);
+
+        Instantiate();
+
+        Anchor(true);
+    }
+
+    public void Instantiate()
+    {
+        RealityTangler.Instance.OriginReset += ResetOrigin;
+        AddPartFromData(PartData, parentObject: this);
+
+        CentralPart = LoadedParts[0];
+    }
+
+    public void SetOrbitDriver(OrbitDriver driver)
+    {
+        // Delete old driver
+        OrbitDriver?.QueueFree();
+
+        OrbitDriver = driver;
+    }
+
     public void UpdateMap()
     {
-        if (MapObject != null)
+        if (MapObject != null && OrbitDriver != null)
         {
             MapObject.truePosition = OrbitDriver.cartesian.position + OrbitDriver.parent.GlobalCartesianPosition;
         }
@@ -38,8 +73,7 @@ public partial class Craft : Node3D
     {
         if (OrbitDriver != null)
         {
-            // Loop over every part and apply a force towards the planet
-            if (OrbitDriver.parent != null)
+            if (OrbitDriver.enabled)
             {
                 // Copy root part's state to the driver's cartesian info if we're not on rails
                 if (!OrbitDriver.OnRails)
@@ -75,24 +109,22 @@ public partial class Craft : Node3D
                 }
 
                 OrbitDriver.Update();
-            }
 
-            if(!Anchored) GlobalPosition = CentralPart.GlobalPosition;
+                if(!Anchored) GlobalPosition = CentralPart.GlobalPosition;
 
+                // UHHH FUCK
+                double altitude = OrbitDriver.parent.radius - OrbitDriver.cartesian.position.DistanceTo(Vector3.Zero);
 
-            // UHHH FUCK
-            double altitude = OrbitDriver.parent.radius - OrbitDriver.cartesian.position.DistanceTo(Vector3.Zero);
-
-            if (altitude > OrbitDriver.parent.inverseRotAltitude)
-            {
-                if (RealityTangler.Instance.activeReferenceFrame != null) RealityTangler.Instance.SwitchReferenceFrame(null);
-            }else{
-                if (RealityTangler.Instance.activeReferenceFrame != OrbitDriver.parent)
+                if (altitude > OrbitDriver.parent.inverseRotAltitude)
                 {
-                    RealityTangler.Instance.SwitchReferenceFrame(OrbitDriver.parent);
-                    SetTransformFromCartesian();
-                } 
-            
+                    if (RealityTangler.Instance.activeReferenceFrame != null) RealityTangler.Instance.SwitchReferenceFrame(null);
+                }else{
+                    if (RealityTangler.Instance.activeReferenceFrame != OrbitDriver.parent)
+                    {
+                        RealityTangler.Instance.SwitchReferenceFrame(OrbitDriver.parent);
+                        SetTransformFromCartesian();
+                    } 
+                }
             }
         }
     }
@@ -158,7 +190,7 @@ public partial class Craft : Node3D
     {
         StateManager.Instance.ChangeGameState(StateManager.GameState.Flight);
         StateManager.Instance.ChangeFlightState(new StateManager.FlightState() {activeCraft = this});
-        FlightCamera.Instance.TargetObject(this, 100, 1, 10000);
+        FlightCamera.Instance.TargetObject(this, 25, 1, 10000);
 
         //RealityTangler.Instance.SwitchReferenceFrame();
     }
@@ -208,8 +240,6 @@ public partial class Craft : Node3D
     // For easy use with the physics sim, it's safe to set the position of the node if the craft is anchored.
     public void SetTransformFromCartesian(bool returnVelocity = true)
     {
-        Logger.Print($"GOING TO FUCK ALL {OrbitDriver.cartesian.position}");
-
         Anchor(true);
 
         Vector3 positionResult = OrbitDriver.cartesian.position;
@@ -241,6 +271,15 @@ public partial class Craft : Node3D
         if(returnVelocity) SetVelocityFromCartesian();
     }
 
+    public Aabb GetAABB()
+    {
+        Aabb aabb = new();
+        foreach (Part part in LoadedParts)
+        {
+            aabb = aabb.Merge(part.GetAABB());
+        }
+        return aabb;
+    }
     private void ToggleOnRailsOrbit(bool toggle)
     {
         Logger.Print($"Setting craft ({this}) on-rails orbit to ({toggle})");

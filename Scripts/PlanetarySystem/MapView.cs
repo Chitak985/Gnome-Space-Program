@@ -70,6 +70,13 @@ public partial class MapView : Node3D
         }
     }
 
+    public MapObject AddMapObject(string name)
+    {
+        MapObject mapObject = new() { Name = $"{name}_Map" };
+        AddChild(mapObject);
+        return mapObject;
+    }
+
     public void AddMapIcon(MapObject mapObject, Image icon = null)
     {
         MapIcon mapIcon = mapIconPrefab.Instantiate<MapIcon>();
