@@ -51,6 +51,11 @@ public partial class Craft : Node3D
         AddPartFromData(PartData, parentObject: this);
 
         CentralPart = LoadedParts[0];
+
+        foreach (Part part in LoadedParts)
+        {
+            part.InitPart();
+        }
     }
 
     public void SetOrbitDriver(OrbitDriver driver)
