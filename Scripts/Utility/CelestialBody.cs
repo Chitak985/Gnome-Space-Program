@@ -50,9 +50,10 @@ public partial class CelestialBody : Node3D
     private Node3D scaledGizmo;
     private Node3D mapGizmo;
 
-    // DELETE THESE LATER THIS SUCKS
+    // note to future self: DELETE THESE LATER THIS SUCKS
     public string terrain_albedopath;
     public string terrain_normalpath;
+    public bool terrain_unlit;
 
     public bool hasOcean;
     public Color oceanColour;
@@ -201,6 +202,7 @@ public partial class CelestialBody : Node3D
             material.NormalScale = 1f;
             material.Uv1Triplanar = true;
             material.Uv1Scale = Vector3.One * 6;
+            if(terrain_unlit) material.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
 
             pqsSphere.material = material;
         }

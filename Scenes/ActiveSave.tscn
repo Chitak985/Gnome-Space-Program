@@ -59,6 +59,10 @@
 [ext_resource type="Script" uid="uid://b4byh53dv8k5" path="res://Scripts/UserInterface/Misc/ClockUI.cs" id="42_6b1ya"]
 [ext_resource type="PackedScene" uid="uid://d1detwm4i50s7" path="res://Assets/Prefabs/UI/Buttons/timewarp_button.tscn" id="42_w8340"]
 [ext_resource type="PackedScene" uid="uid://dxhvfmveoa832" path="res://Assets/Prefabs/Debug/DebugGizmo.tscn" id="43_oe5si"]
+[ext_resource type="Script" uid="uid://b3h6paq7bpbs0" path="res://Scripts/UserInterface/Flight/Navball.cs" id="43_wlh0d"]
+[ext_resource type="Texture2D" uid="uid://x8xrflxevkxi" path="res://Assets/Textures/UserInterface/Sprites/throttle.svg" id="45_400pm"]
+[ext_resource type="Script" uid="uid://ciw6m5phi56xv" path="res://Scripts/UserInterface/Flight/RotatingThrottle.cs" id="46_wsl1x"]
+[ext_resource type="Texture2D" uid="uid://bsk2xxyemcm0y" path="res://Assets/Textures/UserInterface/Sprites/throttlebackg.svg" id="46_y64qo"]
 [ext_resource type="Script" uid="uid://drrsx2qsfqgck" path="res://Scripts/UserInterface/Windows/DraggablePanel.cs" id="49_oe5si"]
 [ext_resource type="Material" uid="uid://dnylotupwudqk" path="res://Assets/Materials/Planet/water.tres" id="52_mnfnu"]
 [ext_resource type="PackedScene" uid="uid://bwoopux77w7qj" path="res://Assets/Prefabs/UI/Components/resize_handles.tscn" id="52_mtnyg"]
@@ -67,6 +71,12 @@
 background_mode = 1
 ssao_radius = 14.58
 ssao_intensity = 16.0
+ssil_enabled = true
+glow_enabled = true
+glow_bloom = 0.5
+adjustment_enabled = true
+adjustment_brightness = 1.1
+adjustment_contrast = 1.1
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_oe5si"]
 material = ExtResource("34_ou012")
@@ -80,6 +90,12 @@ flip_faces = true
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_oe5si"]
+
+[sub_resource type="Gradient" id="Gradient_wsl1x"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2aux3"]
+gradient = SubResource("Gradient_wsl1x")
 
 [sub_resource type="CSharpScript" id="CSharpScript_ou012"]
 script/source = "using Godot;
@@ -914,7 +930,6 @@ theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
 [node name="FlightUI" type="Control" parent="UI" unique_id=2070060330]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1071,12 +1086,13 @@ own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(211, 212)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="UI/FlightUI/BottomLeft/Navball/SubViewportContainer/SubViewport" unique_id=331086803]
 transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0)
 material_override = ExtResource("30_ldaci")
 mesh = SubResource("SphereMesh_oe5si")
+script = ExtResource("43_wlh0d")
 
 [node name="Camera3D" type="Camera3D" parent="UI/FlightUI/BottomLeft/Navball/SubViewportContainer/SubViewport" unique_id=995235907]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.499157813288001)
@@ -1134,7 +1150,76 @@ orbit parameter: 123123123
 orbit parameter: 123123123
 orbit parameter: 123123123"
 
+[node name="Control" type="Control" parent="UI/FlightUI/BottomLeft" unique_id=1263030631]
+clip_contents = true
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -146.0
+offset_top = -191.0
+offset_right = 61.0
+offset_bottom = 132.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Throttle" type="TextureRect" parent="UI/FlightUI/BottomLeft/Control" unique_id=1316746889]
+modulate = Color(0, 0.1882353, 0.3019608, 0.8117647)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.131
+anchor_top = 0.04
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -147.88299999999998
+offset_top = -11.920000000000002
+offset_right = -1.9999999999999716
+offset_bottom = 58.0
+grow_horizontal = 0
+grow_vertical = 2
+rotation = 2.2689280275926285
+pivot_offset = Vector2(190, 190)
+texture = ExtResource("45_400pm")
+expand_mode = 3
+script = ExtResource("46_wsl1x")
+emptyRot = 2.356
+fullRot = -0.288
+
+[node name="ThrottleBackg" type="TextureRect" parent="UI/FlightUI/BottomLeft/Control" unique_id=1587885184]
+modulate = Color(0.35246357, 0.14452446, 0.23979393, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.131
+anchor_top = 0.04
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -147.88299999999998
+offset_top = -11.920000000000002
+offset_right = -1.9999999999999716
+offset_bottom = 58.0
+grow_horizontal = 0
+grow_vertical = 2
+rotation = -0.2879793265790644
+pivot_offset = Vector2(190, 190)
+texture = ExtResource("46_y64qo")
+expand_mode = 3
+
+[node name="Thingy" type="TextureRect" parent="UI/FlightUI/BottomLeft/Control" unique_id=1426174276]
+modulate = Color(0.3529412, 0.14509805, 0.23921569, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.997
+offset_left = 96.0
+offset_top = 322.0
+offset_right = -72.0
+offset_bottom = 1.968999999999994
+texture = SubResource("GradientTexture1D_2aux3")
+expand_mode = 1
+
 [node name="UniversalUI" type="Control" parent="UI" unique_id=564722764]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

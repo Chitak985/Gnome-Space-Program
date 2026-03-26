@@ -281,6 +281,7 @@ public partial class PlanetSystem : Node3D
         {
             if (ConfigUtility.TryGetDictionary("material", pqs, out Dictionary material))
             {
+                cBody.terrain_unlit = material.TryGetValue("unlit", out var unl) && (bool)unl;
                 cBody.terrain_albedopath = material.TryGetValue("albedo", out var alb) ? (string)alb : "";
                 cBody.terrain_normalpath = material.TryGetValue("normal", out var nml) ? (string)nml : "";
             }

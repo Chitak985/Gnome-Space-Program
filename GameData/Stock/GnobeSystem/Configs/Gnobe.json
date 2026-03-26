@@ -35,8 +35,8 @@
 		"type": "perlin",
 		"seed": 0,
 		"noiseOffset": [0,0,0],
-		"deformity": 12000,
-		"offset": -6000,
+		"deformity": 20000,
+		"offset": -10000,
 		"frequency": 500,
 		"fractal": {
 		  "type": "fbm",

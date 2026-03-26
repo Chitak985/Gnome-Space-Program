@@ -25,6 +25,8 @@ public partial class Craft : Node3D
     public bool Anchored { get; private set; }
     public MapObject MapObject { get; private set; }
     public OrbitRenderer OrbitRenderer { get; private set; }
+    
+    public double Throttle { get; private set; }
 
     public void Init(Dictionary partData)
     {

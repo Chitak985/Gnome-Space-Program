@@ -17,6 +17,11 @@
 	"colour": [1,1,1]
   },
   "pqs": {
+	"material": {
+		"unlit": true,
+		"albedo": "Stock/GnobeSystem/Textures/Terrain/Blank/Albedo.png",
+		"normal": "Stock/GnobeSystem/Textures/Terrain/Blank/Normal.png"
+	},
 	"pqsMods": [
 
 	]

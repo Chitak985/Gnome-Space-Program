@@ -10,7 +10,7 @@
 
     "buildings": {
         "GSC_VAB": {
-            "position": [0,16,250],
+            "position": [0,18,250],
             "rotation": [0,0,0],
             "scale": [1,1,1],
             "destroyed": false,
