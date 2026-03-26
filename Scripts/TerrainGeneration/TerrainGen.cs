@@ -17,17 +17,14 @@ public partial class TerrainGen : Node3D
     [Export] public float radius = 600.0f;
     [Export] public int perQuadSubdivison = 8;
     [Export] public int minLevel = 4;
-    [Export] public int maxLevel = 12;
+    [Export] public int maxLevel = 10;
     [Export] public int minRenderLevel = 0;
     [Export] public int minColliderLevel = 10;
     [Export] public int mapQuadDetail = 4;
     [Export] public Node3D player;
     
-    //[Export] public Material material;
+    public Material material;
     //[Export] public UniverseManager universeManager;
-
-    // extras
-    [Export] public Mesh scaledBillboard;
 
     public CelestialBody cBody;
 
@@ -38,6 +35,8 @@ public partial class TerrainGen : Node3D
     private readonly List<QuadDetailLevel> quadDetailLevels = [];
 
     private readonly List<Quad> quadsQueuedForDeletion = [];
+
+    public bool isAFuckingOcean;
 
     public override void _Ready()
     {
@@ -370,6 +369,7 @@ public partial class TerrainGen : Node3D
             meshObject.Mesh = mesh;
             meshObject.Position = quad.position;
             meshObject.Scale = quad.scale;
+            if (material != null) meshObject.MaterialOverride = material;
 
             quad.mapRenderedMesh = meshBody;
 
@@ -395,10 +395,12 @@ public partial class TerrainGen : Node3D
             localMeshObject.Mesh = mesh;
             localMeshObject.Position = quad.position;
             localMeshObject.Scale = quad.scale;
+            if (material != null) localMeshObject.MaterialOverride = material;
 
             scaledMeshObject.Mesh = mesh;
             scaledMeshObject.Position = quad.position;
             scaledMeshObject.Scale = quad.scale;
+            if (material != null) scaledMeshObject.MaterialOverride = material;
 
             quad.localRenderedMesh = localMeshBody;
             quad.scaledRenderedMesh = scaledMeshBody;
@@ -516,7 +518,8 @@ public partial class TerrainGen : Node3D
             float quadNodeSizeToRadius = radius / quadScale;
             Vector3 noiseSamplePoint = globalVertex / quadNodeSizeToRadius;
             float noiseOffset = 0;
-            if (cBody.pqsMods != null)
+
+            if (cBody.pqsMods != null && !isAFuckingOcean)
             {
                 foreach (Node mod in cBody.pqsMods)
                 {
@@ -526,6 +529,7 @@ public partial class TerrainGen : Node3D
                     }
                 }
             }
+
             float quadNodeSizeToRadius2 = (radius + noiseOffset) / quadScale;
 
             Vector3 normalizedVertPos = (globalVertex - Vector3.Zero).Normalized() * quadNodeSizeToRadius2;

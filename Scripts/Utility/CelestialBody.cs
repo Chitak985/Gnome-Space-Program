@@ -50,6 +50,14 @@ public partial class CelestialBody : Node3D
     private Node3D scaledGizmo;
     private Node3D mapGizmo;
 
+    // DELETE THESE LATER THIS SUCKS
+    public string terrain_albedopath;
+    public string terrain_normalpath;
+
+    public bool hasOcean;
+    public Color oceanColour;
+    public double oceanRadius;
+
     // Deletes old gizmos tooo
     public void CreateGizmo()
     {
@@ -174,7 +182,50 @@ public partial class CelestialBody : Node3D
             radius = (float)radius,
             Name = "PQS"
         };
+
+        if (terrain_albedopath != null && terrain_normalpath != null) 
+        {
+            Image albedo = new();
+            albedo.Load($"{ConfigUtility.GameData}/{terrain_albedopath}");
+            albedo.GenerateMipmaps();
+            Texture2D albedoTex = ImageTexture.CreateFromImage(albedo);
+            Image normal = new();
+            normal.Load($"{ConfigUtility.GameData}/{terrain_normalpath}");
+            normal.GenerateMipmaps();
+            Texture2D normalTex = ImageTexture.CreateFromImage(normal);
+
+            StandardMaterial3D material = new();
+            material.AlbedoTexture = albedoTex;
+            material.NormalTexture = normalTex;
+            material.NormalEnabled = true;
+            material.NormalScale = 1f;
+            material.Uv1Triplanar = true;
+            material.Uv1Scale = Vector3.One * 6;
+
+            pqsSphere.material = material;
+        }
+
         gimbal.AddChild(pqsSphere);
+
+        if (hasOcean) 
+        {
+            TerrainGen oceanSphere = new TerrainGen
+            {
+                cBody = this,
+                runInSeparateThread = false,
+                radius = (float)radius,
+                Name = "PQS_Ocean",
+                isAFuckingOcean = true,
+                maxLevel = 6
+            };
+
+            ShaderMaterial waterShader = (ShaderMaterial)PlanetSystem.Instance.watershader.Duplicate();
+            waterShader.SetShaderParameter("albedo", new Vector3(oceanColour.R, oceanColour.G, oceanColour.B));
+
+            oceanSphere.material = waterShader;
+
+            gimbal.AddChild(oceanSphere);
+        }
 
         CreateGizmo();
 
@@ -231,8 +282,8 @@ public partial class CelestialBody : Node3D
     // Returns a global velocity from a local velocity (this function may not work correctly)
     public Vector3 GetGlobalVelocity(Vector3 velocity)
     {
-        Vector3 localVel = CachedTransform.Basis.Inverse() * velocity;
-        return localVel;
+        Vector3 globalVel = CachedTransform.Basis * velocity;
+        return globalVel;
     }
 
     // Shamelessly stolen from https://stackoverflow.com/questions/46247499/vector3-to-latitude-longitude

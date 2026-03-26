@@ -30,6 +30,9 @@ public partial class PlanetSystem : Node3D
 
     public List<CelestialBody> celestialBodies = [];
 
+    // WHAT THE HELL
+    [Export] public ShaderMaterial watershader;
+
     // DEBUG SHART
     [Export] public bool DEBUG_startWithGizmo;
     [Export] public PackedScene DEBUG_GizmoPrefab;
@@ -262,12 +265,25 @@ public partial class PlanetSystem : Node3D
         // Oceans
         if (ConfigUtility.TryGetDictionary("ocean", data, out Dictionary ocean))
         {
-            
+            cBody.hasOcean = true;
+            if (ConfigUtility.TryGetArray("colour", ocean, out Godot.Collections.Array oceanColour))
+            {
+                Color colour = new((float)oceanColour[0], (float)oceanColour[1], (float)oceanColour[2]);
+                cBody.oceanColour = colour;
+            }else{
+                Color colour = new(1, 1, 1);
+                cBody.oceanColour = colour;
+            }
         }
 
         // PQS
         if (ConfigUtility.TryGetDictionary("pqs", data, out Dictionary pqs))
         {
+            if (ConfigUtility.TryGetDictionary("material", pqs, out Dictionary material))
+            {
+                cBody.terrain_albedopath = material.TryGetValue("albedo", out var alb) ? (string)alb : "";
+                cBody.terrain_normalpath = material.TryGetValue("normal", out var nml) ? (string)nml : "";
+            }
             if (ConfigUtility.TryGetArray("pqsMods", pqs, out Godot.Collections.Array pqsMods))
             {
                 // Initialize pqs mods for the cBody

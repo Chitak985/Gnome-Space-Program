@@ -29,7 +29,7 @@ public partial class RocketEngine : PartModule
 
     public override void PartProcess()
     {
-        part.AddForce(CalculateForce(), Vector3.Zero); // Force is applied the center of part, this is fine but should be fixed later
+        part.AddLinearForce(CalculateForce(), Vector3.Zero); // Force is applied the center of part, this is fine but should be fixed later
     }
 
     private Vector3 CalculateForce()

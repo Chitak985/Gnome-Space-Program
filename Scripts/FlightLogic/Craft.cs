@@ -64,6 +64,13 @@ public partial class Craft : Node3D
         OrbitDriver?.QueueFree();
 
         OrbitDriver = driver;
+
+        if (OrbitRenderer == null)
+        {
+            OrbitRendererManager.Instance.CreateOrbitRenderer(this);
+        }else{
+            OrbitRenderer.OrbitDriver = driver;
+        }
     }
 
     public void UpdateMap()
@@ -122,12 +129,12 @@ public partial class Craft : Node3D
 
                 if (altitude > OrbitDriver.parent.inverseRotAltitude)
                 {
-                    if (RealityTangler.Instance.activeReferenceFrame != null) RealityTangler.Instance.SwitchReferenceFrame(null);
+                    //if (RealityTangler.Instance.activeReferenceFrame != null) RealityTangler.Instance.SwitchReferenceFrame(null);
                 }else{
                     if (RealityTangler.Instance.activeReferenceFrame != OrbitDriver.parent)
                     {
-                        RealityTangler.Instance.SwitchReferenceFrame(OrbitDriver.parent);
-                        SetTransformFromCartesian();
+                    //    RealityTangler.Instance.SwitchReferenceFrame(OrbitDriver.parent);
+                    //    SetTransformFromCartesian();
                     } 
                 }
             }

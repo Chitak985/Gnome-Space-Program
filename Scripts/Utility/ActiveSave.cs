@@ -81,11 +81,11 @@ public partial class ActiveSave : Node3D
         Engine.TimeScale = trueTimeSpeed;
 
         // For craft easing
-        if (!TimeSpeedAtSafeLevel && timeSpeed <= timeSpeedLevels[maxPhysicsSpeedLevel])
+        if (!TimeSpeedAtSafeLevel && timeSpeed <= timeSpeedLevels[maxPhysicsSpeedLevel-1])
         {
             TimeSpeedAtSafeLevel = true;
             EmitSignal(SignalName.TimeLevelSafeState);
-        }else if (timeSpeed > timeSpeedLevels[maxPhysicsSpeedLevel]){
+        }else if (timeSpeed > timeSpeedLevels[maxPhysicsSpeedLevel-1]){
             TimeSpeedAtSafeLevel = false;
         }
     }

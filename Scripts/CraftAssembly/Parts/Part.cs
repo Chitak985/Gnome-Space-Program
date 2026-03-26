@@ -50,7 +50,8 @@ public partial class Part : RigidBody3D
 
     public bool overrideHover = false;
 
-    public Vector3 ActiveForce { get; private set; }
+    public Vector3 ActiveLinearForce { get; private set; }
+    public Vector3 ActiveAngularForce { get; private set; }
 
     public override void _Ready()
     {
@@ -74,8 +75,12 @@ public partial class Part : RigidBody3D
             double force = Conics.GravConstant * bodyMass / Math.Pow(distance, 2);
 
             state.LinearVelocity += direction * force * GetProcessDeltaTime();
-            state.LinearVelocity += ActiveForce * GetProcessDeltaTime();
-            ActiveForce = Vector3.Zero; // Reset force
+            state.LinearVelocity += ActiveLinearForce * GetProcessDeltaTime();
+
+            state.AngularVelocity += ActiveAngularForce * GetProcessDeltaTime();
+
+            ActiveLinearForce = Vector3.Zero; // Reset force
+            ActiveAngularForce = Vector3.Zero;
         }
     }
 
@@ -84,9 +89,14 @@ public partial class Part : RigidBody3D
         UpdatePartModules();
     }
 
-    public void AddForce(Vector3 force, Vector3 position)
+    public void AddLinearForce(Vector3 force, Vector3 position)
     {
-        ActiveForce = force;
+        ActiveLinearForce += force;
+    }
+
+    public void AddAngularForce(Vector3 force)
+    {
+        ActiveAngularForce += force;
     }
 
     private void UpdatePartModules()

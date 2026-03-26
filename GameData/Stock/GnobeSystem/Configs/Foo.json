@@ -22,6 +22,10 @@
 	"meanAnomalyAtEpoch": 0
   },
   "pqs": {
+	"material": {
+		"albedo": "Stock/GnobeSystem/Textures/Terrain/Gravel/Albedo.png",
+		"normal": "Stock/GnobeSystem/Textures/Terrain/Gravel/Normal.png"
+	},
 	"pqsMods": [
 	  {
 		"mod": "fastNoise3D",
