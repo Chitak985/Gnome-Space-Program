@@ -26,8 +26,8 @@ public partial class Speedometer : Node
             CelestialBody cBody = craft.OrbitDriver.parent;
             Vector3 vel = craft.OrbitDriver.cartesian.velocity;
 
-            if (displayType == DisplayType.Surface)
-                vel -= cBody.GetLocalVelocity(cBody.GetSurfaceRotationVelocity(craft.OrbitDriver.cartesian.position));
+            //if (displayType == DisplayType.Surface)
+            //    vel -= cBody.GetLocalVelocity(cBody.GetSurfaceRotationVelocity(craft.OrbitDriver.cartesian.position));
 
             double speed = vel.Length();
 

@@ -259,6 +259,23 @@ public partial class CelestialBody : Node3D
     // Ate a bit of https://en.wikipedia.org/wiki/Rigid_body_dynamics and shat out this function
     public Vector3 GetSurfaceRotationVelocity(Vector3 point, bool geocentric = false)
     {
+        Vector3 velocity = GetAngularVelocity(geocentric).Cross(point); // Cross and pray
+
+        return velocity;
+    }
+
+    public Vector3 GetCoriolisAcceleration(Vector3 velocity, bool geocentric = false)
+    {
+        return -2 * GetAngularVelocity(geocentric).Cross(velocity);
+    }
+
+    public Vector3 GetCentrifugalAcceleration(Vector3 position, bool geocentric = false)
+    {
+        return -GetAngularVelocity(geocentric).Cross(GetSurfaceRotationVelocity(position));
+    }
+
+    public Vector3 GetAngularVelocity(bool geocentric = false)
+    {
         // Rotation period is in seconds per 2pi radians.
         // Angular velocity has to be in radians per second.
         double angularVelocity = Math.Tau / rotPeriod;
@@ -269,9 +286,7 @@ public partial class CelestialBody : Node3D
 
         Vector3 angularVelocityVector = planetUp * angularVelocity;
 
-        Vector3 velocity = angularVelocityVector.Cross(point); // Cross and pray
-
-        return velocity;
+        return angularVelocityVector;
     }
 
     // Returns a local velocity from a global velocty

@@ -37,6 +37,12 @@ public partial class RocketEngine : PartModule
         Vector3 forceVector = ThrustDirection * Thrust;
         Vector3 globalForceVector = ThrustPivot.GlobalTransform.Basis * forceVector;
 
+        if (StateManager.Instance.CurrentFlightState.activeCraft != null)
+        {
+            Craft craft = StateManager.Instance.CurrentFlightState.activeCraft;
+            globalForceVector *= craft.Throttle;
+        }
+
         return globalForceVector;
     }
 }

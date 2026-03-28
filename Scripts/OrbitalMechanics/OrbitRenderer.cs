@@ -16,7 +16,7 @@ public partial class OrbitRenderer : Node3D
     {
         Orbit orbit = OrbitDriver.orbit;
 
-        if (orbit != null && OrbitDriver.enabled)
+        if (orbit != null && OrbitDriver.enabled && false)
         {
             //Logger.Print(GetViewport().GetVisibleRect().Size * vpSizeRatio);
 

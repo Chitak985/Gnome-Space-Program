@@ -66,6 +66,7 @@
 [ext_resource type="Script" uid="uid://drrsx2qsfqgck" path="res://Scripts/UserInterface/Windows/DraggablePanel.cs" id="49_oe5si"]
 [ext_resource type="Material" uid="uid://dnylotupwudqk" path="res://Assets/Materials/Planet/water.tres" id="52_mnfnu"]
 [ext_resource type="PackedScene" uid="uid://bwoopux77w7qj" path="res://Assets/Prefabs/UI/Components/resize_handles.tscn" id="52_mtnyg"]
+[ext_resource type="Script" uid="uid://sdj8klytec1m" path="res://Scripts/FlightLogic/CraftInputManager.cs" id="60_2aux3"]
 
 [sub_resource type="Environment" id="Environment_h3s5b"]
 background_mode = 1
@@ -1152,9 +1153,10 @@ orbit parameter: 123123123
 orbit parameter: 123123123
 orbit parameter: 123123123"
 
-[node name="Control" type="Control" parent="UI/FlightUI/BottomLeft" unique_id=1263030631]
+[node name="ThrottleContainer" type="Control" parent="UI/FlightUI/BottomLeft" unique_id=1263030631]
 clip_contents = true
 layout_mode = 1
+anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
@@ -1166,8 +1168,8 @@ offset_bottom = 132.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="Throttle" type="TextureRect" parent="UI/FlightUI/BottomLeft/Control" unique_id=1316746889]
-modulate = Color(0, 0.1882353, 0.3019608, 0.8117647)
+[node name="ThrottleBackgSolid" type="TextureRect" parent="UI/FlightUI/BottomLeft/ThrottleContainer" unique_id=643014898]
+modulate = Color(0, 0.015686275, 0.043137256, 0.78431374)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = -0.131
@@ -1180,7 +1182,26 @@ offset_right = -1.9999999999999716
 offset_bottom = 58.0
 grow_horizontal = 0
 grow_vertical = 2
-rotation = 2.2689280275926285
+rotation = -0.2879793265790644
+pivot_offset = Vector2(190, 190)
+texture = ExtResource("45_400pm")
+expand_mode = 3
+
+[node name="Throttle" type="TextureRect" parent="UI/FlightUI/BottomLeft/ThrottleContainer" unique_id=1316746889]
+modulate = Color(0.2784314, 0.42352942, 0.5372549, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.131
+anchor_top = 0.04
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -147.883
+offset_top = -11.92
+offset_right = -2.0
+offset_bottom = 58.0
+grow_horizontal = 0
+grow_vertical = 2
+rotation = 2.321287905152458
 pivot_offset = Vector2(190, 190)
 texture = ExtResource("45_400pm")
 expand_mode = 3
@@ -1188,8 +1209,8 @@ script = ExtResource("46_wsl1x")
 emptyRot = 2.356
 fullRot = -0.288
 
-[node name="ThrottleBackg" type="TextureRect" parent="UI/FlightUI/BottomLeft/Control" unique_id=1587885184]
-modulate = Color(0.35246357, 0.14452446, 0.23979393, 1)
+[node name="ThrottleBackg" type="TextureRect" parent="UI/FlightUI/BottomLeft/ThrottleContainer" unique_id=1587885184]
+modulate = Color(0.17254902, 0.08235294, 0.14901961, 1)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = -0.131
@@ -1207,8 +1228,8 @@ pivot_offset = Vector2(190, 190)
 texture = ExtResource("46_y64qo")
 expand_mode = 3
 
-[node name="Thingy" type="TextureRect" parent="UI/FlightUI/BottomLeft/Control" unique_id=1426174276]
-modulate = Color(0.3529412, 0.14509805, 0.23921569, 1)
+[node name="Thingy" type="TextureRect" parent="UI/FlightUI/BottomLeft/ThrottleContainer" unique_id=1426174276]
+modulate = Color(0.17254902, 0.08235294, 0.14901961, 1)
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -1364,6 +1385,12 @@ temporaryPartDump = NodePath("TemporaryPartDump")
 
 [node name="CraftManager" type="Node" parent="." unique_id=837445787]
 script = ExtResource("6_ijjgm")
+
+[node name="CraftInputManager" type="Node" parent="CraftManager" unique_id=1193255632]
+script = ExtResource("60_2aux3")
+throttleIncrement = 0.5
+throttleIncreaseAction = &"throttle_increase"
+throttleDecreaseAction = &"throttle_decrease"
 
 [node name="ColonyManager" type="Node" parent="." unique_id=639718792]
 script = ExtResource("8_gxrxs")

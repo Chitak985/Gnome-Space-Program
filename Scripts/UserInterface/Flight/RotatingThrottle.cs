@@ -6,8 +6,6 @@ public partial class RotatingThrottle : Control
     [Export] private float emptyRot;
     [Export] private float fullRot;
 
-    [Export] private float DEBUG_THROTTLE;
-
     public override void _Process(double delta)
     {
         Craft craft = StateManager.Instance.CurrentFlightState.activeCraft;
@@ -15,7 +13,7 @@ public partial class RotatingThrottle : Control
         // NOT CORRECT RIGHT NOW
         if (craft != null)
         {
-            Rotation = Mathf.Lerp(emptyRot, fullRot, DEBUG_THROTTLE);
+            Rotation = Mathf.Lerp(emptyRot, fullRot, craft.Throttle);
         }
     }
 }

@@ -12,7 +12,7 @@ public partial class Altimeter : Node
 
         if (craft != null)
         {
-            label.Text = $"{Math.Round(craft.OrbitDriver.parent.radius - craft.OrbitDriver.cartesian.position.Length(), digits)} m";
+            label.Text = $"{Math.Round(craft.OrbitDriver.cartesian.position.Length() - craft.OrbitDriver.parent.radius, digits)} m";
         }
     }
 }

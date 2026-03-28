@@ -3,7 +3,7 @@
 [ext_resource type="Shader" uid="uid://dchs7o82vrm81" path="res://Assets/Shaders/Planet/water.gdshader" id="1_qo6t8"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_1e75w"]
-frequency = 0.009999999999999998
+frequency = 0.00999999999999999
 fractal_type = 2
 fractal_octaves = 10
 

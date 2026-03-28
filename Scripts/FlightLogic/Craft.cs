@@ -103,7 +103,7 @@ public partial class Craft : Node3D
                     {
                         CelestialBody reference = RealityTangler.Instance.activeReferenceFrame;
                         finalPos = reference.GetGlobalPositionOfPoint(relativePos);
-                        finalVel = reference.GetGlobalVelocity(CentralPart.LinearVelocity + reference.GetSurfaceRotationVelocity(finalPos));
+                        finalVel = reference.GetGlobalVelocity(CentralPart.LinearVelocity) + reference.GetSurfaceRotationVelocity(finalPos);
                     }
 
                     OrbitDriver.cartesian.position = finalPos;
@@ -284,7 +284,6 @@ public partial class Craft : Node3D
         // Return the velocity lost from anchoring
         if(returnVelocity) SetVelocityFromCartesian();
     }
-
     public Aabb GetAABB()
     {
         Aabb aabb = new();
@@ -293,6 +292,18 @@ public partial class Craft : Node3D
             aabb = aabb.Merge(part.GetAABB());
         }
         return aabb;
+    }
+    // Normalize throttle to 0 - 1
+    public void SetThrottle(double value)
+    {
+        if (value > 1)
+        {
+            Throttle = 1;
+        }else if (value < 0) {
+            Throttle = 0;
+        }else{
+            Throttle = value;
+        }
     }
     private void ToggleOnRailsOrbit(bool toggle)
     {
@@ -309,7 +320,6 @@ public partial class Craft : Node3D
             SetTransformFromCartesian();
         }
     }
-
     private void OnTimeLevelSafe()
     {
         Task.Delay(TimeSpan.FromSeconds(CraftManager.Instance.TimeEaseDuration)).ContinueWith(_ =>
@@ -317,7 +327,6 @@ public partial class Craft : Node3D
             if (OrbitDriver.OnRails) CallDeferred(nameof(ToggleOnRailsOrbit), false);
         });
     }
-
     private void OnTimeLevelChanged(int newTime)
     {
         if (newTime > ActiveSave.Instance.maxPhysicsSpeedLevel)
