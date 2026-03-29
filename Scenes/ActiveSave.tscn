@@ -1416,6 +1416,7 @@ rendererPrefab = ExtResource("16_np084")
 
 [node name="gizmo" parent="Miscellaneous" unique_id=904981576 instance=ExtResource("17_h3s5b")]
 transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
+visible = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Miscellaneous" unique_id=1060175846]
 environment = SubResource("Environment_h3s5b")

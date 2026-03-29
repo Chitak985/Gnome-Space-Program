@@ -19,13 +19,14 @@ public partial class RealityTangler : Node
     [Export] public Vector3 ReferenceFrameOriginOffset { get; private set;} // Whatever the hell this is
 
     // Universe will rotate around this, but it won't if it's null.
-    public CelestialBody activeReferenceFrame;
+    public CelestialBody RotatingReferenceFrame { get; private set;}
 
     // Planets, crafts, and whatnot should like and subscribe to this
     [Signal] public delegate void OriginResetEventHandler();
     [Signal] public delegate void OrbitProcessEventHandler();
     [Signal] public delegate void CameraProcessEventHandler();
     [Signal] public delegate void ScaledProcessEventHandler();
+    [Signal] public delegate void ReferenceFrameChangedEventHandler();
 
     public override void _Ready()
     {
@@ -116,7 +117,7 @@ public partial class RealityTangler : Node
     }
 
     // Makes the universe rotate around this celestial body
-    // Sets the reference frame to be global when no cBody is supplied
+    // Sets the reference frame to non-rotating inertial when no cBody is supplied
     public void SwitchReferenceFrame(CelestialBody cBody = null)
     {
         Logger.Print($"{classTag} Switching reference frame to {cBody}");
@@ -129,33 +130,54 @@ public partial class RealityTangler : Node
 
         if (cBody != null)
         {
-            activeReferenceFrame = cBody;
+            RotatingReferenceFrame = cBody;
             
             cBody.TopLevel = true;
         }else{
-            activeReferenceFrame = null;
+            RotatingReferenceFrame = null;
         }
+
+        EmitSignal(SignalName.ReferenceFrameChanged);
     }
 
     private void UpdateRotatingFrame()
     {
-        if (activeReferenceFrame != null)
+        if (RotatingReferenceFrame != null)
         {
             Node3D localPlanets = LocalSpace.Instance.Planets;
 
             Transform3D trans = new()
             {
-                Basis = activeReferenceFrame.CachedTransform.Basis.Inverse()
+                Basis = RotatingReferenceFrame.CachedTransform.Basis.Inverse()
             };
 
             localPlanets.GlobalTransform = trans;
 
             // Just set the position after doing all that transform stuff, because I can.
-            localPlanets.GlobalPosition = activeReferenceFrame.GlobalPosition;
+            localPlanets.GlobalPosition = RotatingReferenceFrame.GlobalPosition;
         }else{
             // Keep all the planets at 0,0,0 (and rotated to 0,0,0)
             LocalSpace.Instance.Planets.Position = Vector3.Zero;
             LocalSpace.Instance.Planets.Rotation = Vector3.Zero;
+        }
+
+        // Determine if we gotta switch (based on altitude IF we are a shipy)
+        if (StateManager.Instance.CurrentGameState == StateManager.GameState.Flight)
+        {
+            Craft craft = StateManager.Instance.CurrentFlightState.activeCraft;
+            double altitude = craft.OrbitDriver.cartesian.position.DistanceTo(Vector3.Zero) - craft.OrbitDriver.parent.radius;
+
+            if (altitude > craft. OrbitDriver.parent.inverseRotAltitude)
+            {
+                if (RotatingReferenceFrame != null) SwitchReferenceFrame(null); // Go into a non-rotating frame
+            }
+            else
+            {
+                if (RotatingReferenceFrame != craft.OrbitDriver.parent)
+                {
+                    RealityTangler.Instance.SwitchReferenceFrame(craft.OrbitDriver.parent);
+                }
+            }
         }
     }
 }

@@ -78,10 +78,10 @@ public partial class Part : RigidBody3D
             state.LinearVelocity += ActiveLinearForce * GetProcessDeltaTime();
 
             // Add coriolis and cetrifugal if we're in a rotating reference frame
-            if (RealityTangler.Instance.activeReferenceFrame != null)
+            if (RealityTangler.Instance.RotatingReferenceFrame != null)
             {
                 // Keep the reference frame variable different from orbitingBody just in case we royally fuck up and somehow end up in a situation where those are different
-                CelestialBody reference = RealityTangler.Instance.activeReferenceFrame;
+                CelestialBody reference = RealityTangler.Instance.RotatingReferenceFrame;
                 Vector3 relativePos = GlobalPosition - reference.GlobalPosition;
                 
                 Vector3 coriolis = reference.GetCoriolisAcceleration(state.LinearVelocity);

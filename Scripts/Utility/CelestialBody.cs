@@ -109,7 +109,7 @@ public partial class CelestialBody : Node3D
 
         Vector3 originPos;
         // Uh
-        if (RealityTangler.Instance.activeReferenceFrame == this)
+        if (RealityTangler.Instance.RotatingReferenceFrame == this)
         {
             originPos = GlobalCartesianPosition - RealityTangler.Instance.OriginOffset; 
         }else{
@@ -145,7 +145,7 @@ public partial class CelestialBody : Node3D
         //Logger.Print(gimbal.GlobalTransform.Basis.GetEuler());
 
         // Don't rotate if we're the active reference frame
-        if (RealityTangler.Instance.activeReferenceFrame != this)
+        if (RealityTangler.Instance.RotatingReferenceFrame != this)
         {
             gimbal.Transform = trans;
             scaledObject.Rotation = gimbal.GlobalTransform.Basis.GetEuler();

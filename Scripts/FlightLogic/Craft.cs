@@ -33,6 +33,7 @@ public partial class Craft : Node3D
         // Connect signals
         RealityTangler.Instance.OrbitProcess += UpdateOrbit;
         RealityTangler.Instance.OrbitProcess += UpdateMap;
+        RealityTangler.Instance.ReferenceFrameChanged += OnReferenceFrameChanged;
         ActiveSave.Instance.TimeLevelChanged += OnTimeLevelChanged;
         ActiveSave.Instance.TimeLevelSafeState += OnTimeLevelSafe;
 
@@ -96,12 +97,12 @@ public partial class Craft : Node3D
                     Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.parent.GlobalPosition;
 
                     Vector3 finalPos = relativePos;
-                    Vector3 finalRot = CentralPart.Rotation;
+                    Vector3 finalRot = CentralPart.GlobalRotation;
                     Vector3 finalVel = CentralPart.LinearVelocity;
 
-                    if (RealityTangler.Instance.activeReferenceFrame != null)
+                    if (RealityTangler.Instance.RotatingReferenceFrame != null)
                     {
-                        CelestialBody reference = RealityTangler.Instance.activeReferenceFrame;
+                        CelestialBody reference = RealityTangler.Instance.RotatingReferenceFrame;
                         finalPos = reference.GetGlobalPositionOfPoint(relativePos);
                         finalVel = reference.GetGlobalVelocity(CentralPart.LinearVelocity) + reference.GetSurfaceRotationVelocity(finalPos);
                     }
@@ -112,9 +113,9 @@ public partial class Craft : Node3D
                 }else{
                     Vector3 finalPos = OrbitDriver.cartesian.position;
 
-                    if (RealityTangler.Instance.activeReferenceFrame != null)
+                    if (RealityTangler.Instance.RotatingReferenceFrame != null)
                     {
-                        CelestialBody reference = RealityTangler.Instance.activeReferenceFrame;
+                        CelestialBody reference = RealityTangler.Instance.RotatingReferenceFrame;
                         finalPos = reference.GetLocalPositionOfPoint(finalPos);
                     }
 
@@ -124,20 +125,11 @@ public partial class Craft : Node3D
 
                 OrbitDriver.Update();
 
-                if(!Anchored) GlobalPosition = CentralPart.GlobalPosition;
-
-                // UHHH FUCK
-                double altitude = OrbitDriver.parent.radius - OrbitDriver.cartesian.position.DistanceTo(Vector3.Zero);
-
-                if (altitude > OrbitDriver.parent.inverseRotAltitude)
+                // Update the node's transforms to follow the parts
+                if (!Anchored)
                 {
-                    //if (RealityTangler.Instance.activeReferenceFrame != null) RealityTangler.Instance.SwitchReferenceFrame(null);
-                }else{
-                    if (RealityTangler.Instance.activeReferenceFrame != OrbitDriver.parent)
-                    {
-                    //    RealityTangler.Instance.SwitchReferenceFrame(OrbitDriver.parent);
-                    //    SetTransformFromCartesian();
-                    } 
+                    GlobalPosition = CentralPart.GlobalPosition;
+                    GlobalRotation = CentralPart.GlobalRotation;
                 }
             }
         }
@@ -240,9 +232,9 @@ public partial class Craft : Node3D
             Vector3 finalVel = OrbitDriver.cartesian.velocity;
 
             // Subtract planet's rotation if we're in a geocentric reference frame
-            if (RealityTangler.Instance.activeReferenceFrame != null)
+            if (RealityTangler.Instance.RotatingReferenceFrame != null)
             {
-                CelestialBody activeFrame = RealityTangler.Instance.activeReferenceFrame;
+                CelestialBody activeFrame = RealityTangler.Instance.RotatingReferenceFrame;
                 finalVel -= activeFrame.GetSurfaceRotationVelocity(OrbitDriver.cartesian.position);
                 finalVel = activeFrame.GetLocalVelocity(finalVel);
             }
@@ -259,9 +251,9 @@ public partial class Craft : Node3D
         Vector3 positionResult = OrbitDriver.cartesian.position;
         Vector3 rotationResult = OrbitDriver.cartesian.rotation;
 
-        if (RealityTangler.Instance.activeReferenceFrame != null)
+        if (RealityTangler.Instance.RotatingReferenceFrame != null)
         {
-            CelestialBody activeReference = RealityTangler.Instance.activeReferenceFrame;
+            CelestialBody activeReference = RealityTangler.Instance.RotatingReferenceFrame;
             positionResult = activeReference.GetLocalPositionOfPoint(OrbitDriver.cartesian.position);
         }
 
@@ -333,5 +325,9 @@ public partial class Craft : Node3D
         {
             if (!OrbitDriver.OnRails) ToggleOnRailsOrbit(true);
         }
+    }
+    private void OnReferenceFrameChanged()
+    {
+        if (!Anchored) SetTransformFromCartesian();
     }
 }

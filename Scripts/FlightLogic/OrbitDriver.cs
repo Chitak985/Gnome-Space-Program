@@ -47,6 +47,7 @@ public partial class OrbitDriver : Node
 
         // Simply follow the orbit
         CartesianData newCartesian = Conics.ElemToCart(orbit);
+        newCartesian.rotation = cartesian.rotation; // preserve rotation
         cartesian = newCartesian;
     }
 

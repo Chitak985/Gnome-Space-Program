@@ -80,7 +80,7 @@ public partial class TerrainGen : Node3D
         
         if (player != null)
         {
-            if (RealityTangler.Instance.activeReferenceFrame == cBody)
+            if (RealityTangler.Instance.RotatingReferenceFrame == cBody)
             {
                 playerPos = player.GlobalPosition;
             }else{
@@ -224,7 +224,7 @@ public partial class TerrainGen : Node3D
                 Quad planetQuad = quadList[i];
 
                 Vector3 quadPos = planetQuad.centerPosition;
-                if (RealityTangler.Instance.activeReferenceFrame == null)
+                if (RealityTangler.Instance.RotatingReferenceFrame == null)
                 {
                     quadPos = cBody.GetGlobalPositionOfPoint(planetQuad.centerPosition);
                 }

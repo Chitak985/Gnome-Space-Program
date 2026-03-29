@@ -10,7 +10,7 @@ public partial class Navball : Node3D
         // NOT CORRECT RIGHT NOW
         if (craft != null)
         {
-            Rotation = craft.CentralPart.Rotation;
+            Rotation = craft.CentralPart.GlobalRotation;
         }
     }
 }
