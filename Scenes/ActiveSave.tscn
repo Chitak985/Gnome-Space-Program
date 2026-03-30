@@ -2,12 +2,13 @@
 
 [ext_resource type="Script" uid="uid://c3i0ynvo54sk1" path="res://Scripts/Utility/ActiveSave.cs" id="1_2c3j4"]
 [ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
-[ext_resource type="CameraAttributesPractical" uid="uid://cyf8gikvidq0w" path="res://Assets/Misc/CamAttributes.tres" id="2_cbqy2"]
 [ext_resource type="Script" uid="uid://dcgkvx650oopr" path="res://Scripts/Utility/StateManager.cs" id="2_wsyj0"]
 [ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
+[ext_resource type="Material" uid="uid://bgcp3j11mrprb" path="res://Assets/Materials/Background.tres" id="5_2aux3"]
 [ext_resource type="Script" uid="uid://qcplqipy8mmr" path="res://Scripts/PlanetarySystem/ScaledSpace.cs" id="5_yxkbd"]
 [ext_resource type="Script" uid="uid://ve83kys7a48x" path="res://Scripts/CameraControl/FlightCamera.cs" id="6_0mdm0"]
 [ext_resource type="Script" uid="uid://chvjvd0id2y27" path="res://Scripts/CraftAssembly/Parts/PartManager.cs" id="6_2c3j4"]
+[ext_resource type="Script" uid="uid://bdl0q4iof0s44" path="res://Scripts/Graphics/Background.cs" id="6_807e1"]
 [ext_resource type="Script" uid="uid://dn8105q754rdm" path="res://Scripts/CraftAssembly/CraftManager.cs" id="6_ijjgm"]
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="7_yxkbd"]
 [ext_resource type="Script" uid="uid://yt1hbw2t4y8b" path="res://Scripts/Colonies/ColonyManager.cs" id="8_gxrxs"]
@@ -68,10 +69,20 @@
 [ext_resource type="PackedScene" uid="uid://bwoopux77w7qj" path="res://Assets/Prefabs/UI/Components/resize_handles.tscn" id="52_mtnyg"]
 [ext_resource type="Script" uid="uid://sdj8klytec1m" path="res://Scripts/FlightLogic/CraftInputManager.cs" id="60_2aux3"]
 
+[sub_resource type="SphereMesh" id="SphereMesh_wsl1x"]
+flip_faces = true
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2aux3"]
+
+[sub_resource type="Sky" id="Sky_807e1"]
+sky_material = SubResource("ProceduralSkyMaterial_2aux3")
+
 [sub_resource type="Environment" id="Environment_h3s5b"]
 background_mode = 1
-ssao_radius = 14.58
-ssao_intensity = 16.0
+background_color = Color(1, 1, 1, 1)
+background_energy_multiplier = 0.05
+sky = SubResource("Sky_807e1")
+ssao_enabled = true
 ssil_enabled = true
 glow_enabled = true
 glow_bloom = 0.5
@@ -246,6 +257,9 @@ remote_path = NodePath("../../../../../../RenderLayers/LocalContainer/LocalView/
 [node name="Scaled" type="RemoteTransform3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=1061326743]
 remote_path = NodePath("../../../../../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
 
+[node name="Background" type="RemoteTransform3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=903743557]
+remote_path = NodePath("../../../../../../RenderLayers/BackgContainer/SubViewport/Camera3D")
+
 [node name="RenderLayers" type="Control" parent="." unique_id=980932977]
 z_index = -1000
 texture_filter = 1
@@ -257,6 +271,31 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="BackgContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=442988402]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="RenderLayers/BackgContainer" unique_id=1989627046]
+own_world_3d = true
+size = Vector2i(1920, 1080)
+
+[node name="Camera3D" type="Camera3D" parent="RenderLayers/BackgContainer/SubViewport" unique_id=713492981]
+transform = Transform3D(1, 0, 0, 0, 6.123233995736766e-17, -1, 0, 1, 6.123233995736766e-17, 0, -1, 6.123233995736766e-17)
+fov = 90.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RenderLayers/BackgContainer/SubViewport" unique_id=746733680]
+process_priority = 100
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+layers = 4
+material_override = ExtResource("5_2aux3")
+mesh = SubResource("SphereMesh_wsl1x")
+script = ExtResource("6_807e1")
+
 [node name="ScaledContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=672276359]
 layout_mode = 1
 anchors_preset = 15
@@ -267,6 +306,7 @@ grow_vertical = 2
 stretch = true
 
 [node name="ScaledView" type="SubViewport" parent="RenderLayers/ScaledContainer" unique_id=787600989]
+transparent_bg = true
 handle_input_locally = false
 msaa_3d = 2
 screen_space_aa = 1
@@ -276,7 +316,6 @@ render_target_update_mode = 4
 [node name="Camera3D" type="Camera3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=39155709]
 transform = Transform3D(1, 0, 0, 0, 6.123233995736766e-17, -1, 0, 1, 6.123233995736766e-17, 0, -1, 6.123233995736766e-17)
 cull_mask = 1047554
-attributes = ExtResource("2_cbqy2")
 fov = 90.0
 near = 0.5
 far = 1e+15
@@ -306,7 +345,6 @@ render_target_update_mode = 4
 [node name="Camera3D" type="Camera3D" parent="RenderLayers/LocalContainer/LocalView" unique_id=1187591863]
 transform = Transform3D(1, 0, 0, 0, 6.123233995736766e-17, -1, 0, 1, 6.123233995736766e-17, 0, -1, 6.123233995736766e-17)
 cull_mask = 1047553
-attributes = ExtResource("2_cbqy2")
 current = true
 fov = 90.0
 far = 1000000.0
