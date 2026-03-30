@@ -82,7 +82,6 @@ background_mode = 1
 background_color = Color(1, 1, 1, 1)
 background_energy_multiplier = 0.05
 sky = SubResource("Sky_807e1")
-ssao_enabled = true
 ssil_enabled = true
 glow_enabled = true
 glow_bloom = 0.5
@@ -282,7 +281,9 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="RenderLayers/BackgContainer" unique_id=1989627046]
 own_world_3d = true
+handle_input_locally = false
 size = Vector2i(1920, 1080)
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="RenderLayers/BackgContainer/SubViewport" unique_id=713492981]
 transform = Transform3D(1, 0, 0, 0, 6.123233995736766e-17, -1, 0, 1, 6.123233995736766e-17, 0, -1, 6.123233995736766e-17)
