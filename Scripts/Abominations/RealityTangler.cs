@@ -75,9 +75,9 @@ public partial class RealityTangler : Node
                     //{
                         //ResetOrigin(activeCraft);
                     //}
-                    CelestialBody cBody = activeCraft.OrbitDriver.parent;
-                    PlanetaryOffset = cBody.OrbitDriver.cartesian.position;
-                    OriginOffset = cBody.OrbitDriver.cartesian.position;
+                    CelestialBody cBody = activeCraft.OrbitDriver.ParentCBody;
+                    PlanetaryOffset = cBody.AbsolutePosition;
+                    OriginOffset = cBody.AbsolutePosition;
                     EmitSignal(SignalName.OrbitProcess);
                 }
                 break;
@@ -88,9 +88,9 @@ public partial class RealityTangler : Node
                     Colony colony = StateManager.Instance.CurrentColonyState.activeColony;
                     CelestialBody cBody = colony.parentBody;
 
-                    PlanetaryOffset = cBody.OrbitDriver.cartesian.position;
-                    ReferenceFrameOriginOffset = cBody.GetGlobalPositionOfPoint(colony.position);
-                    OriginOffset = cBody.OrbitDriver.cartesian.position + colony.position;
+                    PlanetaryOffset = cBody.AbsolutePosition;
+                    ReferenceFrameOriginOffset = cBody.GetAbsolutePositionOfPoint(colony.position);
+                    OriginOffset = cBody.AbsolutePosition + colony.position;
                     EmitSignal(SignalName.OrbitProcess);
                 }
                 break;
@@ -123,7 +123,7 @@ public partial class RealityTangler : Node
         Logger.Print($"{classTag} Switching reference frame to {cBody}");
 
         // Just reset all of them
-        foreach (CelestialBody c in PlanetSystem.Instance.celestialBodies)
+        foreach (CelestialBody c in CelestialBodyManager.Instance.CelestialBodies)
         {
             c.TopLevel = false;
         }
@@ -144,38 +144,36 @@ public partial class RealityTangler : Node
     {
         if (RotatingReferenceFrame != null)
         {
-            Node3D localPlanets = LocalSpace.Instance.Planets;
-
             Transform3D trans = new()
             {
-                Basis = RotatingReferenceFrame.CachedTransform.Basis.Inverse()
+                Basis = RotatingReferenceFrame.AbsoluteTransform.Basis.Inverse()
             };
 
-            localPlanets.GlobalTransform = trans;
+            CelestialBodyManager.Instance.GlobalTransform = trans;
 
             // Just set the position after doing all that transform stuff, because I can.
-            localPlanets.GlobalPosition = RotatingReferenceFrame.GlobalPosition;
+            CelestialBodyManager.Instance.GlobalPosition = RotatingReferenceFrame.GlobalPosition;
         }else{
             // Keep all the planets at 0,0,0 (and rotated to 0,0,0)
-            LocalSpace.Instance.Planets.Position = Vector3.Zero;
-            LocalSpace.Instance.Planets.Rotation = Vector3.Zero;
+            CelestialBodyManager.Instance.Position = Vector3.Zero;
+            CelestialBodyManager.Instance.Rotation = Vector3.Zero;
         }
 
         // Determine if we gotta switch (based on altitude IF we are a shipy)
         if (StateManager.Instance.CurrentGameState == StateManager.GameState.Flight)
         {
             Craft craft = StateManager.Instance.CurrentFlightState.activeCraft;
-            double altitude = craft.OrbitDriver.cartesian.position.DistanceTo(Vector3.Zero) - craft.OrbitDriver.parent.radius;
+            double altitude = craft.OrbitDriver.CartState.elements.position.DistanceTo(Vector3.Zero) - craft.OrbitDriver.ParentCBody.Config.properties.radius;
 
-            if (altitude > craft. OrbitDriver.parent.inverseRotAltitude)
+            if (altitude > craft. OrbitDriver.ParentCBody.Config.properties.inverseRotAltitude)
             {
                 if (RotatingReferenceFrame != null) SwitchReferenceFrame(null); // Go into a non-rotating frame
             }
             else
             {
-                if (RotatingReferenceFrame != craft.OrbitDriver.parent)
+                if (RotatingReferenceFrame != craft.OrbitDriver.ParentCBody)
                 {
-                    RealityTangler.Instance.SwitchReferenceFrame(craft.OrbitDriver.parent);
+                    SwitchReferenceFrame(craft.OrbitDriver.ParentCBody);
                 }
             }
         }

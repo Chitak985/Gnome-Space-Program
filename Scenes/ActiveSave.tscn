@@ -1,9 +1,7 @@
 [gd_scene format=3 uid="uid://b08reqxmoktvk"]
 
 [ext_resource type="Script" uid="uid://c3i0ynvo54sk1" path="res://Scripts/Utility/ActiveSave.cs" id="1_2c3j4"]
-[ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
 [ext_resource type="Script" uid="uid://dcgkvx650oopr" path="res://Scripts/Utility/StateManager.cs" id="2_wsyj0"]
-[ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
 [ext_resource type="Material" uid="uid://bgcp3j11mrprb" path="res://Assets/Materials/Background.tres" id="5_2aux3"]
 [ext_resource type="Script" uid="uid://qcplqipy8mmr" path="res://Scripts/PlanetarySystem/ScaledSpace.cs" id="5_yxkbd"]
 [ext_resource type="Script" uid="uid://ve83kys7a48x" path="res://Scripts/CameraControl/FlightCamera.cs" id="6_0mdm0"]
@@ -13,6 +11,7 @@
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="7_yxkbd"]
 [ext_resource type="Script" uid="uid://yt1hbw2t4y8b" path="res://Scripts/Colonies/ColonyManager.cs" id="8_gxrxs"]
 [ext_resource type="Script" uid="uid://crssbseia2fkb" path="res://Scripts/PlanetarySystem/MapView.cs" id="8_h4qns"]
+[ext_resource type="Script" uid="uid://bo7lm1dl3hh8r" path="res://Scripts/PlanetarySystem/CelestialBodyManager.cs" id="9_y64qo"]
 [ext_resource type="Script" uid="uid://ciw1nydyx82x6" path="res://Scripts/PlanetarySystem/LocalSpace.cs" id="10_5brss"]
 [ext_resource type="Script" uid="uid://fbpdjag2kcfi" path="res://Scripts/CameraControl/MapCamera.cs" id="12_ou012"]
 [ext_resource type="Script" uid="uid://djpke18bqs2nu" path="res://Scripts/Abominations/RealityTangler.cs" id="13_sfn14"]
@@ -59,13 +58,11 @@
 [ext_resource type="Script" uid="uid://dblpo740d2d4w" path="res://Scripts/UserInterface/Misc/TimewarpUI.cs" id="41_w8340"]
 [ext_resource type="Script" uid="uid://b4byh53dv8k5" path="res://Scripts/UserInterface/Misc/ClockUI.cs" id="42_6b1ya"]
 [ext_resource type="PackedScene" uid="uid://d1detwm4i50s7" path="res://Assets/Prefabs/UI/Buttons/timewarp_button.tscn" id="42_w8340"]
-[ext_resource type="PackedScene" uid="uid://dxhvfmveoa832" path="res://Assets/Prefabs/Debug/DebugGizmo.tscn" id="43_oe5si"]
 [ext_resource type="Script" uid="uid://b3h6paq7bpbs0" path="res://Scripts/UserInterface/Flight/Navball.cs" id="43_wlh0d"]
 [ext_resource type="Texture2D" uid="uid://x8xrflxevkxi" path="res://Assets/Textures/UserInterface/Sprites/throttle.svg" id="45_400pm"]
 [ext_resource type="Script" uid="uid://ciw6m5phi56xv" path="res://Scripts/UserInterface/Flight/RotatingThrottle.cs" id="46_wsl1x"]
 [ext_resource type="Texture2D" uid="uid://bsk2xxyemcm0y" path="res://Assets/Textures/UserInterface/Sprites/throttlebackg.svg" id="46_y64qo"]
 [ext_resource type="Script" uid="uid://drrsx2qsfqgck" path="res://Scripts/UserInterface/Windows/DraggablePanel.cs" id="49_oe5si"]
-[ext_resource type="Material" uid="uid://dnylotupwudqk" path="res://Assets/Materials/Planet/water.tres" id="52_mnfnu"]
 [ext_resource type="PackedScene" uid="uid://bwoopux77w7qj" path="res://Assets/Prefabs/UI/Components/resize_handles.tscn" id="52_mtnyg"]
 [ext_resource type="Script" uid="uid://sdj8klytec1m" path="res://Scripts/FlightLogic/CraftInputManager.cs" id="60_2aux3"]
 
@@ -108,49 +105,6 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_2aux3"]
 gradient = SubResource("Gradient_wsl1x")
 width = 1
-
-[sub_resource type="CSharpScript" id="CSharpScript_ou012"]
-script/source = "using Godot;
-using System;
-
-public partial class PlanetIcon : MapIcon
-{
-    [Export] public CelestialBody planet;
-
-    public override void _Ready()
-    {
-        thing = planet.mapObject;
-    }
-
-    public override void _Pressed()
-    {
-        FlightCamera flightCam = FlightCamera.Instance;
-        //flightCam.TargetObject(planet);
-
-        Godot.Collections.Dictionary info = new()
-        {
-            { \"planet\", planet }
-        };
-
-        MapView.Instance.mapUI.contextMenus.OpenMenu(\"PlanetMenu\", info, true);
-    }
-}
-"
-
-[sub_resource type="PackedScene" id="PackedScene_oe5si"]
-_bundled = {
-"conn_count": 0,
-"conns": PackedInt32Array(),
-"editable_instances": [],
-"id_paths": [],
-"names": PackedStringArray("PlanetIcon", "TextureButton", "offset_right", "offset_bottom", "texture_normal", "texture_hover", "script"),
-"node_count": 1,
-"node_ids": PackedInt32Array(0),
-"node_paths": [],
-"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 5, 2, 0, 3, 1, 4, 2, 5, 3, 6, 4, 0),
-"variants": [20.0, 20.0, ExtResource("39_mbbrb"), ExtResource("40_ul3nw"), SubResource("CSharpScript_ou012")],
-"version": 3
-}
 
 [sub_resource type="CSharpScript" id="CSharpScript_ldaci"]
 script/source = "using Godot;
@@ -202,9 +156,9 @@ _bundled = {
 "version": 3
 }
 
-[node name="ActiveSave" type="Node3D" unique_id=1641581012 node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "stateManager", "localSpace", "scaledSpace", "mapSpace")]
+[node name="ActiveSave" type="Node3D" unique_id=1641581012 node_paths=PackedStringArray("celestialBodyManager", "partManager", "colonyManager", "flightCam", "stateManager", "localSpace", "scaledSpace", "mapSpace")]
 script = ExtResource("1_2c3j4")
-planetSystem = NodePath("PlanetSystem")
+celestialBodyManager = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace/Planets")
 partManager = NodePath("PartManager")
 colonyManager = NodePath("ColonyManager")
 flightCam = NodePath("FlightCamera")
@@ -357,6 +311,7 @@ Camera = NodePath("../Camera3D")
 Planets = NodePath("Planets")
 
 [node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace" unique_id=643920472]
+script = ExtResource("9_y64qo")
 
 [node name="ViewportWindows" type="Control" parent="." unique_id=1216988180]
 layout_mode = 3
@@ -369,7 +324,6 @@ mouse_filter = 2
 theme = ExtResource("7_yxkbd")
 
 [node name="Map" type="Panel" parent="ViewportWindows" unique_id=1962789458]
-visible = false
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 1
 anchors_preset = 15
@@ -395,7 +349,7 @@ own_world_3d = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1920, 1080)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1582826098]
 environment = SubResource("Environment_h3s5b")
@@ -609,7 +563,7 @@ text = "OTHER INFO"
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="MapIcons" type="Control" parent="ViewportWindows/Map/MapUI" unique_id=2014758103]
+[node name="MapIcons" type="Control" parent="ViewportWindows/Map/MapUI" unique_id=57788984]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -1404,16 +1358,6 @@ text = "999999999999999999999999999s"
 autowrap_mode = 0
 horizontal_alignment = 2
 vertical_alignment = 1
-
-[node name="PlanetSystem" type="Node3D" parent="." unique_id=13215807 node_paths=PackedStringArray("localCamera", "localSpace", "scaledSpace")]
-script = ExtResource("1_pocjb")
-orbitRendererPrefab = ExtResource("3_212tm")
-planetIconPrefab = SubResource("PackedScene_oe5si")
-localCamera = NodePath("../RenderLayers/LocalContainer/LocalView/Camera3D")
-localSpace = NodePath("../RenderLayers/LocalContainer/LocalView/LocalSpace")
-scaledSpace = NodePath("../RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
-watershader = ExtResource("52_mnfnu")
-DEBUG_GizmoPrefab = ExtResource("43_oe5si")
 
 [node name="PartManager" type="Node" parent="." unique_id=1645644584 node_paths=PackedStringArray("temporaryPartDump")]
 process_priority = 3290

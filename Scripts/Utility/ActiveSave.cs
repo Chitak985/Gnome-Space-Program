@@ -8,7 +8,7 @@ public partial class ActiveSave : Node3D
 {
 	public static readonly string classTag = "([color=orange]ActiveSave[color=white])";
 	public static ActiveSave Instance { get; private set; }
-	[Export] public PlanetSystem planetSystem;
+	[Export] public CelestialBodyManager celestialBodyManager;
 	[Export] public PartManager partManager;
 	[Export] public ColonyManager colonyManager;
 	[Export] public FlightCamera flightCam;
@@ -105,7 +105,7 @@ public partial class ActiveSave : Node3D
 		// !!! ADD EXTRA SYSTEMS IMPLEMENTATION WHEN RELEVANT !!!
 		List<string> planetPackPaths = [];
 		planetPackPaths.Add(planetPacks[chosenRootSystem].path);
-		planetSystem.InitSystem(planetPackPaths);
+		celestialBodyManager.CreateCBodiesFromConfigs(planetPackPaths);
 
 		// Handle part packs
 		Dictionary<string, PartPack> partPacks = SaveManager.GetPartPacks();
@@ -190,5 +190,11 @@ public partial class ActiveSave : Node3D
                 SetTimeSpeed(TimeSpeedLevel - 1, 0.01);
             }
         }
+    }
+
+    // Important function
+    public static void SendThoughtsAndPrayers()
+    {
+        Logger.Print($"{classTag} Thoughts and prayers sent.");
     }
 }

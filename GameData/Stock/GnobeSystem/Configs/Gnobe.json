@@ -2,7 +2,7 @@
   "configType": "cBody",
   "properties": {
 	"name": "Gnobe",
-	"focusOnload": true,
+	"focusOnLoad": true,
 	"geeASL": 1,
 	"radius": 600000,
 	"inverseRotAltitude": 70000

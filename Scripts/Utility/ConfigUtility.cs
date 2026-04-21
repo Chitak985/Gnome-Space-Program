@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
@@ -95,14 +96,53 @@ public partial class ConfigUtility : Node
         dict = null;
         return false;
     }
-    public static bool TryGetArray(string name, Dictionary parent, out Array array)
+    public static bool TryGetArray(string name, Dictionary parent, out Godot.Collections.Array array)
     {
         if (parent.TryGetValue(name, out var arr))
         {
-            array = (Array)arr;
+            array = (Godot.Collections.Array)arr;
             return true;
         }
         array = null;
         return false;
+    }
+
+    // So that ordinary trygets don't clutter everything up
+    public static Variant GetValue(string name, Dictionary parent, Variant defaultValue)
+    {
+        if (parent.TryGetValue(name, out var val))
+        {
+            return val;
+        }else{
+            //Logger.Print($"{classTag} Value ({name}) could not be found!!");
+            return defaultValue;
+        }
+    }
+    public static Variant GetValue(string name, Dictionary parent)
+    {
+        if (parent.TryGetValue(name, out var val))
+        {
+            return val;
+        }else{
+            throw new NullReferenceException($"Value {name} could not be found and has no default value.");
+        }
+    }
+    public static Vector3 GetVector3(string name, Dictionary parent, Vector3 defaultValue)
+    {
+        if (TryGetArray(name, parent, out Godot.Collections.Array vector))
+        {
+            return new Vector3((float)vector[0],(float)vector[1],(float)vector[2]);
+        }else{
+            return defaultValue;
+        }
+    }
+    public static Vector3 GetVector3(string name, Dictionary parent)
+    {
+        if (TryGetArray(name, parent, out Godot.Collections.Array vector))
+        {
+            return new Vector3((float)vector[0],(float)vector[1],(float)vector[2]);
+        }else{
+            throw new NullReferenceException($"Vector3 {name} could not be found and has no default value.");
+        }
     }
 }

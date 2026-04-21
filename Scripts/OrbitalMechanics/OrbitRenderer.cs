@@ -14,9 +14,9 @@ public partial class OrbitRenderer : Node3D
 
     public void Update()
     {
-        Orbit orbit = OrbitDriver.orbit;
+        KeplerianState.KeplerianElements orbit = OrbitDriver.KeplerState.elements;
 
-        if (orbit != null && OrbitDriver.enabled)
+        if (OrbitDriver.Enabled)
         {
             //Logger.Print(GetViewport().GetVisibleRect().Size * vpSizeRatio);
 
@@ -34,7 +34,7 @@ public partial class OrbitRenderer : Node3D
     }
 
     // Sample multiple points in orbit
-    public List<Vector2> SamplePoints(Orbit orbit)
+    public List<Vector2> SamplePoints(KeplerianState.KeplerianElements orbit)
     {
         double precision = OrbitRendererManager.Instance.orbitPrecision;
 
@@ -48,20 +48,18 @@ public partial class OrbitRenderer : Node3D
 
         for (int i = 0; i < amount; i++)
         {
-            Orbit newOrbit = new()
+            KeplerianState.KeplerianElements newElems = new()
             {
-                parent = orbit.parent,
                 semiMajorAxis = orbit.semiMajorAxis,
                 eccentricity = orbit.eccentricity,
                 inclination = orbit.inclination,
                 argumentOfPeriapsis = orbit.argumentOfPeriapsis,
                 longitudeOfAscendingNode = orbit.longitudeOfAscendingNode,
                 trueAnomaly = startTrueAn + i/precision,
-                period = orbit.period
             };
-            CartesianData data = Conics.ElemToCart(newOrbit);
+            CartesianState.CartesianElements data = Conics.ElemToCart(newElems, OrbitDriver.ParentCBody);
                 
-            Vector3 position = (data.position + orbit.parent.OrbitDriver.cartesian.position - MapView.Instance.FocusOffset) / MapView.Instance.ScaleFactor;
+            Vector3 position = (data.position + OrbitDriver.ParentCBody.AbsolutePosition - MapView.Instance.FocusOffset) / MapView.Instance.ScaleFactor;
 
             Vector2 projectedPosition = GetViewport().GetCamera3D().UnprojectPosition(position);
 

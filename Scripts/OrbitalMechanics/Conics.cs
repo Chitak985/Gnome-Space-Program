@@ -33,19 +33,19 @@ public partial class Conics : Node
     }
     
     // Orbital Elements to Cartesian
-    public static CartesianData ElemToCart(Orbit orbit)
+    public static CartesianState.CartesianElements ElemToCart(KeplerianState.KeplerianElements elements, CelestialBody parent)
     {
         // yeah whatever the fRICK
-        double MU = orbit.ComputeMU();//GravConstant * parent.mass;
+        double MU = GravConstant * parent.Config.properties.mass;
 
         // Compile our favourite Keplerian orbit elements
 
-        double a = orbit.semiMajorAxis;
-        double e = orbit.eccentricity;
-        double i = orbit.inclination;
-        double omega = orbit.argumentOfPeriapsis;
-        double Omega = orbit.longitudeOfAscendingNode;
-        double truAN = orbit.trueAnomaly;
+        double a = elements.semiMajorAxis;
+        double e = elements.eccentricity;
+        double i = elements.inclination;
+        double omega = elements.argumentOfPeriapsis;
+        double Omega = elements.longitudeOfAscendingNode;
+        double truAN = elements.trueAnomaly;
 
         double p = e != 1.0 ? a * (1 - e * e) : 2 * a;
         double r = p / (1 + e * Math.Cos(truAN));
@@ -72,8 +72,7 @@ public partial class Conics : Node
 
         Vector3 velocity = R * vPQW;
 
-        return new CartesianData() {
-            parent = orbit.parent,
+        return new CartesianState.CartesianElements() {
             position = new Vector3(position.X,position.Z,position.Y),
             velocity = new Vector3(velocity.X,velocity.Z,velocity.Y)
         };
@@ -86,15 +85,13 @@ public partial class Conics : Node
 
         This method is incomplete! A decent chunk of stuff here is not using Atan2 when it should be
         (owing to the fact that I don't really understand how to convert them to use Atan2)
-
-        
     */
-   public static Orbit CartToElem(CartesianData data)
+   public static KeplerianState.KeplerianElements CartToElem(CartesianState.CartesianElements elements, CelestialBody parent)
     {
         // define mu, vectors
-        double mu = GravConstant * data.parent.mass;
-        Vector3 rVec = new(data.position.X, data.position.Z, data.position.Y); // Just flip some numbers around and pray
-        Vector3 vVec = new(data.velocity.X, data.velocity.Z, data.velocity.Y);
+        double mu = GravConstant * parent.Config.properties.mass;
+        Vector3 rVec = new(elements.position.X, elements.position.Z, elements.position.Y); // Just flip some numbers around and pray
+        Vector3 vVec = new(elements.velocity.X, elements.velocity.Z, elements.velocity.Y);
         double r = rVec.Length();
         double v = vVec.Length();
 
@@ -185,9 +182,8 @@ public partial class Conics : Node
             Logger.Print("Shit's fucked mate \n (Couldn't determine orbit type)");
         }
 
-        Orbit newOrbit = new()
+        KeplerianState.KeplerianElements newOrbit = new()
         {
-            parent = data.parent,
             semiMajorAxis = a,
             eccentricity = e,
             inclination = i,
@@ -200,26 +196,25 @@ public partial class Conics : Node
     }
 
     // Name is a bit confusing but all this does is convert time (t) to true anomaly (v)
-    public static double TimeToTrueAnomaly(Orbit orbit, double t, double T)
+    public static double TimeToTrueAnomaly(KeplerianState.KeplerianElements elements, CelestialBody parent, double t, double T)
     {
-        double MU = orbit.ComputeMU();
-        double v = 0;
-        if (orbit.eccentricity > 1)
+        double MU = GravConstant * parent.Config.properties.mass;
+        double v;
+        if (elements.eccentricity > 1)
         {
             // Hyperbolic case
-            double n = Math.Sqrt(MU/Math.Pow(Math.Abs(orbit.semiMajorAxis),3));
-            double M = orbit.meanAnomalyAtEpoch + n*(t-T);
-            double EA = GetHyperbolicAnomaly(M,orbit.eccentricity);
+            double n = Math.Sqrt(MU/Math.Pow(Math.Abs(elements.semiMajorAxis),3));
+            double M = elements.meanAnomalyAtEpoch + n*(t-T);
+            double EA = GetHyperbolicAnomaly(M,elements.eccentricity);
 
-            v = 2 * Math.Atan(Math.Sqrt((orbit.eccentricity + 1) / (orbit.eccentricity - 1)) * Math.Tanh(EA / 2));
+            v = 2 * Math.Atan(Math.Sqrt((elements.eccentricity + 1) / (elements.eccentricity - 1)) * Math.Tanh(EA / 2));
         }else{
             // Elliptical case
-            double PRD = orbit.ComputePeriod();
-            double n = Math.Sqrt(MU/Math.Pow(orbit.semiMajorAxis,3));
-            double M = orbit.meanAnomalyAtEpoch + n*(t-T);
-            double EA = GetEccentricAnomaly(M, orbit.eccentricity);
+            double n = Math.Sqrt(MU/Math.Pow(elements.semiMajorAxis,3));
+            double M = elements.meanAnomalyAtEpoch + n*(t-T);
+            double EA = GetEccentricAnomaly(M, elements.eccentricity);
             
-            v = Math.Atan2(Math.Sqrt(1-Math.Pow(orbit.eccentricity,2)) * Math.Sin(EA), Math.Cos(EA) - orbit.eccentricity);
+            v = Math.Atan2(Math.Sqrt(1-Math.Pow(elements.eccentricity,2)) * Math.Sin(EA), Math.Cos(EA) - elements.eccentricity);
         }
 
         return v;
@@ -289,7 +284,7 @@ public partial class Conics : Node
         return H;
     }
 
-    // Checks what SOI a location is currently in and returns the corresponding cBody
+    /* Checks what SOI a location is currently in and returns the corresponding cBody
     public static (CelestialBody, Vector3) GetSOI(CartesianData location)
     {
         if (PlanetSystem.Instance != null)
@@ -334,4 +329,5 @@ public partial class Conics : Node
             return (null, new Vector3(double.NaN, double.NaN, double.NaN));
         }
     }
+    */
 }

@@ -22,7 +22,7 @@ public partial class OrbitRendererManager : Node
         OrbitRenderer renderer = (OrbitRenderer)rendererPrefab.Instantiate();
         orbitRenderers.Add(renderer);
         renderer.OrbitDriver = cBody.OrbitDriver;
-        cBody.OrbitDriver.parent.mapObject.AddChild(renderer);
+        cBody.OrbitDriver.ParentCBody.MapObject.AddChild(renderer);
         renderer.enabled = true;
         return renderer;
     }
@@ -33,7 +33,7 @@ public partial class OrbitRendererManager : Node
         OrbitRenderer renderer = (OrbitRenderer)rendererPrefab.Instantiate();
         orbitRenderers.Add(renderer);
         renderer.OrbitDriver = craft.OrbitDriver;
-        craft.OrbitDriver.parent.mapObject.AddChild(renderer);
+        craft.OrbitDriver.ParentCBody.MapObject.AddChild(renderer);
         renderer.enabled = true;
         return renderer;
     }

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 public partial class TerrainGen : Node3D
 {
-    [Export] public bool runInSeparateThread = true;
+    [Export] public bool runInSeparateThread = false;
 
     [Export] public float radius = 600.0f;
     [Export] public int perQuadSubdivison = 8;
@@ -22,9 +23,10 @@ public partial class TerrainGen : Node3D
     [Export] public int minColliderLevel = 10;
     [Export] public int mapQuadDetail = 4;
     [Export] public Node3D player;
-    
+
+    public List<PQSMod> pqsMods;
+
     public Material material;
-    //[Export] public UniverseManager universeManager;
 
     public CelestialBody cBody;
 
@@ -38,8 +40,46 @@ public partial class TerrainGen : Node3D
 
     public bool isAFuckingOcean;
 
-    public override void _Ready()
+    public Properties properties;
+
+    public struct Properties
     {
+        public Vector3 colour;
+        public Godot.Collections.Array pqsModArr; // The pqs mod config is parsed in here because fuck it we ball i guess dude idk im replacing all of this anyways
+    }
+
+    // ????
+    public void Init(Properties properties, CelestialBody cBody)
+    {
+        this.properties = properties;
+
+        // Initialize pqs mods for the terrrain
+        pqsMods = [];
+        foreach (var pqsModDict in properties.pqsModArr)
+        {
+            Dictionary pqsMod = (Dictionary)pqsModDict;
+            
+            string pqsModType = (string)ConfigUtility.GetValue("mod", pqsMod);
+
+            // I'm too lazy to do this the smart way so here you go
+            switch (pqsModType)
+            {
+                case "fastNoise3D":
+                    FastNoise3D mod = new();
+                    mod.Initialize(pqsMod, "DEPRECATED BUT I CANT REMOVE THIS SHIT");
+                    pqsMods.Add(mod);
+                    break;
+                default:
+                    Logger.Print($"Unknown PQS mod type ({pqsModType})");
+                    break;
+            }
+        }
+
+        radius = (float)cBody.Config.properties.radius;
+        Name = "PQS";
+        this.cBody = cBody;
+        cBody.Gimbal.AddChild(this);
+
         for (int i = 1; i < maxLevel+1; i++)
         {
             float distToQuad = Mathf.RoundToInt(radius/Mathf.Pow(2,i-minLevel)) + 2000;
@@ -226,7 +266,7 @@ public partial class TerrainGen : Node3D
                 Vector3 quadPos = planetQuad.centerPosition;
                 if (RealityTangler.Instance.RotatingReferenceFrame == null)
                 {
-                    quadPos = cBody.GetGlobalPositionOfPoint(planetQuad.centerPosition);
+                    quadPos = cBody.GetAbsolutePositionOfPoint(planetQuad.centerPosition);
                 }
 
                 double distanceFromPlr = (quadPos - (playerPos-planetCenter)).Length();
@@ -248,8 +288,10 @@ public partial class TerrainGen : Node3D
                 if (!planetQuad.rendered && planetQuad.children == null)
                 {
                     planetQuad.rendered = true;
-                    CallDeferred(nameof(RenderQuad), planetQuad, planetQuad.mesh);
-                    CallDeferred(nameof(RenderMapQuad), planetQuad, planetQuad.mesh);
+                    //CallDeferred(nameof(RenderQuad), planetQuad, planetQuad.mesh);
+                    //CallDeferred(nameof(RenderMapQuad), planetQuad, planetQuad.mesh);
+                    RenderQuad(planetQuad, planetQuad.mesh);
+                    RenderMapQuad(planetQuad, planetQuad.mesh);
                 }
             }
 
@@ -375,7 +417,7 @@ public partial class TerrainGen : Node3D
 
             meshBody.AddChild(meshObject);
 
-            cBody.mapObject.AddChild(meshBody);
+            cBody.MapObject.AddChild(meshBody);
 
             meshObject.SetLayerMaskValue(1, false);
             meshObject.SetLayerMaskValue(2, true);
@@ -389,7 +431,7 @@ public partial class TerrainGen : Node3D
 
         StaticBody3D scaledMeshBody = new();
         MeshInstance3D scaledMeshObject = new();
-        
+
         if (IsInstanceValid(mesh))
         {
             localMeshObject.Mesh = mesh;
@@ -409,7 +451,7 @@ public partial class TerrainGen : Node3D
             scaledMeshBody.AddChild(scaledMeshObject);
 
             AddChild(localMeshBody);
-            cBody.scaledObject.AddChild(scaledMeshBody);
+            cBody.ScaledObject.AddChild(scaledMeshBody);
 
             scaledMeshObject.SetLayerMaskValue(1, false);
             scaledMeshObject.SetLayerMaskValue(2, true);
@@ -519,14 +561,12 @@ public partial class TerrainGen : Node3D
             Vector3 noiseSamplePoint = globalVertex / quadNodeSizeToRadius;
             float noiseOffset = 0;
 
-            if (cBody.pqsMods != null && !isAFuckingOcean)
+            // This is the worst thing ever (but this entire terrain system will be shot dead out back so it's okay)
+            if (pqsMods != null && !isAFuckingOcean)
             {
-                foreach (Node mod in cBody.pqsMods)
+                foreach (PQSMod mod in pqsMods)
                 {
-                    if (mod is FastNoise3D fastNoise3D)
-                    {
-                        noiseOffset += fastNoise3D.SamplePoint(noiseSamplePoint);
-                    }
+                    noiseOffset += mod.SamplePoint(noiseSamplePoint);
                 }
             }
 

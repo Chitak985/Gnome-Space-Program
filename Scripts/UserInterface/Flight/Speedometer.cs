@@ -23,8 +23,8 @@ public partial class Speedometer : Node
 
         if (craft != null)
         {
-            CelestialBody cBody = craft.OrbitDriver.parent;
-            Vector3 vel = craft.OrbitDriver.cartesian.velocity;
+            CelestialBody cBody = craft.OrbitDriver.ParentCBody;
+            Vector3 vel = craft.OrbitDriver.CartState.elements.velocity;
 
             //if (displayType == DisplayType.Surface)
             //    vel -= cBody.GetLocalVelocity(cBody.GetSurfaceRotationVelocity(craft.OrbitDriver.cartesian.position));

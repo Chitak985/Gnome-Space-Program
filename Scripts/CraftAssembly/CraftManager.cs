@@ -20,19 +20,12 @@ public partial class CraftManager : Node
         Instance = this;
     }
 
-    public Craft CreateCraft(Dictionary partData)
+    public Craft CreateCraft(Dictionary partData, CelestialBody parentCBody)
     {
         Craft craft = new();
         ActiveSave.Instance.localSpace.AddChild(craft);
-        craft.Init(partData);
+        craft.Init(partData, parentCBody);
 
         return craft;
-    }
-
-    public void PlaceCraftAtPoint(Craft craft, OrbitDriver driver)
-    {
-        driver.ToggleOnRailsOrbit(false);
-        craft.SetOrbitDriver(driver);
-        craft.SetTransformFromCartesian();
     }
 }

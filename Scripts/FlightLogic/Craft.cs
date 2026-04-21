@@ -28,8 +28,10 @@ public partial class Craft : Node3D
     
     public double Throttle { get; private set; }
 
-    public void Init(Dictionary partData)
+    public void Init(Dictionary partData, CelestialBody parentCBody)
     {
+        CreateOrbitDriver(parentCBody);
+
         // Connect signals
         RealityTangler.Instance.OrbitProcess += UpdateOrbit;
         RealityTangler.Instance.OrbitProcess += UpdateMap;
@@ -48,6 +50,14 @@ public partial class Craft : Node3D
         Anchor(true);
     }
 
+    // Run this once per craft and never again
+    public void CreateOrbitDriver(CelestialBody parentCBody)
+    {
+        OrbitDriver = new();
+        AddChild(OrbitDriver);
+        OrbitDriver.Init(parentCBody, this);
+    }
+
     public void Instantiate()
     {
         RealityTangler.Instance.OriginReset += ResetOrigin;
@@ -61,26 +71,11 @@ public partial class Craft : Node3D
         }
     }
 
-    public void SetOrbitDriver(OrbitDriver driver)
-    {
-        // Delete old driver
-        OrbitDriver?.QueueFree();
-
-        OrbitDriver = driver;
-
-        if (OrbitRenderer == null)
-        {
-            OrbitRendererManager.Instance.CreateOrbitRenderer(this);
-        }else{
-            OrbitRenderer.OrbitDriver = driver;
-        }
-    }
-
     public void UpdateMap()
     {
         if (MapObject != null && OrbitDriver != null)
         {
-            MapObject.truePosition = OrbitDriver.cartesian.position + OrbitDriver.parent.GlobalCartesianPosition;
+            MapObject.truePosition = OrbitDriver.CartState.elements.position + OrbitDriver.ParentCBody.AbsolutePosition;
         }
     }
 
@@ -88,13 +83,13 @@ public partial class Craft : Node3D
     {
         if (OrbitDriver != null)
         {
-            if (OrbitDriver.enabled)
+            if (OrbitDriver.Enabled)
             {
                 // Copy root part's state to the driver's cartesian info if we're not on rails
                 if (!OrbitDriver.OnRails)
                 {
                     // Because cartesian position is relative to planet
-                    Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.parent.GlobalPosition;
+                    Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.ParentCBody.GlobalPosition;
 
                     Vector3 finalPos = relativePos;
                     Vector3 finalRot = CentralPart.GlobalRotation;
@@ -103,15 +98,15 @@ public partial class Craft : Node3D
                     if (RealityTangler.Instance.RotatingReferenceFrame != null)
                     {
                         CelestialBody reference = RealityTangler.Instance.RotatingReferenceFrame;
-                        finalPos = reference.GetGlobalPositionOfPoint(relativePos);
-                        finalVel = reference.GetGlobalVelocity(CentralPart.LinearVelocity) + reference.GetSurfaceRotationVelocity(finalPos);
+                        finalPos = reference.GetAbsolutePositionOfPoint(relativePos);
+                        finalVel = reference.GetAbsoluteVelocity(CentralPart.LinearVelocity) + reference.GetSurfaceRotationVelocity(finalPos);
                     }
 
-                    OrbitDriver.cartesian.position = finalPos;
-                    OrbitDriver.cartesian.rotation = finalRot;
-                    OrbitDriver.cartesian.velocity = finalVel; // Feels sloppy but all we can do is pray
+                    OrbitDriver.CartState.elements.position = finalPos;
+                    OrbitDriver.CartState.elements.rotation = finalRot;
+                    OrbitDriver.CartState.elements.velocity = finalVel; // Feels sloppy but all we can do is pray
                 }else{
-                    Vector3 finalPos = OrbitDriver.cartesian.position;
+                    Vector3 finalPos = OrbitDriver.CartState.elements.position;
 
                     if (RealityTangler.Instance.RotatingReferenceFrame != null)
                     {
@@ -229,13 +224,13 @@ public partial class Craft : Node3D
     {
         foreach (Part part in LoadedParts)
         {
-            Vector3 finalVel = OrbitDriver.cartesian.velocity;
+            Vector3 finalVel = OrbitDriver.CartState.elements.velocity;
 
             // Subtract planet's rotation if we're in a geocentric reference frame
             if (RealityTangler.Instance.RotatingReferenceFrame != null)
             {
                 CelestialBody activeFrame = RealityTangler.Instance.RotatingReferenceFrame;
-                finalVel -= activeFrame.GetSurfaceRotationVelocity(OrbitDriver.cartesian.position);
+                finalVel -= activeFrame.GetSurfaceRotationVelocity(OrbitDriver.CartState.elements.position);
                 finalVel = activeFrame.GetLocalVelocity(finalVel);
             }
 
@@ -248,13 +243,13 @@ public partial class Craft : Node3D
     {
         Anchor(true);
 
-        Vector3 positionResult = OrbitDriver.cartesian.position;
-        Vector3 rotationResult = OrbitDriver.cartesian.rotation;
+        Vector3 positionResult = OrbitDriver.CartState.elements.position;
+        Vector3 rotationResult = OrbitDriver.CartState.elements.rotation;
 
         if (RealityTangler.Instance.RotatingReferenceFrame != null)
         {
             CelestialBody activeReference = RealityTangler.Instance.RotatingReferenceFrame;
-            positionResult = activeReference.GetLocalPositionOfPoint(OrbitDriver.cartesian.position);
+            positionResult = activeReference.GetLocalPositionOfPoint(OrbitDriver.CartState.elements.position);
         }
 
         Position = positionResult;
@@ -302,12 +297,12 @@ public partial class Craft : Node3D
         Logger.Print($"Setting craft ({this}) on-rails orbit to ({toggle})");
 
         Anchor(toggle);
-        OrbitDriver.ToggleOnRailsOrbit(toggle);
+        OrbitDriver.OnRails = toggle;
         
         // Return to every value we had previously
         if (toggle)
         {
-            OrbitDriver.InitCraftPropagator();
+            //OrbitDriver.InitCraftPropagator();
         }else{
             SetTransformFromCartesian();
         }

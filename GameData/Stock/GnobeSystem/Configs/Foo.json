@@ -5,7 +5,7 @@
 	"focusOnload": true,
 	"geeASL": 0.1654,
 	"radius": 173750,
-	"inverseRotAltitude": 100000
+	"inverseRotAltitude": 50000
   },
   "rotation": {
 	"initial": 0,
@@ -32,9 +32,9 @@
 		"type": "cellular",
 		"seed": 0,
 		"noiseOffset": [0,0,0],
-		"deformity": 6000,
+		"deformity": 4000,
 		"offset": 0,
-		"frequency": 4000,
+		"frequency": 14000,
 		"fractal": {
 		  "type": "fbm",
 		  "octaves": 10,

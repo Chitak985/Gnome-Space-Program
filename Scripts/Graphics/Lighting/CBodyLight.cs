@@ -23,8 +23,8 @@ public partial class CBodyLight : Node3D
     {
         if (cBody != null)
         {
-            if(cBody.mapObject.GlobalPosition != MapView.Instance.mapCamera.GlobalPosition)
-                mapLightContainer.LookAtFromPosition(cBody.mapObject.GlobalPosition, MapView.Instance.mapCamera.GlobalPosition);
+            if(cBody.MapObject.GlobalPosition != MapView.Instance.mapCamera.GlobalPosition)
+                mapLightContainer.LookAtFromPosition(cBody.MapObject.GlobalPosition, MapView.Instance.mapCamera.GlobalPosition);
             if(cBody.GlobalPosition != FlightCamera.Instance.GlobalPosition)
                 localLightContainer.LookAtFromPosition(cBody.GlobalPosition, FlightCamera.Instance.GlobalPosition);
         }

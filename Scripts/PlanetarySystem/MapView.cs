@@ -38,7 +38,7 @@ public partial class MapView : Node3D
 
             if (mapObj.counterpart is Colony colonyObj)
             {
-                FocusOffset = colonyObj.parentBody.mapObject.truePosition;
+                FocusOffset = colonyObj.parentBody.MapObject.truePosition;
             }
         }
 

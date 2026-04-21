@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 
 // Most of all this junk should be refactored
+// DEPRECATED !!!! THIS CAN GO 
+/*
 public partial class PlanetSystem : Node3D
 {
     [Export] public PackedScene orbitRendererPrefab;
@@ -45,14 +47,14 @@ public partial class PlanetSystem : Node3D
     }
 
     // Called when the node enters the scene tree for the first time.
-    /*public override void _Ready()
-    {
-        Instance = this;
-        localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");
-        localSpacePlanets = (Node3D)localSpace.FindChild("Planets");
-        orbitRenderers = (Control)GetTree().GetFirstNodeInGroup("OrbitRenderers");
-        CreateSystem(GetPlanetConfigs(ConfigPath));
-    }*/
+    //public override void _Ready()
+    //{
+    //    Instance = this;
+    //    localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");
+    //    localSpacePlanets = (Node3D)localSpace.FindChild("Planets");
+    //    orbitRenderers = (Control)GetTree().GetFirstNodeInGroup("OrbitRenderers");
+    //    CreateSystem(GetPlanetConfigs(ConfigPath));
+    //}
 
     // Start the Planet System for this particular save
     public void InitSystem(List<string> chosenPacks)
@@ -153,11 +155,9 @@ public partial class PlanetSystem : Node3D
             CelestialBody parent = FindCBodyByName(cBody.parentName);
             if (parent != null)
             {
-                cBody.OrbitDriver.parent = parent;
-                cBody.OrbitDriver.orbit.cBody = cBody;
-                if (cBody.OrbitDriver.orbit.sphereOfInfluence <= 0) // 14959800320 * ((5.289772250524424*10^22) / (1.7565459*10^28))^(2/5)
-                    cBody.OrbitDriver.orbit.sphereOfInfluence = cBody.OrbitDriver.orbit.semiMajorAxis * Math.Pow(5.289772250524424e22 / 1.7565459e28, 2f/5f);
-                cBody.OrbitDriver.cartesian.cBody = cBody;
+                cBody.OrbitDriver.ParentCBody = parent;
+                if (cBody.sphereOfInfluence <= 0) // 14959800320 * ((5.289772250524424*10^22) / (1.7565459*10^28))^(2/5)
+                    cBody.sphereOfInfluence = cBody.OrbitDriver.KeplerState.elements.semiMajorAxis * Math.Pow(5.289772250524424e22 / 1.7565459e28, 2f/5f);
                 parent.childPlanets.Add(cBody);
             }
 
@@ -242,7 +242,7 @@ public partial class PlanetSystem : Node3D
         if (ConfigUtility.TryGetDictionary("orbit", data, out Dictionary orbit))
         {
             cBody.parentName = orbit.TryGetValue("parent", out var pnm) ? (string)pnm : null;
-            cBody.OrbitDriver.orbit = new Orbit{
+            cBody.OrbitDriver.KeplerState.elements = new (){
                 semiMajorAxis = orbit.TryGetValue("semiMajorAxis", out var sma) ? (double)sma : MissingNum(path, "orbit/semiMajorAxis"),
                 inclination = orbit.TryGetValue("inclination", out var inc) ? (double)inc : MissingNum(path, "orbit/inclination"),
                 eccentricity = orbit.TryGetValue("eccentricity", out var ecc) ? (double)ecc : MissingNum(path, "orbit/eccentricity"),
@@ -250,13 +250,13 @@ public partial class PlanetSystem : Node3D
                 longitudeOfAscendingNode = orbit.TryGetValue("longitudeOfAscendingNode", out var lon) ? (double)lon : MissingNum(path, "orbit/longitudeOfAscendingNode"),
                 trueAnomaly = orbit.TryGetValue("trueAnomaly", out var tra) ? (double)tra : 0,
                 meanAnomalyAtEpoch = orbit.TryGetValue("meanAnomalyAtEpoch", out var tre) ? (double)tre : MissingNum(path, "orbit/meanAnomalyAtEpoch"),
-                sphereOfInfluence = orbit.TryGetValue("sphereOfInfluence", out var soi) ? (double)soi : -1,
             };
+            cBody.sphereOfInfluence = orbit.TryGetValue("sphereOfInfluence", out var soi) ? (double)soi : -1;
         }else{
             Logger.Print($"{classTag} CBody {cBody.cBodyName} is missing its orbit! If this is intended, then disregard this message.");
         }
         // Same here too
-        cBody.OrbitDriver.cartesian = new()
+        cBody.OrbitDriver.CartState.elements = new()
         {
             position = Vector3.Zero,
             velocity = Vector3.Zero
@@ -330,3 +330,4 @@ public partial class PlanetSystem : Node3D
         return double.NaN;
     }
 }
+*/

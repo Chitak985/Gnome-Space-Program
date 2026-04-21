@@ -66,8 +66,8 @@ public partial class Part : RigidBody3D
     {
         if (parentThing is Craft craft)
         {
-            CelestialBody orbitingBody = craft.OrbitDriver.parent;
-            double bodyMass = orbitingBody.mass;
+            CelestialBody orbitingBody = craft.OrbitDriver.ParentCBody;
+            double bodyMass = orbitingBody.Config.properties.mass;
 
             Vector3 center = orbitingBody.GlobalPosition;
             Vector3 direction = GlobalPosition.DirectionTo(center);

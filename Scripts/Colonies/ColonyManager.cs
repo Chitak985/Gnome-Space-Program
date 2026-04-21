@@ -88,13 +88,14 @@ public partial class ColonyManager : Node
         colony.initialBase = data.TryGetValue("initialBase", out var initialBase) && (bool)initialBase;
 
         // Add to the planet and also add a map icon
-        CelestialBody parent = PlanetSystem.Instance.FindCBodyByName((string)data["parent"]);
-        colony.parentBody = parent;
-        parent.gimbal.AddChild(colony);
+        Logger.Print(CelestialBodyManager.Instance.CelestialBodies);
+        CelestialBody parent = CelestialBodyManager.Instance.GetCBodyFromName((string)data["parent"]);
+        colony.parentBody = parent;;
+        parent.Gimbal.AddChild(colony);
 
         colony.mapObject = new() {Name = $"{colony.name} Map"};
         //MapView.Instance.AddChild(colony.mapObject);
-        parent.mapObject.AddChild(colony.mapObject);
+        parent.MapObject.AddChild(colony.mapObject);
         colony.mapObject.Position = colony.position;
         colony.mapObject.counterpart = colony;
 
