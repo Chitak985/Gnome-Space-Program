@@ -28,57 +28,6 @@ public partial class Craft : Node3D
     
     public double Throttle { get; private set; }
 
-    public void Init(Dictionary partData, CelestialBody parentCBody)
-    {
-        CreateOrbitDriver(parentCBody);
-
-        // Connect signals
-        RealityTangler.Instance.OrbitProcess += UpdateOrbit;
-        RealityTangler.Instance.OrbitProcess += UpdateMap;
-        RealityTangler.Instance.ReferenceFrameChanged += OnReferenceFrameChanged;
-        ActiveSave.Instance.TimeLevelChanged += OnTimeLevelChanged;
-        ActiveSave.Instance.TimeLevelSafeState += OnTimeLevelSafe;
-
-        PartData = partData;
-
-        // Add map object
-        MapObject = MapView.Instance.AddMapObject(Name);
-        MapView.Instance.AddMapIcon(MapObject);
-
-        Instantiate();
-
-        Anchor(true);
-    }
-
-    // Run this once per craft and never again
-    public void CreateOrbitDriver(CelestialBody parentCBody)
-    {
-        OrbitDriver = new();
-        AddChild(OrbitDriver);
-        OrbitDriver.Init(parentCBody, this);
-    }
-
-    public void Instantiate()
-    {
-        RealityTangler.Instance.OriginReset += ResetOrigin;
-        AddPartFromData(PartData, parentObject: this);
-
-        CentralPart = LoadedParts[0];
-
-        foreach (Part part in LoadedParts)
-        {
-            part.InitPart();
-        }
-    }
-
-    public void UpdateMap()
-    {
-        if (MapObject != null && OrbitDriver != null)
-        {
-            MapObject.truePosition = OrbitDriver.CartState.elements.position + OrbitDriver.ParentCBody.AbsolutePosition;
-        }
-    }
-
     public void UpdateOrbit()
     {
         if (OrbitDriver != null)
@@ -119,14 +68,63 @@ public partial class Craft : Node3D
                 }
 
                 OrbitDriver.Update();
-
-                // Update the node's transforms to follow the parts
-                if (!Anchored)
-                {
-                    GlobalPosition = CentralPart.GlobalPosition;
-                    GlobalRotation = CentralPart.GlobalRotation;
-                }
             }
+
+            if (!Anchored)
+            {
+                GlobalPosition = CentralPart.GlobalPosition;
+            }
+        }
+    }
+
+    public void Init(Dictionary partData, CelestialBody parentCBody)
+    {
+        CreateOrbitDriver(parentCBody);
+
+        // Connect signals
+        RealityTangler.Instance.OrbitProcess += UpdateOrbit;
+        RealityTangler.Instance.OrbitProcess += UpdateMap;
+        RealityTangler.Instance.ReferenceFrameChanged += OnReferenceFrameChanged;
+        ActiveSave.Instance.TimeLevelChanged += OnTimeLevelChanged;
+        ActiveSave.Instance.TimeLevelSafeState += OnTimeLevelSafe;
+
+        PartData = partData;
+
+        // Add map object
+        MapObject = MapView.Instance.AddMapObject(Name);
+        MapView.Instance.AddMapIcon(MapObject);
+
+        Instantiate();
+
+        Anchor(true);
+    }
+
+    // Run this once per craft and never again
+    public void CreateOrbitDriver(CelestialBody parentCBody)
+    {
+        OrbitDriver = new();
+        OrbitDriver.ElementsUpdated += OnDriverElementUpdate;
+        OrbitDriver.Init(parentCBody, this);
+    }
+
+    public void Instantiate()
+    {
+        RealityTangler.Instance.OriginReset += ResetOrigin;
+        AddPartFromData(PartData, parentObject: this);
+
+        CentralPart = LoadedParts[0];
+
+        foreach (Part part in LoadedParts)
+        {
+            part.InitPart();
+        }
+    }
+
+    public void UpdateMap()
+    {
+        if (MapObject != null && OrbitDriver != null)
+        {
+            MapObject.truePosition = OrbitDriver.CartState.elements.position + OrbitDriver.ParentCBody.AbsolutePosition;
         }
     }
 
@@ -324,5 +322,9 @@ public partial class Craft : Node3D
     private void OnReferenceFrameChanged()
     {
         if (!Anchored) SetTransformFromCartesian();
+    }
+    private void OnDriverElementUpdate()
+    {
+        SetTransformFromCartesian();
     }
 }

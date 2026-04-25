@@ -43,7 +43,7 @@ public partial class CamControl : Node3D
 
         if (target != null) Position = target.GlobalPosition;
 
-        if (ground != null)
+        if (ground != null && ground.GlobalPosition != GlobalPosition)
         {
             LookAt(ground.GlobalPosition, Vector3.Up);
             //Rotate(Vector3.Right, Math.PI / 2);

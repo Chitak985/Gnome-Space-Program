@@ -68,6 +68,10 @@ public partial class LaunchSite : PartModule
             velocity = cBody.GetSurfaceRotationVelocity(cBody.GetAbsolutePositionOfPoint(originPos))
         };
 
+        craft.OrbitDriver.OnRails = false;
+        craft.SnatchFocus();
+        craft.OrbitDriver.SetFromElements(cartesianData, cBody);
+
         BuildingManager.Instance.ExitBuildMode(false);
         craft.SnatchFocus();
 

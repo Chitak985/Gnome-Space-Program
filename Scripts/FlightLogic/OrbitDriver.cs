@@ -16,8 +16,11 @@ public partial class OrbitDriver : Node
     public KeplerianState KeplerState { get; private set; }
     public CartesianState CartState { get; private set; }
 
-    public bool Enabled;
+    public bool Enabled = false;
     public bool OnRails;
+
+    // Signal nonsense
+    [Signal] public delegate void ElementsUpdatedEventHandler();
 
     public void Init(CelestialBody cBody, Node3D vehicle, bool startOnRails = false)
     {
@@ -43,7 +46,10 @@ public partial class OrbitDriver : Node
     {
         if (Enabled)
         {
-            PropagateFromKepler();
+            if (OnRails)
+            {
+                PropagateFromKepler();
+            } 
         }else{
             CartState.elements.position = Vector3.Zero;
         }
@@ -56,6 +62,8 @@ public partial class OrbitDriver : Node
 
         KeplerState.elements = elements;
         CartState.elements = Conics.ElemToCart(elements, cBody);
+
+        EmitSignal(SignalName.ElementsUpdated);
     }
 
     public void SetFromElements(CartesianState.CartesianElements elements, CelestialBody cBody = null)
@@ -65,6 +73,8 @@ public partial class OrbitDriver : Node
 
         CartState.elements = elements;
         KeplerState.elements = Conics.CartToElem(elements, cBody);
+
+        EmitSignal(SignalName.ElementsUpdated);
     }
 
     public void SetParent(CelestialBody cBody)
