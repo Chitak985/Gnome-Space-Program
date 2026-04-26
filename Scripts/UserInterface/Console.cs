@@ -15,7 +15,7 @@ public partial class Console : RichTextLabel
         
         GuiInput += OnInput;
         VisibilityChanged += () => {if(IsVisibleInTree())Logger.Print("[color=cyan]Welcome to the console! ctrl+scroll changes the font size.[color=white]"); };
-        Logger.OnLogged += AddLog;
+        Logger.Instance.OnLogged += AddLog;
         AppDomain.CurrentDomain.FirstChanceException += CatchException;
 
         Text = "";
@@ -29,9 +29,10 @@ public partial class Console : RichTextLabel
         Logger.Print("");
     }
 
-    public void AddLog(DateTime time, string content)
+    public void AddLog(long time, string content)
     {
-        Text += $"[color=676767]{time:HH:mm:ss}[color=white]: {content}\n";
+        DateTime date = DateTime.FromBinary(time);
+        Text += $"[color=676767]{date:HH:mm:ss}[color=white]: {content}\n";
     }
 
     public void CatchException(object sender, FirstChanceExceptionEventArgs args)
@@ -39,7 +40,7 @@ public partial class Console : RichTextLabel
         // God forbid an exception happens in here
         Logger.Print("[color=red]Exception was logged:");
         if (args.Exception is Exception ex)
-            AddLog(DateTime.Now, $"[color=red]{ex}");
+            AddLog(DateTime.Now.ToBinary(), $"[color=red]{ex}");
     }
 
     public override void _UnhandledInput(InputEvent inpEvent)

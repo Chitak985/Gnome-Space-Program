@@ -26,6 +26,8 @@ public partial class CraftManager : Node
         ActiveSave.Instance.localSpace.AddChild(craft);
         craft.Init(partData, parentCBody);
 
+        EmitSignal(SignalName.CraftSpawned, craft);
+
         return craft;
     }
 }

@@ -147,7 +147,11 @@ public partial class CelestialBody : Node3D
         OrbitDriver = new();
         OrbitDriver.Init(parentCBody, this, true);
         OrbitDriver.KeplerState.elements = Config.orbitElements;
-        if (parentCBody != null) OrbitDriver.Enabled = true;
+        if (parentCBody != null)
+        {
+            OrbitDriver.Enabled = true;
+            OrbitRendererManager.Instance.CreateOrbitRenderer(this);
+        }
 
         // Add self to the parent's list and the global list
         parentCBody?.OrbitingCBodies.Add(this);

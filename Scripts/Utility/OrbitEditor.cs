@@ -45,10 +45,10 @@ public partial class OrbitEditor : Panel
             {
 
             }else if (mode == Mode.CelestialBody){
-                //foreach (CelestialBody cBody in PlanetSystem.Instance.celestialBodies)
-                //{
-                //    objectDropdown.AddItem(cBody.Name);
-                //}
+                foreach (CelestialBody cBody in CelestialBodyManager.Instance.CelestialBodies)
+                {
+                    objectDropdown.AddItem(cBody.Name);
+                }
             }
 
             modeLabel.Text = $"Mode: {mode}";
@@ -86,7 +86,7 @@ public partial class OrbitEditor : Panel
 
         if (mode == Mode.Craft)
         {
-            //StateManager.Instance.CurrentFlightState.activeCraft.SetOrbitDriver(driver);
+            StateManager.Instance.CurrentFlightState.activeCraft.OrbitDriver.SetFromElements(orbit);
             StateManager.Instance.CurrentFlightState.activeCraft.SetTransformFromCartesian();
         }else if (mode == Mode.CelestialBody){
             //selectedCBody.SetOrbitDriver(driver);

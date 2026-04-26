@@ -81,6 +81,8 @@ public partial class Craft : Node3D
     {
         CreateOrbitDriver(parentCBody);
 
+        OrbitRendererManager.Instance.CreateOrbitRenderer(this);
+        
         // Connect signals
         RealityTangler.Instance.OrbitProcess += UpdateOrbit;
         RealityTangler.Instance.OrbitProcess += UpdateMap;
