@@ -32,42 +32,41 @@ public partial class Craft : Node3D
     {
         if (OrbitDriver != null)
         {
-            if (OrbitDriver.Enabled)
+            OrbitDriver.Update();
+
+            // Copy root part's state to the driver's cartesian info if we're not on rails
+            if (!OrbitDriver.OnRails)
             {
-                // Copy root part's state to the driver's cartesian info if we're not on rails
-                if (!OrbitDriver.OnRails)
+                // Because cartesian position is relative to planet
+                Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.ParentCBody.GlobalPosition;
+
+                Vector3 finalPos = relativePos;
+                Vector3 finalRot = CentralPart.GlobalRotation;
+                Vector3 finalVel = CentralPart.LinearVelocity;
+
+                if (RealityTangler.Instance.RotatingReferenceFrame != null)
                 {
-                    // Because cartesian position is relative to planet
-                    Vector3 relativePos = CentralPart.GlobalPosition - OrbitDriver.ParentCBody.GlobalPosition;
-
-                    Vector3 finalPos = relativePos;
-                    Vector3 finalRot = CentralPart.GlobalRotation;
-                    Vector3 finalVel = CentralPart.LinearVelocity;
-
-                    if (RealityTangler.Instance.RotatingReferenceFrame != null)
-                    {
-                        CelestialBody reference = RealityTangler.Instance.RotatingReferenceFrame;
-                        finalPos = reference.GetAbsolutePositionOfPoint(relativePos);
-                        finalVel = reference.GetAbsoluteVelocity(CentralPart.LinearVelocity) + reference.GetSurfaceRotationVelocity(finalPos);
-                    }
-
-                    OrbitDriver.CartState.elements.position = finalPos;
-                    OrbitDriver.CartState.elements.rotation = finalRot;
-                    OrbitDriver.CartState.elements.velocity = finalVel; // Feels sloppy but all we can do is pray
-                }else{
-                    Vector3 finalPos = OrbitDriver.CartState.elements.position;
-
-                    if (RealityTangler.Instance.RotatingReferenceFrame != null)
-                    {
-                        CelestialBody reference = RealityTangler.Instance.RotatingReferenceFrame;
-                        finalPos = reference.GetLocalPositionOfPoint(finalPos);
-                    }
-
-                    GlobalPosition = finalPos;
-                    FixCraft();
+                    CelestialBody reference = RealityTangler.Instance.RotatingReferenceFrame;
+                    finalPos = reference.GetAbsolutePositionOfPoint(relativePos);
+                    finalVel = reference.GetAbsoluteVelocity(CentralPart.LinearVelocity) + reference.GetSurfaceRotationVelocity(finalPos);
                 }
 
-                OrbitDriver.Update();
+                OrbitDriver.CartState.elements.position = finalPos;
+                OrbitDriver.CartState.elements.rotation = finalRot;
+                OrbitDriver.CartState.elements.velocity = finalVel; // Feels sloppy but all we can do is pray
+            }else{
+                // Propagation is done in the orbit driver
+                Vector3 finalPos = OrbitDriver.CartState.elements.position;
+
+                if (RealityTangler.Instance.RotatingReferenceFrame != null)
+                {
+                    CelestialBody reference = RealityTangler.Instance.RotatingReferenceFrame;
+                    finalPos = reference.GetLocalPositionOfPoint(finalPos);
+                }
+
+                GlobalPosition = finalPos;
+
+                FixCraft();
             }
 
             if (!Anchored)
@@ -107,6 +106,7 @@ public partial class Craft : Node3D
         OrbitDriver = new();
         OrbitDriver.ElementsUpdated += OnDriverElementUpdate;
         OrbitDriver.Init(parentCBody, this);
+        OrbitDriver.Enabled = true;
     }
 
     public void Instantiate()
@@ -297,15 +297,10 @@ public partial class Craft : Node3D
         Logger.Print($"Setting craft ({this}) on-rails orbit to ({toggle})");
 
         Anchor(toggle);
-        OrbitDriver.OnRails = toggle;
-        
-        // Return to every value we had previously
-        if (toggle)
-        {
-            //OrbitDriver.InitCraftPropagator();
-        }else{
+        OrbitDriver.ToggleOnRailsOrbit(toggle, saveMeanAnomaly: true);
+
+        if (!toggle)
             SetTransformFromCartesian();
-        }
     }
     private void OnTimeLevelSafe()
     {

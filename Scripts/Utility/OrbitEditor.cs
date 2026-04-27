@@ -87,7 +87,7 @@ public partial class OrbitEditor : Panel
         if (mode == Mode.Craft)
         {
             StateManager.Instance.CurrentFlightState.activeCraft.OrbitDriver.SetFromElements(orbit);
-            StateManager.Instance.CurrentFlightState.activeCraft.SetTransformFromCartesian();
+            //StateManager.Instance.CurrentFlightState.activeCraft.SetTransformFromCartesian();
         }else if (mode == Mode.CelestialBody){
             //selectedCBody.SetOrbitDriver(driver);
         } 

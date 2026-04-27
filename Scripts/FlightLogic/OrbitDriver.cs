@@ -11,13 +11,17 @@ public partial class OrbitDriver : Node
     [Export] public Node3D Vehicle { get; private set; }
 
     // This will change if the vehicle enters another SOI (if patching is enabled)
-    [Export] public CelestialBody ParentCBody { get; set; } // FIX THIS STUPID FUCK TO NOT BE SETTABLE WHEN PLANETS ARE REVAMPED
+    [Export] public CelestialBody ParentCBody { get; private set; } // FIX THIS STUPID FUCK TO NOT BE SETTABLE WHEN PLANETS ARE REVAMPED
 
     public KeplerianState KeplerState { get; private set; }
     public CartesianState CartState { get; private set; }
 
     public bool Enabled = false;
-    public bool OnRails;
+    public bool OnRails { get; private set; }
+
+    // Time when the driver switched to or from an "on-rails" state
+    // 0 for all celestial bodies.
+    public double OnRailsSwithTime { get; private set; }
 
     // Signal nonsense
     [Signal] public delegate void ElementsUpdatedEventHandler();
@@ -49,7 +53,7 @@ public partial class OrbitDriver : Node
             if (OnRails)
             {
                 PropagateFromKepler();
-            } 
+            }
         }else{
             CartState.elements.position = Vector3.Zero;
         }
@@ -82,18 +86,27 @@ public partial class OrbitDriver : Node
         ParentCBody = cBody;
     }
 
+    public void ToggleOnRailsOrbit(bool toggle, bool saveMeanAnomaly = false)
+    {
+        OnRails = toggle;
+
+        OnRailsSwithTime = ActiveSave.Instance.SaveTime;
+
+        if (saveMeanAnomaly)
+        {
+            KeplerState.elements.meanAnomalyAtEpoch = Conics.TrueAnomalyToMeanAnomaly(KeplerState.elements.trueAnomaly, KeplerState.elements.eccentricity);
+        }
+    }
+
     // Propagates the orbit along the given Keplerian state. 
-    // For when there are no (or, in the case of planets, very very little) meaningful perturbation on the vehicle.
+    // For when there are no meaningful perturbations on the vehicle.
     private void PropagateFromKepler()
     {
         // Increment true anomaly
-        KeplerState.elements.trueAnomaly = Conics.TimeToTrueAnomaly(KeplerState.elements, ParentCBody, ActiveSave.Instance.SaveTime, 0);
+        KeplerState.elements.trueAnomaly = Conics.TimeToTrueAnomaly(KeplerState.elements, ParentCBody, ActiveSave.Instance.SaveTime, OnRailsSwithTime);
 
         // Update the cartesian
         CartState.elements = Conics.ElemToCart(KeplerState.elements, ParentCBody);
-
-        // Positioning is handled inside the respective vehicle
-        //Vehicle.Position = CartState.elements.position;
     }
 
     // For when the driver is NOT on rails and the vehicle is being influenced by ordinary physics
@@ -101,5 +114,13 @@ public partial class OrbitDriver : Node
     {
         // Update keplerian from the cartesian
         KeplerState.elements = Conics.CartToElem(CartState.elements, ParentCBody);
+    }
+
+    public override string ToString()
+    {
+        string referenceFrame = $"Reference: {ParentCBody}\n";
+        string cartesianText = $"\nState Vectors: \n\n{CartState}\n";
+        string orbitText = $"\nOrbital Elements: \n\n{KeplerState}";
+        return referenceFrame + cartesianText + orbitText;
     }
 }
