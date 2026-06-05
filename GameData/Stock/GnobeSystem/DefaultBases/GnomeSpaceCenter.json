@@ -2,14 +2,15 @@
     "configType": "Base",
     "parent": "Gnobe",
     "blueprint": true,
+    "initialBase": true,
     "name": "Gnome Space Center",
 
-    "position": [-100,-50,596546.0],
+    "position": [-500,0,600000.0],
     "rotation": [90,0,0],
 
     "buildings": {
         "GSC_VAB": {
-            "position": [0,28,-200],
+            "position": [0,18,250],
             "rotation": [0,0,0],
             "scale": [1,1,1],
             "destroyed": false,
@@ -19,8 +20,8 @@
             "attachedBuildings": {}
         },
         "GSC_Launchpad": {
-            "position": [0,5,300],
-            "rotation": [0,180,0],
+            "position": [0,10,-300],
+            "rotation": [0,0,0],
             "scale": [1,1,1],
             "destroyed": false,
 

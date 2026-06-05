@@ -1,0 +1,333 @@
+using Godot;
+using System;
+using System.Collections.Generic;
+
+// All-encompassing class for orbital math
+/*
+These are just saved links to some things i think might be useful because google is useless:
+https://en.wikipedia.org/wiki/Earth-centered_inertial
+https://www.sciencedirect.com/topics/engineering/patched-conic
+https://ai-solutions.com/_freeflyeruniversityguide/patched_conics_transfer.htm#calculatingapatchedconicsproblem
+https://www.mathworks.com/help/aerotbx/ug/keplerian2ijk.html
+https://space.stackexchange.com/questions/19322/converting-orbital-elements-to-cartesian-state-vectors
+https://space.stackexchange.com/questions/24646/finding-x-y-z-vx-vy-vz-from-hyperbolic-orbital-elements
+https://space.stackexchange.com/questions/1904/how-to-programmatically-calculate-orbital-elements-using-position-velocity-vecto
+https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
+
+list of orbital gobbledygook:
+https://www.bogan.ca/orbits/kepler/orbteqtn.html
+*/
+
+public partial class Conics : Node
+{
+    // Buncha constants
+    public static readonly double GravConstant = 6.674e-11;
+    public static readonly double EarthGravity = 9.80665;
+    public static readonly double Epsilon = 1e-08;
+    
+    // Functions to get points with Y as up rather than Z
+    // To Be Eliminated
+    private static Vector3 GetPosYUp(Vector3 inputVector)
+    {
+        return new Vector3(inputVector.X,inputVector.Z,inputVector.Y);
+    }
+    
+    // Orbital Elements to Cartesian
+    public static CartesianState.CartesianElements ElemToCart(KeplerianState.KeplerianElements elements, CelestialBody parent)
+    {
+        // yeah whatever the fRICK
+        double MU = GravConstant * parent.Config.properties.mass;
+
+        // Compile our favourite Keplerian orbit elements
+
+        double a = elements.semiMajorAxis;
+        double e = elements.eccentricity;
+        double i = elements.inclination;
+        double omega = elements.argumentOfPeriapsis;
+        double Omega = elements.longitudeOfAscendingNode;
+        double truAN = elements.trueAnomaly;
+
+        double p = e != 1.0 ? a * (1 - e * e) : 2 * a;
+        double r = p / (1 + e * Math.Cos(truAN));
+
+        Vector3 rPQW = new(
+            r * Math.Cos(truAN),
+            r * Math.Sin(truAN),
+            0
+        );
+
+        Vector3 vPQW = new(
+            -Math.Sqrt(MU / p) * Math.Sin(truAN),
+            Math.Sqrt(MU / p) * (e + Math.Cos(truAN)),
+            0
+        );
+
+        Basis R =
+            new Basis(Vector3.Forward, -Omega) * // Rotate around global Z
+            new Basis(Vector3.Right, i) *           // Rotate by inclination
+            new Basis(Vector3.Forward, -omega);       // Rotate by argument of periapsis
+
+        // Rotate position and velocity vectors
+        Vector3 position = R * rPQW;
+
+        Vector3 velocity = R * vPQW;
+
+        return new CartesianState.CartesianElements() {
+            position = new Vector3(position.X,position.Z,position.Y),
+            velocity = new Vector3(velocity.X,velocity.Z,velocity.Y)
+        };
+    }
+
+    /* Cartesian to Orbital Elements
+
+        Lots of help from https://orbital-mechanics.space/classical-orbital-elements/orbital-elements-and-the-state-vector.html
+        And various other pages
+
+        This method is incomplete! A decent chunk of stuff here is not using Atan2 when it should be
+        (owing to the fact that I don't really understand how to convert them to use Atan2)
+    */
+   public static KeplerianState.KeplerianElements CartToElem(CartesianState.CartesianElements elements, CelestialBody parent)
+    {
+        // define mu, vectors
+        double mu = GravConstant * parent.Config.properties.mass;
+        Vector3 rVec = new(elements.position.X, elements.position.Z, elements.position.Y); // Just flip some numbers around and pray
+        Vector3 vVec = new(elements.velocity.X, elements.velocity.Z, elements.velocity.Y);
+        double r = rVec.Length();
+        double v = vVec.Length();
+
+        // Specific angular momentum
+        Vector3 hVec = rVec.Cross(vVec);
+        double h = hVec.Length();
+        double p = h * h / mu;
+
+        // Right Ascension of the Ascending Node
+        // Back is (0, 0, 1)
+        Vector3 nVec = Vector3.Back.Cross(hVec);
+        double N = nVec.Length();
+
+        // Eccentricity
+        Vector3 eVec = vVec.Cross(hVec) / mu - rVec / r;
+        double e = eVec.Length();
+
+        // Semimajor axis
+        double alpha = 2.0 / r - v * v / mu;
+        double a;
+        if (Math.Abs(alpha) > Epsilon)
+        {
+            // elliptic or hyperbolic
+            a = 1.0 / alpha;
+        }else{
+            double rp = p / 2;
+            a = -rp;
+        }
+
+        // Inclination
+        double i = Math.Acos(hVec.Z / h);
+
+        // Acending node, argument of periapsis, true anomaly (respectively)
+        double Omega = 0; // Ascending node
+        double omega = 0; // Arg. of periapsis
+        double nu = 0;
+        if (e >= 1e-11 && i >= 1e-11 && i <= Math.PI - 1e-11)
+        {
+            // Non circular inclined orbit
+            Omega = Math.Acos(nVec.X / N);
+            if (nVec.Y < 0.0)
+                Omega = 2.0 * Math.PI - Omega;
+            omega = Math.Acos(Math.Clamp(nVec.Dot(eVec) / N / e, -1.0, 1.0));
+            if (eVec.Z < 0.0)
+                omega = 2.0 * Math.PI - omega;
+            nu = Math.Acos(Math.Clamp(eVec.Dot(rVec) / e / r, -1.0, 1.0));
+            if (rVec.Dot(vVec) < 0.0)
+                nu = 2.0 * Math.PI - nu;
+        }else if (e >= 1e-11 && (i < 1e-11 || i > Math.PI - 1e-11))
+        {
+            // Non circular equatorial orbit
+            // Equatorial orbit has no ascending node
+            Omega = 0.0;
+            // True longitude of periapsis
+            omega = Math.Acos(eVec.X / e);
+            // Handle cases where the orbit is retrograde
+            if (i <= Math.PI - 1e-11)
+            {
+                if (eVec.Y < 0.0)
+                    omega = 2.0 * Math.PI - omega;
+            }else{
+                if (eVec.Y > 0.0)
+                    omega = 2.0 * Math.PI - omega;
+            }
+
+            nu = Math.Acos(Math.Clamp(eVec.Dot(rVec) / e / r, -1.0, 1.0));
+            if (rVec.Dot(vVec) < 0.0)
+                nu = 2.0 * Math.PI - nu;   
+        }else if (e < 1e-11 && i >= 1e-11)
+        {
+            // Circular inclined orbit
+            Omega = Math.Acos(nVec.X / N);
+            if (nVec.Y < 0.0)
+                Omega = 2.0 * Math.PI - Omega;
+            omega = 0.0;
+            nu = Math.Acos(Math.Clamp(nVec.Dot(rVec) / N / r, -1.0, 1.0));
+            if (rVec.Z < 0.0)
+                nu = 2.0 * Math.PI - nu;
+        }else if (e < 1e-11 && i < 1e-11)
+        {
+            // Circular equatorial orbit
+            Omega = 0.0;
+            omega = 0.0;
+            nu = Math.Acos(rVec.X / r);
+            if (rVec.Y < 0)
+                nu = 2.0 * Math.PI - nu;
+        }else{
+            Logger.Print("Shit's fucked mate \n (Couldn't determine orbit type)");
+        }
+
+        KeplerianState.KeplerianElements newOrbit = new()
+        {
+            semiMajorAxis = a,
+            eccentricity = e,
+            inclination = i,
+            longitudeOfAscendingNode = Omega,
+            argumentOfPeriapsis = omega,
+            trueAnomaly = nu,
+        };
+
+        return newOrbit;
+    }
+
+    // Name is a bit confusing but all this does is convert time (t) to true anomaly (v)
+    public static double TimeToTrueAnomaly(KeplerianState.KeplerianElements elements, CelestialBody parent, double t, double T)
+    {
+        double MU = GravConstant * parent.Config.properties.mass;
+        double v;
+        if (elements.eccentricity > 1)
+        {
+            // Hyperbolic case
+            double n = Math.Sqrt(MU/Math.Pow(Math.Abs(elements.semiMajorAxis),3));
+            double M = elements.meanAnomalyAtEpoch + n*(t-T);
+            double EA = GetHyperbolicAnomaly(M,elements.eccentricity);
+
+            v = 2 * Math.Atan(Math.Sqrt((elements.eccentricity + 1) / (elements.eccentricity - 1)) * Math.Tanh(EA / 2));
+        }else{
+            // Elliptical case
+            double n = Math.Sqrt(MU/Math.Pow(elements.semiMajorAxis,3));
+            double M = elements.meanAnomalyAtEpoch + n*(t-T);
+            double EA = GetEccentricAnomaly(M, elements.eccentricity);
+            
+            v = Math.Atan2(Math.Sqrt(1-Math.Pow(elements.eccentricity,2)) * Math.Sin(EA), Math.Cos(EA) - elements.eccentricity);
+        }
+
+        return v;
+    }
+
+    public static double GetHyperbolicAnomalyFromTrueAnomaly(double v, double e)
+    {
+        return 2 * Math.Atanh(Math.Sqrt((e - 1) / (e + 1)) * Math.Tan(v / 2));
+    }
+
+    // https://en.wikipedia.org/wiki/Mean_anomaly
+    // Calculates the mean anomaly from the true anomaly and eccentricity
+    public static double TrueAnomalyToMeanAnomaly(double v, double e)
+    {
+        if (e > 1)
+        {
+            // Hyperbolic case
+            double H = GetHyperbolicAnomalyFromTrueAnomaly(v, e);
+            return e * Math.Sinh(H) - H;
+        }else if (e < 1){
+            // Elliptical case
+            // Pfft honestly bro I don't even really know bruh I just mangled some equations from wikipedia
+            return Math.Atan2(Math.Sqrt(1 - Math.Pow(e, 2)) * Math.Sin(v), e + Math.Cos(v)) - e * (Math.Sqrt(1 - Math.Pow(e, 2)) * Math.Sin(v) / (1 + e * Math.Cos(v)));
+        }else{
+            Logger.Print("OH HELL NAH THIS SHIT BROKEN AS FUH BRAH OHH HELLL NAW HOW DID YOU GET e = 1 BRUH BRUH NAWWWW");
+            return 0;
+        }
+    }
+
+    // Keplerian method of calculating eccentric anomaly apparently
+    public static double GetEccentricAnomaly(double meanAnomaly, double eccentricity, double tolerance = 1e-2, int maxIter = 100000)
+    {
+        double E;
+
+        if (eccentricity > 0.8){
+            E = Math.PI;
+        }else{
+            E = meanAnomaly;
+        }
+
+        for (int i = 0; i < maxIter; i++)
+        {
+            double delta = (E - eccentricity * Math.Sin(E) - meanAnomaly) / (1 - eccentricity * Math.Cos(E));
+            E -= delta;
+            if (Math.Abs(delta) < tolerance)
+            {
+                break;
+            }
+        }
+            
+        return E;
+    }
+
+    // Solve for hyperbolic eccentric anomaly because that's DIFFERENT TOO?
+    public static double GetHyperbolicAnomaly(double meanAnomaly, double eccentricity, double tolerance = 1e-2, int maxIter = 100000)
+    {
+        double H = Math.Log(2 * Math.Abs(meanAnomaly) / eccentricity + 1.8); // Initial guess
+        for (int i = 0; i < maxIter; i++)
+        {
+            double f = eccentricity * Math.Sinh(H) - H - meanAnomaly;
+            double fp = eccentricity * Math.Cosh(H) - 1;
+            double dH = f / fp;
+            H -= dH;
+            if (Math.Abs(dH) < tolerance)
+                break;
+        }
+        return H;
+    }
+
+    /* Checks what SOI a location is currently in and returns the corresponding cBody
+    public static (CelestialBody, Vector3) GetSOI(CartesianData location)
+    {
+        if (PlanetSystem.Instance != null)
+        {
+            // Set SOI to infinity if orbit doesn't exist (only applicable to root body) 
+            double currentPlanetSOI = location.parent.OrbitDriver.orbit == null ? double.PositiveInfinity : location.parent.OrbitDriver.orbit.sphereOfInfluence;
+
+            if (location.parent != null)
+            {
+                if (location.position.DistanceTo(Vector3.Zero) <= currentPlanetSOI)
+                {
+                    // Search orbiting bodies
+                    foreach (CelestialBody cBody in location.parent.childPlanets)
+                    {
+                        double cBodySOI = cBody.OrbitDriver.orbit == null ? double.PositiveInfinity : cBody.OrbitDriver.orbit.sphereOfInfluence;
+                        // As part of the large world coordinate refactor, this weird inconsistent 
+                        // coordinate system should be removed. For now, a stupid workaround.
+                        // Convert to double3 to use its weird coordinate switching function and back.
+                        // I hate this. -R
+                        // GetPosYUp should be eliminated... soon.
+                        if (location.position.DistanceTo(cBody.OrbitDriver.cartesian.position) < cBodySOI)
+                        {
+                            return (cBody, location.position - GetPosYUp(cBody.OrbitDriver.cartesian.position));
+                        }
+                    }
+                    // Return current cBody because we are not within any child SOI
+                    return (location.parent, location.position);
+                }else{
+                    // Return parent body because we are outside the sphere of influence
+                    return (location.parent.OrbitDriver.orbit.parent, location.position + GetPosYUp(location.parent.OrbitDriver.cartesian.position));
+                }
+            }else{
+                // Return root body as last resort fallback
+                // This should NEVER run because the outputted position is ambiguous!
+                GD.Print("Uh oh");
+                return (PlanetSystem.Instance.rootBody, Vector3.Zero);
+            }
+        }else{
+            // No planets exist so we can't return anything
+            GD.Print("PlanetSystem Instance has not been set! It literally doesn't exist what are you doing!?!");
+            // Vector3 is not nullable, but NaNs are possible.
+            return (null, new Vector3(double.NaN, double.NaN, double.NaN));
+        }
+    }
+    */
+}

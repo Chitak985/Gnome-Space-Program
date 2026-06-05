@@ -30,7 +30,7 @@ public partial class BuildingManager : Node
     // Guess what, it's the part being dragged!
     public Part draggingPart;
     public (AttachNode, AttachNode) snappedNodes;
-    public List<Part> partsList;
+    public List<Part> partsList = [];
     // We orient around this one
     public Part centralPart;
 
@@ -50,17 +50,20 @@ public partial class BuildingManager : Node
     {
         if (draggingPart != null)
         {
-            Camera3D camera = ActiveSave.Instance.localCamera;
+            Camera3D camera = LocalSpace.Instance.Camera;
 
             Vector2 mousePos = GetViewport().GetMousePosition();
             Vector3 projectedPosition = camera.ProjectPosition(mousePos, partHoldDistance);
 
             (AttachNode, AttachNode) attachNodeBuffer = (null, null);
 
+            // Reset parent part in case we really don't want it
+            draggingPart.parentPart = null;
+
             // Part Snappy
             foreach (Part part in partsList)
             {
-                if (part != draggingPart) // Redundant but who tf cares
+                if (!draggingPart.descendantParts.Contains(part))
                 {
                     foreach (AttachNode attachNode0 in part.attachNodes)
                     {
@@ -71,7 +74,7 @@ public partial class BuildingManager : Node
                             foreach (AttachNode attachNode1 in draggingPart.attachNodes)
                             {
                                 // We get screen positions to avoid depth problems
-                                Camera3D localCam = ActiveSave.Instance.localCamera;
+                                Camera3D localCam = LocalSpace.Instance.Camera;
 
                                 Vector3 node0Pos = attachNode0.GlobalPosition;
                                 // Imagine this one (relative node position + supposed global position)
@@ -88,6 +91,10 @@ public partial class BuildingManager : Node
                                     projectedPosition = attachNode0.GlobalPosition - (attachNode1.GlobalPosition - draggingPart.GlobalPosition);
                                     // We remember those two nodes if we ever want to place the part again
                                     attachNodeBuffer = (attachNode0, attachNode1);
+                                    // Track which part and node we attach to
+                                    draggingPart.parentPart = attachNode0.part;
+                                    draggingPart.parentNode = attachNode0;
+                                    draggingPart.usedNode = attachNode1;
                                     break; // Exit the loop
                                 }
                             }
@@ -102,6 +109,7 @@ public partial class BuildingManager : Node
             snappedNodes = attachNodeBuffer;
         }
 
+        /*
         Godot.Collections.Array<Node> parts = editorPartContainer.GetChildren();
 
         // There's no concrete reason for a buffer but it makes some of this more manageable maybe?? uhhm uhh err :3
@@ -114,29 +122,27 @@ public partial class BuildingManager : Node
             }
         }
         partsList = partListBuffer;
-
+        
+        */
+        
         // Just pick one if it's null (the user will take control, otherwise)
-        if (partListBuffer.Count > 0 && centralPart == null)
+        if (partsList.Count > 0 && centralPart == null)
         {
-            centralPart = partListBuffer[0];
+            centralPart = partsList[0];
             Logger.Print($"{classTag} Auto assigned central part to: {centralPart.Name}");
             centralPart.Position = new Vector3(0, 0, 0);
         }
     }
 
-    // Don't use
-    public void LaunchCraft()
+    public void InsertPart(CachedPart partRef)
     {
-        Dictionary partData = PartManager.CompilePartData(partsList);
+        Random RNG = new();
 
-        if (verboseLogging)
-            Logger.Print(partData);
+        Part part = partRef.Instantiate(floatingPartContainer, true, true);
 
-        Craft craft = new();
-        ActiveSave.Instance.localSpace.AddChild(craft);
-        craft.Instantiate(partData);
-
-        craft.GlobalPosition = editorPartContainer.GlobalPosition;
+        part.cachedPart = partRef;
+        part.id = RNG.NextInt64();
+        draggingPart = part;
     }
 
     public void ClearParts()
@@ -172,12 +178,11 @@ public partial class BuildingManager : Node
         floatingPartContainer.GlobalTransform = module.vab.GlobalTransform;
 
         // Reposition cam
-        FlightCamera.Instance.TargetObject(module.camPivot, new Vector3(0.1f, maxZoom, targetZoom), false);
+        FlightCamera.Instance.TargetObject(module.camPivot, 100, 1, 10000);
         editorMode = EditorMode.Static;
 
-        // Disable map view while in flight
-        FlightCamera.Instance.ToggleMapView(false);
-        FlightCamera.Instance.canEnterMap = false;
+        // Disable map view
+        MapView.Instance.ToggleMap(false);
 
         // Close Part Menus
         PartMenuHandler.Instance.contextMenus.OpenMenu("", [], true);
@@ -194,7 +199,6 @@ public partial class BuildingManager : Node
         PartMenuHandler.Instance.contextMenus.OpenMenu("", [], true);
 
         // Misc
-        FlightCamera.Instance.canEnterMap = true;
         editorMode = EditorMode.None;
 
         // Return focus to the parent craft / colony IF WE WANT TO
@@ -202,9 +206,31 @@ public partial class BuildingManager : Node
         {
             if (activeThing is Colony colony)
             {
-                FlightCamera.Instance.TargetObject(colony);
+                colony.Enter();
             }
         }
+    }
+
+    // Updates the hierarchy for each part
+    public void UpdatePartHierarchy()
+    {
+        Logger.Print($"{classTag} Updated part hierarchies");
+        foreach (Part part in partsList)
+        {
+            part.UpdateChildParts();
+        }
+    }
+
+    // Function to delete parts in the editor context
+    public void DeletePart(Part part)
+    {
+        Logger.Print($"{classTag} Deleting part {part.Name}");
+        partsList.Remove(part);
+        part.QueueFree();
+        // Clear the current dragging part if we're throwing that out
+        if (part == draggingPart) draggingPart = null;
+        // Clear the central part if we're throwing that out too
+        if (part == centralPart) centralPart = null;
     }
 
     // Inputs !!!
@@ -217,27 +243,27 @@ public partial class BuildingManager : Node
             {
                 if (draggingPart != null)
                 {
-                    partsList.Remove(draggingPart);
-                    Logger.Print("try this");
-                    Logger.Print("draggingPart id, after removing:" + draggingPart.id);
-                    Logger.Print("that worked");
-                    // If picking up the central part, we need to reassign this
-                    // (to prevent having a null central part)
-                    if (centralPart == draggingPart)
+                    foreach (Part part in draggingPart.descendantParts)
                     {
-                        if (partsList.Count != 0)
+                        DeletePart(part);
+                    }
+
+                    DeletePart(draggingPart);
+
+                    if (verboseLogging)
+                    {
+                        Logger.Print($"{classTag} Part list:");
+
+                        if (partsList.Count > 0)
                         {
-                            // For now, just choose the first part?
-                            // Probably figure out a better method to choose
-                            // central part.
-                            centralPart = partsList[0];
-                        } else {
-                            // We've deleted the last part in this case
-                            centralPart = null;
+                            foreach (Part part in partsList)
+                            {
+                                Logger.Print(part.Name);
+                            }
+                        }else{
+                            Logger.Print("EMPTY");
                         }
                     }
-                    draggingPart.QueueFree();
-                    draggingPart = null;
                 }
             }
         }
@@ -258,13 +284,24 @@ public partial class BuildingManager : Node
                     }
 
                     Logger.Print($"{classTag} Selected part {draggingPart.Name}");
+                    partsList.Remove(draggingPart);
+                    UpdatePartHierarchy();
                 }else if (draggingPart != null) {
-                    draggingPart.Reparent(editorPartContainer);
+                    if (draggingPart.parentPart != null)
+                    {
+                        // Parent to the parent part cuz we attach yay!!
+                        draggingPart.Reparent(draggingPart.parentPart);
+                        if (snappedNodes.Item1 != null && snappedNodes.Item2 != null)
+                            snappedNodes.Item1.Attach(snappedNodes.Item2);
 
-                    if (snappedNodes.Item1 != null && snappedNodes.Item2 != null)
-                        snappedNodes.Item1.Attach(snappedNodes.Item2);
+                        UpdatePartHierarchy();
+                    }else{
+                        // Parent to the part container cuz we didn't attach :(
+                        draggingPart.Reparent(editorPartContainer);
+                    }
 
                     Logger.Print($"{classTag} Unselected part {draggingPart.Name}");
+                    partsList.Add(draggingPart);
                     draggingPart = null;
                 }
             }

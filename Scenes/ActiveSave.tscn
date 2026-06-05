@@ -1,74 +1,220 @@
-[gd_scene load_steps=45 format=3 uid="uid://b08reqxmoktvk"]
+[gd_scene format=3 uid="uid://b08reqxmoktvk"]
 
 [ext_resource type="Script" uid="uid://c3i0ynvo54sk1" path="res://Scripts/Utility/ActiveSave.cs" id="1_2c3j4"]
-[ext_resource type="Script" uid="uid://2vlhdf4w605i" path="res://Scripts/PlanetarySystem/PlanetSystem.cs" id="1_pocjb"]
-[ext_resource type="CameraAttributesPractical" uid="uid://cyf8gikvidq0w" path="res://Assets/Misc/CamAttributes.tres" id="2_cbqy2"]
-[ext_resource type="PackedScene" uid="uid://oo6ip25lyjt3" path="res://Assets/Prefabs/Planets/OrbitRenderer.tscn" id="3_212tm"]
-[ext_resource type="Material" uid="uid://bgcp3j11mrprb" path="res://Assets/Materials/Background.tres" id="3_sfn14"]
-[ext_resource type="PackedScene" uid="uid://dt3jn2nr8pm3l" path="res://Assets/Prefabs/UI/planet_icon.tscn" id="4_yxkbd"]
+[ext_resource type="Script" uid="uid://dcgkvx650oopr" path="res://Scripts/Utility/StateManager.cs" id="2_wsyj0"]
+[ext_resource type="Material" uid="uid://bgcp3j11mrprb" path="res://Assets/Materials/Background.tres" id="5_2aux3"]
 [ext_resource type="Script" uid="uid://qcplqipy8mmr" path="res://Scripts/PlanetarySystem/ScaledSpace.cs" id="5_yxkbd"]
 [ext_resource type="Script" uid="uid://ve83kys7a48x" path="res://Scripts/CameraControl/FlightCamera.cs" id="6_0mdm0"]
 [ext_resource type="Script" uid="uid://chvjvd0id2y27" path="res://Scripts/CraftAssembly/Parts/PartManager.cs" id="6_2c3j4"]
+[ext_resource type="Script" uid="uid://bdl0q4iof0s44" path="res://Scripts/Graphics/Background.cs" id="6_807e1"]
 [ext_resource type="Script" uid="uid://dn8105q754rdm" path="res://Scripts/CraftAssembly/CraftManager.cs" id="6_ijjgm"]
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="7_yxkbd"]
 [ext_resource type="Script" uid="uid://yt1hbw2t4y8b" path="res://Scripts/Colonies/ColonyManager.cs" id="8_gxrxs"]
-[ext_resource type="PackedScene" uid="uid://bw23jl4jvv55y" path="res://Assets/Prefabs/UI/colony_icon.tscn" id="9_gusxr"]
+[ext_resource type="Script" uid="uid://crssbseia2fkb" path="res://Scripts/PlanetarySystem/MapView.cs" id="8_h4qns"]
+[ext_resource type="Script" uid="uid://bo7lm1dl3hh8r" path="res://Scripts/PlanetarySystem/CelestialBodyManager.cs" id="9_y64qo"]
+[ext_resource type="Script" uid="uid://ciw1nydyx82x6" path="res://Scripts/PlanetarySystem/LocalSpace.cs" id="10_5brss"]
+[ext_resource type="Script" uid="uid://fbpdjag2kcfi" path="res://Scripts/CameraControl/MapCamera.cs" id="12_ou012"]
 [ext_resource type="Script" uid="uid://djpke18bqs2nu" path="res://Scripts/Abominations/RealityTangler.cs" id="13_sfn14"]
 [ext_resource type="Script" uid="uid://byojjoj3wpnpd" path="res://Scripts/UserInterface/MapUI.cs" id="14_23wpb"]
 [ext_resource type="Script" uid="uid://cyombaxie5vkw" path="res://Scripts/Utility/BuildingManager.cs" id="14_uc177"]
 [ext_resource type="Script" uid="uid://b2koecyr2n2mv" path="res://Scripts/UserInterface/ContextMenus/PartMenuHandler.cs" id="15_cbqy2"]
+[ext_resource type="Script" uid="uid://dwh7ro6ua2sfc" path="res://Scripts/OrbitalMechanics/OrbitRendererManager.cs" id="15_h7vhn"]
 [ext_resource type="Script" uid="uid://b0otr6yt3ikn2" path="res://Scripts/UserInterface/ContextMenus/ColonyMenu.cs" id="15_p543u"]
 [ext_resource type="Script" uid="uid://bc0vnn6dhlhug" path="res://Scripts/UserInterface/ContextMenus/ContextMenus.cs" id="15_ue2ba"]
+[ext_resource type="PackedScene" uid="uid://0l4exascpcks" path="res://Assets/Prefabs/orbit_renderer_enclosure.tscn" id="16_np084"]
 [ext_resource type="PackedScene" uid="uid://c8odi3kjvqxhl" path="res://Assets/Prefabs/UI/part_menu.tscn" id="17_2vujl"]
 [ext_resource type="PackedScene" uid="uid://dam6vsicmpefq" path="res://Assets/Meshes/Gizmo/gizmo.glb" id="17_h3s5b"]
 [ext_resource type="Script" uid="uid://nutgi3n1uf8j" path="res://Scripts/UserInterface/ContextMenus/PlanetMenu.cs" id="17_ue2ba"]
 [ext_resource type="PackedScene" uid="uid://chuuxhnbua61m" path="res://Assets/Prefabs/UI/partmenu_button.tscn" id="19_cuu2x"]
+[ext_resource type="Script" uid="uid://foqxid37ui4r" path="res://Scripts/Graphics/Lighting/LightingManager.cs" id="22_3w3h3"]
 [ext_resource type="StyleBox" uid="uid://cmyfacsvlil8r" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_normal.tres" id="23_2c3fv"]
 [ext_resource type="Script" uid="uid://dshwjlk4h8fed" path="res://Scripts/UserInterface/CraftAssembly/BuildUI.cs" id="23_hx2xn"]
+[ext_resource type="PackedScene" uid="uid://d0ci447d308yk" path="res://Assets/Prefabs/Graphics/c_body_light.tscn" id="23_mbbrb"]
 [ext_resource type="PackedScene" uid="uid://cr52dmkgty470" path="res://Assets/Prefabs/UI/part_selector.tscn" id="23_vd1dx"]
 [ext_resource type="Script" uid="uid://tn3h1s53tlmy" path="res://Scripts/UserInterface/CraftAssembly/PartList.cs" id="24_287u4"]
 [ext_resource type="StyleBox" uid="uid://didwclm676g4f" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_press.tres" id="24_vd1dx"]
 [ext_resource type="PackedScene" uid="uid://f72it1x2go4q" path="res://Assets/Prefabs/UI/part_category.tscn" id="25_51qm0"]
 [ext_resource type="StyleBox" uid="uid://d2x1glka2wnkb" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_hover.tres" id="25_hx2xn"]
-[ext_resource type="Script" uid="uid://drlfgjufqytvn" path="res://Scripts/UserInterface/ResizeHandle.cs" id="26_287u4"]
+[ext_resource type="Script" uid="uid://drlfgjufqytvn" path="res://Scripts/UserInterface/Windows/ResizeHandle.cs" id="26_287u4"]
 [ext_resource type="PackedScene" uid="uid://4gm81i1keb5p" path="res://Assets/Prefabs/UI/part_cat_button.tscn" id="30_d1dok"]
-[ext_resource type="Texture2D" uid="uid://bxe8uo40enbck" path="res://Assets/Textures/UserInterface/Buttons/allIcon.svg" id="32_nej1p"]
-[ext_resource type="Texture2D" uid="uid://6gd5l8bljd83" path="res://Assets/Textures/UserInterface/Buttons/launchbutton.svg" id="33_8ed1a"]
+[ext_resource type="Script" uid="uid://c21n1werdnvqr" path="res://Scripts/UserInterface/Flight/OrbitTracker.cs" id="30_kqsux"]
+[ext_resource type="Material" uid="uid://f7ph3sm1vmfr" path="res://Assets/Materials/navball.tres" id="30_ldaci"]
+[ext_resource type="StyleBox" uid="uid://clequcydisajd" path="res://Assets/Materials/GeneralUI/Misc/paddedPanel.tres" id="32_mtnyg"]
+[ext_resource type="Texture2D" uid="uid://bxe8uo40enbck" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/allIcon.svg" id="32_nej1p"]
+[ext_resource type="PackedScene" uid="uid://dbvfo1henkgx8" path="res://Assets/Prefabs/UI/MapView/MapIcon.tscn" id="32_ul3nw"]
+[ext_resource type="Texture2D" uid="uid://6gd5l8bljd83" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/launchbutton.svg" id="33_8ed1a"]
 [ext_resource type="Script" uid="uid://dt2716mcyojap" path="res://Scripts/UserInterface/ButtonHandlers/BuildModeLaunchMenu.cs" id="33_yged2"]
+[ext_resource type="Material" uid="uid://itxwt6f7xxmm" path="res://Assets/Materials/Grid.tres" id="34_ou012"]
 [ext_resource type="Script" uid="uid://0n7uvn3scbtd" path="res://Scripts/UserInterface/ButtonHandlers/BuildModeClear.cs" id="35_p24xc"]
-[ext_resource type="Texture2D" uid="uid://xp6y4oqgn2ko" path="res://Assets/Textures/UserInterface/Buttons/clearicon.svg" id="36_7j3xb"]
+[ext_resource type="Texture2D" uid="uid://xp6y4oqgn2ko" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/clearicon.svg" id="36_7j3xb"]
 [ext_resource type="Script" uid="uid://bxldarynbrqxw" path="res://Scripts/UserInterface/ContextMenus/LaunchsiteMenu.cs" id="37_7j3xb"]
 [ext_resource type="Script" uid="uid://dsqu0fmvb11d6" path="res://Scripts/UserInterface/ButtonHandlers/BuildModeExit.cs" id="38_a66g2"]
-[ext_resource type="Texture2D" uid="uid://3e0eh5stlfej" path="res://Assets/Textures/UserInterface/Buttons/exitIcon.svg" id="38_byrdn"]
+[ext_resource type="Texture2D" uid="uid://3e0eh5stlfej" path="res://Assets/Textures/UserInterface/CraftEditor/Buttons/exitIcon.svg" id="38_byrdn"]
+[ext_resource type="Texture2D" uid="uid://x8kvw8eh51rl" path="res://Assets/Textures/dropdown_button_down.png" id="39_mbbrb"]
+[ext_resource type="Script" uid="uid://ddw6dgxoyosje" path="res://Scripts/UserInterface/Flight/FlightUI.cs" id="39_tucam"]
+[ext_resource type="Texture2D" uid="uid://cvu7pnyn48c8j" path="res://Assets/Textures/dropdown_button_right.png" id="40_ul3nw"]
+[ext_resource type="Script" uid="uid://cstbvsefoxhk2" path="res://Scripts/UserInterface/Flight/Altimeter.cs" id="40_wkwvl"]
+[ext_resource type="Script" uid="uid://d2561kxnruepq" path="res://Scripts/UserInterface/Flight/Speedometer.cs" id="41_cw7fe"]
+[ext_resource type="Script" uid="uid://dblpo740d2d4w" path="res://Scripts/UserInterface/Misc/TimewarpUI.cs" id="41_w8340"]
+[ext_resource type="Script" uid="uid://b4byh53dv8k5" path="res://Scripts/UserInterface/Misc/ClockUI.cs" id="42_6b1ya"]
+[ext_resource type="PackedScene" uid="uid://d1detwm4i50s7" path="res://Assets/Prefabs/UI/Buttons/timewarp_button.tscn" id="42_w8340"]
+[ext_resource type="Script" uid="uid://b3h6paq7bpbs0" path="res://Scripts/UserInterface/Flight/Navball.cs" id="43_wlh0d"]
+[ext_resource type="Texture2D" uid="uid://x8xrflxevkxi" path="res://Assets/Textures/UserInterface/Sprites/throttle.svg" id="45_400pm"]
+[ext_resource type="Script" uid="uid://ciw6m5phi56xv" path="res://Scripts/UserInterface/Flight/RotatingThrottle.cs" id="46_wsl1x"]
+[ext_resource type="Texture2D" uid="uid://bsk2xxyemcm0y" path="res://Assets/Textures/UserInterface/Sprites/throttlebackg.svg" id="46_y64qo"]
+[ext_resource type="Script" uid="uid://drrsx2qsfqgck" path="res://Scripts/UserInterface/Windows/DraggablePanel.cs" id="49_oe5si"]
+[ext_resource type="PackedScene" uid="uid://bwoopux77w7qj" path="res://Assets/Prefabs/UI/Components/resize_handles.tscn" id="52_mtnyg"]
+[ext_resource type="Script" uid="uid://sdj8klytec1m" path="res://Scripts/FlightLogic/CraftInputManager.cs" id="60_2aux3"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_h3s5b"]
-material = ExtResource("3_sfn14")
+[sub_resource type="SphereMesh" id="SphereMesh_wsl1x"]
 flip_faces = true
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2aux3"]
+
+[sub_resource type="Sky" id="Sky_807e1"]
+sky_material = SubResource("ProceduralSkyMaterial_2aux3")
 
 [sub_resource type="Environment" id="Environment_h3s5b"]
 background_mode = 1
-ssao_radius = 14.58
-ssao_intensity = 16.0
+background_color = Color(1, 1, 1, 1)
+background_energy_multiplier = 0.05
+sky = SubResource("Sky_807e1")
+ssil_enabled = true
+glow_enabled = true
+glow_bloom = 0.5
+adjustment_enabled = true
+adjustment_brightness = 1.1
+adjustment_contrast = 1.1
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_oe5si"]
+material = ExtResource("34_ou012")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ou012"]
+material = ExtResource("34_ou012")
+flip_faces = true
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p24xc"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7j3xb"]
 
-[node name="ActiveSave" type="Node3D" node_paths=PackedStringArray("planetSystem", "partManager", "colonyManager", "flightCam", "localCamera", "localSpace")]
+[sub_resource type="SphereMesh" id="SphereMesh_oe5si"]
+
+[sub_resource type="Gradient" id="Gradient_wsl1x"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2aux3"]
+gradient = SubResource("Gradient_wsl1x")
+width = 1
+
+[sub_resource type="CSharpScript" id="CSharpScript_ldaci"]
+script/source = "using Godot;
+using System;
+
+// MapIcon for ordinary Node3Ds
+public partial class ColonyIcon : MapIcon
+{
+    [Export] public Colony colony;
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (thing != null && camera != null) 
+        {
+            Vector3 thingPos = thing.GlobalPosition;
+            Vector2 screenPos = camera.UnprojectPosition(thingPos);
+
+            Position = screenPos;
+        }
+    }
+
+    public override void _Pressed()
+    {
+        FlightCamera flightCam = FlightCamera.Instance;
+        //flightCam.TargetObject(thing, new Vector3(1, float.PositiveInfinity, 2), true);
+
+        Godot.Collections.Dictionary info = new()
+        {
+            { \"colony\", colony }
+        };
+
+        MapView.Instance.mapUI.contextMenus.OpenMenu(\"ColonyMenu\", info, true);
+    }
+}
+"
+
+[sub_resource type="PackedScene" id="PackedScene_kqsux"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"id_paths": [],
+"names": PackedStringArray("ColonyIcon", "TextureButton", "offset_right", "offset_bottom", "texture_normal", "texture_hover", "script"),
+"node_count": 1,
+"node_ids": PackedInt32Array(0),
+"node_paths": [],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 5, 2, 0, 3, 1, 4, 2, 5, 3, 6, 4, 0),
+"variants": [20.0, 20.0, ExtResource("39_mbbrb"), ExtResource("40_ul3nw"), SubResource("CSharpScript_ldaci")],
+"version": 3
+}
+
+[node name="ActiveSave" type="Node3D" unique_id=1641581012 node_paths=PackedStringArray("celestialBodyManager", "partManager", "colonyManager", "flightCam", "stateManager", "localSpace", "scaledSpace", "mapSpace")]
 script = ExtResource("1_2c3j4")
-planetSystem = NodePath("PlanetSystem")
+celestialBodyManager = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace/Planets")
 partManager = NodePath("PartManager")
 colonyManager = NodePath("ColonyManager")
 flightCam = NodePath("FlightCamera")
-localCamera = NodePath("RenderLayers/LocalContainer/LocalView/Camera3D")
+stateManager = NodePath("StateManager")
 localSpace = NodePath("RenderLayers/LocalContainer/LocalView/LocalSpace")
+scaledSpace = NodePath("RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
+mapSpace = NodePath("ViewportWindows/Map/MapContainer/MapVP/MapView")
+timeSpeedLevels = Array[float]([1.0, 2.0, 3.0, 4.0, 5.0, 10.0, 50.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0])
+maxPhysicsSpeedLevel = 4
+timeSpeedChangeDuration = 0.5
+accelTimeEvent = &"accel_time"
+deccelTimeEvent = &"deccel_time"
 
-[node name="RealityTangler" type="Node" parent="."]
+[node name="StateManager" type="Node" parent="." unique_id=2074004250]
+script = ExtResource("2_wsyj0")
+
+[node name="RealityTangler" type="Node" parent="." unique_id=1762014724]
 process_priority = 100
 script = ExtResource("13_sfn14")
+originResetThreshold = 10000000.0
 
-[node name="RenderLayers" type="Control" parent="."]
-z_index = -5
+[node name="FlightCamera" type="Node3D" parent="." unique_id=1009889495 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
+script = ExtResource("6_0mdm0")
+multiplyScroll = true
+lerpSpeed = 0.25
+rotationAmnt = 0.5
+zoomAmnt = 1.1
+zoom = 2.0
+rotNode_Y = NodePath("RotateOffset/Cam_Rot_Y")
+rotNode_X = NodePath("RotateOffset/Cam_Rot_Y/Cam_Rot_X")
+CamNode = NodePath("RotateOffset/Cam_Rot_Y/Cam_Rot_X/RemoteCams")
+dragCam = &"secondary_interaction"
+zoomIn = &"zoom_in"
+zoomOut = &"zoom_out"
+
+[node name="RotateOffset" type="Node3D" parent="FlightCamera" unique_id=84863050]
+transform = Transform3D(1, 0, 0, 0, 6.123233995736766e-17, -1, 0, 1, 6.123233995736766e-17, 0, 0, 0)
+
+[node name="Cam_Rot_Y" type="Node3D" parent="FlightCamera/RotateOffset" unique_id=1913721891]
+
+[node name="Cam_Rot_X" type="Node3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y" unique_id=1323953864]
+
+[node name="RemoteCams" type="Node3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y/Cam_Rot_X" unique_id=1743440393]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="Local" type="RemoteTransform3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=708775881]
+remote_path = NodePath("../../../../../../RenderLayers/LocalContainer/LocalView/Camera3D")
+
+[node name="Scaled" type="RemoteTransform3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=1061326743]
+remote_path = NodePath("../../../../../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
+
+[node name="Background" type="RemoteTransform3D" parent="FlightCamera/RotateOffset/Cam_Rot_Y/Cam_Rot_X/RemoteCams" unique_id=903743557]
+remote_path = NodePath("../../../../../../RenderLayers/BackgContainer/SubViewport/Camera3D")
+
+[node name="RenderLayers" type="Control" parent="." unique_id=980932977]
+z_index = -1000
 texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
@@ -78,8 +224,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="BackgroundContainer" type="SubViewportContainer" parent="RenderLayers"]
-z_index = -1
+[node name="BackgContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=442988402]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -88,29 +233,25 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="BackgView" type="SubViewport" parent="RenderLayers/BackgroundContainer"]
-transparent_bg = true
+[node name="SubViewport" type="SubViewport" parent="RenderLayers/BackgContainer" unique_id=1989627046]
+own_world_3d = true
 handle_input_locally = false
-msaa_3d = 2
-screen_space_aa = 1
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="Camera3D" type="Camera3D" parent="RenderLayers/BackgroundContainer/BackgView"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
-cull_mask = 1047556
+[node name="Camera3D" type="Camera3D" parent="RenderLayers/BackgContainer/SubViewport" unique_id=713492981]
+transform = Transform3D(1, 0, 0, 0, 6.123233995736766e-17, -1, 0, 1, 6.123233995736766e-17, 0, -1, 6.123233995736766e-17)
 fov = 90.0
-far = 100000.0
 
-[node name="Background" type="Node3D" parent="RenderLayers/BackgroundContainer/BackgView"]
-
-[node name="Sky" type="MeshInstance3D" parent="RenderLayers/BackgroundContainer/BackgView/Background"]
-transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, 0, 1)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RenderLayers/BackgContainer/SubViewport" unique_id=746733680]
+process_priority = 100
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
 layers = 4
-mesh = SubResource("BoxMesh_h3s5b")
-skeleton = NodePath("../../../../../Miscellaneous/gizmo")
+material_override = ExtResource("5_2aux3")
+mesh = SubResource("SphereMesh_wsl1x")
+script = ExtResource("6_807e1")
 
-[node name="ScaledContainer" type="SubViewportContainer" parent="RenderLayers"]
+[node name="ScaledContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=672276359]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -119,7 +260,7 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="ScaledView" type="SubViewport" parent="RenderLayers/ScaledContainer"]
+[node name="ScaledView" type="SubViewport" parent="RenderLayers/ScaledContainer" unique_id=787600989]
 transparent_bg = true
 handle_input_locally = false
 msaa_3d = 2
@@ -127,19 +268,17 @@ screen_space_aa = 1
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="Camera3D" type="Camera3D" parent="RenderLayers/ScaledContainer/ScaledView"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+[node name="Camera3D" type="Camera3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=39155709]
+transform = Transform3D(1, 0, 0, 0, 6.123233995736766e-17, -1, 0, 1, 6.123233995736766e-17, 0, -1, 6.123233995736766e-17)
 cull_mask = 1047554
-attributes = ExtResource("2_cbqy2")
 fov = 90.0
-near = 0.51
-far = 10000000.0
+near = 0.5
+far = 1e+15
 
-[node name="ScaledSpace" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" node_paths=PackedStringArray("flightCamera")]
+[node name="ScaledSpace" type="Node3D" parent="RenderLayers/ScaledContainer/ScaledView" unique_id=1784030288]
 script = ExtResource("5_yxkbd")
-flightCamera = NodePath("../../../../FlightCamera")
 
-[node name="LocalContainer" type="SubViewportContainer" parent="RenderLayers"]
+[node name="LocalContainer" type="SubViewportContainer" parent="RenderLayers" unique_id=1335764156]
 z_index = 1
 layout_mode = 1
 anchors_preset = 15
@@ -149,121 +288,32 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="LocalView" type="SubViewport" parent="RenderLayers/LocalContainer"]
+[node name="LocalView" type="SubViewport" parent="RenderLayers/LocalContainer" unique_id=483114518]
 transparent_bg = true
 handle_input_locally = false
 msaa_3d = 2
 screen_space_aa = 1
-oversampling = false
+physics_object_picking = true
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="Camera3D" type="Camera3D" parent="RenderLayers/LocalContainer/LocalView"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+[node name="Camera3D" type="Camera3D" parent="RenderLayers/LocalContainer/LocalView" unique_id=1187591863]
+transform = Transform3D(1, 0, 0, 0, 6.123233995736766e-17, -1, 0, 1, 6.123233995736766e-17, 0, -1, 6.123233995736766e-17)
 cull_mask = 1047553
-attributes = ExtResource("2_cbqy2")
 current = true
 fov = 90.0
 far = 1000000.0
 
-[node name="LocalSpace" type="Node3D" parent="RenderLayers/LocalContainer/LocalView"]
+[node name="LocalSpace" type="Node3D" parent="RenderLayers/LocalContainer/LocalView" unique_id=1184150835 node_paths=PackedStringArray("Viewport", "Camera", "Planets")]
+script = ExtResource("10_5brss")
+Viewport = NodePath("..")
+Camera = NodePath("../Camera3D")
+Planets = NodePath("Planets")
 
-[node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace"]
+[node name="Planets" type="Node3D" parent="RenderLayers/LocalContainer/LocalView/LocalSpace" unique_id=643920472]
+script = ExtResource("9_y64qo")
 
-[node name="OrbitRenderers" type="Control" parent="RenderLayers"]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="PlanetSystem" type="Node3D" parent="." node_paths=PackedStringArray("planetIcons", "localCamera", "localSpace", "scaledSpace", "orbitRenderers")]
-script = ExtResource("1_pocjb")
-orbitRendererPrefab = ExtResource("3_212tm")
-planetIconPrefab = ExtResource("4_yxkbd")
-planetIcons = NodePath("../UI/MapUI/PlanetIcons")
-localCamera = NodePath("../RenderLayers/LocalContainer/LocalView/Camera3D")
-localSpace = NodePath("../RenderLayers/LocalContainer/LocalView/LocalSpace")
-scaledSpace = NodePath("../RenderLayers/ScaledContainer/ScaledView/ScaledSpace")
-orbitRenderers = NodePath("../RenderLayers/OrbitRenderers")
-DEBUG_GizmoPrefab = ExtResource("17_h3s5b")
-
-[node name="PartManager" type="Node" parent="."]
-script = ExtResource("6_2c3j4")
-
-[node name="CraftManager" type="Node" parent="."]
-script = ExtResource("6_ijjgm")
-
-[node name="ColonyManager" type="Node" parent="." node_paths=PackedStringArray("iconParent")]
-script = ExtResource("8_gxrxs")
-iconPrefab = ExtResource("9_gusxr")
-iconParent = NodePath("../UI/MapUI/ColonyIcons")
-
-[node name="BuildingManager" type="Node" parent="." node_paths=PackedStringArray("editorPartContainer", "floatingPartContainer", "buildUI")]
-script = ExtResource("14_uc177")
-editorPartContainer = NodePath("EditorParts")
-floatingPartContainer = NodePath("FloatingParts")
-buildUI = NodePath("../UI/BuildUI")
-partMoveSpeed = 42.0
-verboseLogging = true
-
-[node name="EditorParts" type="Node3D" parent="BuildingManager"]
-
-[node name="FloatingParts" type="Node3D" parent="BuildingManager"]
-
-[node name="FlightCamera" type="Node3D" parent="." node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "camNode")]
-script = ExtResource("6_0mdm0")
-multiplyScroll = true
-lerpSpeed = 10.0
-rotationAmnt = 0.5
-rotNode_Y = NodePath("Cam_Rot_Y")
-rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
-camNode = NodePath("Cam_Rot_Y/Cam_Rot_X/RemoteCams")
-zoomAmnt = 1.1
-zoom = 2.0
-
-[node name="Cam_Rot_Y" type="Node3D" parent="FlightCamera"]
-
-[node name="Cam_Rot_X" type="Node3D" parent="FlightCamera/Cam_Rot_Y"]
-
-[node name="RemoteCams" type="Node3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
-
-[node name="Local" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
-remote_path = NodePath("../../../../../RenderLayers/LocalContainer/LocalView/Camera3D")
-
-[node name="Scaled" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
-remote_path = NodePath("../../../../../RenderLayers/ScaledContainer/ScaledView/Camera3D")
-
-[node name="Background" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
-remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Camera3D")
-
-[node name="Skybox" type="RemoteTransform3D" parent="FlightCamera/Cam_Rot_Y/Cam_Rot_X/RemoteCams"]
-remote_path = NodePath("../../../../../RenderLayers/BackgroundContainer/BackgView/Background/Sky")
-update_rotation = false
-update_scale = false
-
-[node name="Miscellaneous" type="Node" parent="."]
-
-[node name="gizmo" parent="Miscellaneous" instance=ExtResource("17_h3s5b")]
-transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0, 0, 0)
-visible = false
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Miscellaneous"]
-environment = SubResource("Environment_h3s5b")
-
-[node name="Lights" type="Node" parent="."]
-
-[node name="TestLight" type="DirectionalLight3D" parent="Lights"]
-transform = Transform3D(0.9396926, -0.2620026, 0.21984634, 0, 0.6427876, 0.76604456, -0.34202012, -0.71984625, 0.60402286, 0, 0, 0)
-layers = 3
-shadow_enabled = true
-shadow_bias = 0.075
-shadow_blur = 0.5
-directional_shadow_split_1 = 0.02
-directional_shadow_split_2 = 0.05
-directional_shadow_split_3 = 0.4
-directional_shadow_max_distance = 8192.0
-
-[node name="UI" type="Control" parent="."]
+[node name="ViewportWindows" type="Control" parent="." unique_id=1216988180]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -273,31 +323,85 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("7_yxkbd")
 
-[node name="PartMenuHandler" type="Control" parent="UI" node_paths=PackedStringArray("contextMenus")]
+[node name="Map" type="Panel" parent="ViewportWindows" unique_id=1962789458]
+custom_minimum_size = Vector2(200, 100)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("15_cbqy2")
-contextMenus = NodePath("ContextMenus")
-menuPrefab = ExtResource("17_2vujl")
-buttonPrefab = ExtResource("19_cuu2x")
+mouse_force_pass_scroll_events = false
+script = ExtResource("49_oe5si")
+draggable = false
 
-[node name="ContextMenus" type="Control" parent="UI/PartMenuHandler" node_paths=PackedStringArray("menus")]
+[node name="MapContainer" type="SubViewportContainer" parent="ViewportWindows/Map" unique_id=144351039]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("15_ue2ba")
-menus = []
+stretch = true
 
-[node name="MapUI" type="Control" parent="UI" node_paths=PackedStringArray("contextMenus")]
+[node name="MapVP" type="SubViewport" parent="ViewportWindows/Map/MapContainer" unique_id=2039008767]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1582826098]
+environment = SubResource("Environment_h3s5b")
+
+[node name="MapView" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=1218422952 node_paths=PackedStringArray("UIContainer", "mapCamera", "mapUI", "mapIconContainer", "Viewport")]
+script = ExtResource("8_h4qns")
+UIContainer = NodePath("../../..")
+openMapEvent = &"map_view"
+mapCamera = NodePath("MapCamera")
+mapUI = NodePath("../../../MapUI")
+mapIconContainer = NodePath("../../../MapUI/MapIcons")
+mapIconPrefab = ExtResource("32_ul3nw")
+Viewport = NodePath("../..")
+
+[node name="MapCamera" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView" unique_id=1320007421 node_paths=PackedStringArray("rotNode_Y", "rotNode_X", "CamNode")]
+script = ExtResource("12_ou012")
+multiplyScroll = true
+lerpSpeed = 0.25
+rotationAmnt = 0.5
+zoomAmnt = 1.1
+zoom = 2.0
+maxZoom = 10000.0
+rotNode_Y = NodePath("Cam_Rot_Y")
+rotNode_X = NodePath("Cam_Rot_Y/Cam_Rot_X")
+CamNode = NodePath("Cam_Rot_Y/Cam_Rot_X/MapCamera3D")
+dragCam = &"secondary_interaction"
+zoomIn = &"zoom_in"
+zoomOut = &"zoom_out"
+
+[node name="Cam_Rot_Y" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera" unique_id=1209681140]
+
+[node name="Cam_Rot_X" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y" unique_id=1492844660]
+
+[node name="MapCamera3D" type="Camera3D" parent="ViewportWindows/Map/MapContainer/MapVP/MapView/MapCamera/Cam_Rot_Y/Cam_Rot_X" unique_id=1532995661]
+far = 100000000.0
+
+[node name="Grid" type="Node3D" parent="ViewportWindows/Map/MapContainer/MapVP" unique_id=232402699]
+
+[node name="GridUp" type="MeshInstance3D" parent="ViewportWindows/Map/MapContainer/MapVP/Grid" unique_id=942443122]
+transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, 0, 0)
+mesh = SubResource("PlaneMesh_oe5si")
+skeleton = NodePath("../..")
+
+[node name="GridDown" type="MeshInstance3D" parent="ViewportWindows/Map/MapContainer/MapVP/Grid" unique_id=332955875]
+transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, 0, 0)
+mesh = SubResource("PlaneMesh_ou012")
+skeleton = NodePath("../..")
+
+[node name="ResizeHandles" parent="ViewportWindows/Map" unique_id=365995451 instance=ExtResource("52_mtnyg")]
+layout_mode = 1
+
+[node name="MapUI" type="Control" parent="ViewportWindows/Map" unique_id=327474485 node_paths=PackedStringArray("contextMenus", "dragPanel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -308,20 +412,35 @@ mouse_filter = 2
 theme = ExtResource("7_yxkbd")
 script = ExtResource("14_23wpb")
 contextMenus = NodePath("ContextMenus")
+dragPanel = NodePath("..")
 
-[node name="PlanetIcons" type="Control" parent="UI/MapUI"]
-anchors_preset = 0
-offset_right = 40.0
+[node name="Topbar" type="HBoxContainer" parent="ViewportWindows/Map/MapUI" unique_id=688219339]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
 offset_bottom = 40.0
+grow_horizontal = 2
 mouse_filter = 2
 
-[node name="ColonyIcons" type="Control" parent="UI/MapUI"]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-mouse_filter = 2
+[node name="UndockButton" type="Button" parent="ViewportWindows/Map/MapUI/Topbar" unique_id=1114260660]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
 
-[node name="ContextMenus" type="Control" parent="UI/MapUI" node_paths=PackedStringArray("menus")]
+[node name="Icon" type="TextureRect" parent="ViewportWindows/Map/MapUI/Topbar/UndockButton" unique_id=2083253347]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("33_8ed1a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ContextMenus" type="Control" parent="ViewportWindows/Map/MapUI" unique_id=634416631 node_paths=PackedStringArray("menus")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -332,7 +451,7 @@ mouse_filter = 2
 script = ExtResource("15_ue2ba")
 menus = [NodePath("ColonyMenu"), NodePath("PlanetMenu")]
 
-[node name="ColonyMenu" type="Panel" parent="UI/MapUI/ContextMenus" node_paths=PackedStringArray("title")]
+[node name="ColonyMenu" type="Panel" parent="ViewportWindows/Map/MapUI/ContextMenus" unique_id=1209619276 node_paths=PackedStringArray("title")]
 visible = false
 layout_mode = 0
 offset_left = 1670.0
@@ -342,7 +461,7 @@ offset_bottom = 1057.0
 script = ExtResource("15_p543u")
 title = NodePath("VBoxContainer/Title")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/MapUI/ContextMenus/ColonyMenu"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu" unique_id=744676155]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -354,31 +473,31 @@ offset_bottom = -45.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Title" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Title" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=570385702]
 layout_mode = 2
 text = "COLONY NAME"
 
-[node name="Label2" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Label2" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=1739743777]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="Label3" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Label3" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=2062304356]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="Label4" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Label4" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=1311950702]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="Label5" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Label5" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=420589065]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="Label6" type="Label" parent="UI/MapUI/ContextMenus/ColonyMenu/VBoxContainer"]
+[node name="Label6" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/VBoxContainer" unique_id=679138661]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="EnterButton" type="Button" parent="UI/MapUI/ContextMenus/ColonyMenu"]
+[node name="EnterButton" type="Button" parent="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu" unique_id=1731887427]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -390,7 +509,7 @@ offset_bottom = -8.0
 grow_vertical = 0
 text = "Enter"
 
-[node name="PlanetMenu" type="Panel" parent="UI/MapUI/ContextMenus" node_paths=PackedStringArray("title", "radius", "mass", "gravity")]
+[node name="PlanetMenu" type="Panel" parent="ViewportWindows/Map/MapUI/ContextMenus" unique_id=6665928 node_paths=PackedStringArray("title", "radius", "mass", "gravity")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -408,7 +527,7 @@ radius = NodePath("VBoxContainer/Radius")
 mass = NodePath("VBoxContainer/Mass")
 gravity = NodePath("VBoxContainer/Gravity")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/MapUI/ContextMenus/PlanetMenu"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu" unique_id=764233715]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -420,31 +539,75 @@ offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Title" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Title" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=80387065]
 layout_mode = 2
 text = "PLANET NAME"
 
-[node name="Radius" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Radius" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1164703744]
 layout_mode = 2
 text = "RADIUS"
 
-[node name="Mass" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Mass" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=600804206]
 layout_mode = 2
 text = "MASS"
 
-[node name="Gravity" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Gravity" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1458144534]
 layout_mode = 2
 text = "GRAVITY"
 
-[node name="Label5" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Label5" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=401718634]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="Label6" type="Label" parent="UI/MapUI/ContextMenus/PlanetMenu/VBoxContainer"]
+[node name="Label6" type="Label" parent="ViewportWindows/Map/MapUI/ContextMenus/PlanetMenu/VBoxContainer" unique_id=1902628798]
 layout_mode = 2
 text = "OTHER INFO"
 
-[node name="BuildUI" type="Control" parent="UI" node_paths=PackedStringArray("partListContainer", "partList")]
+[node name="MapIcons" type="Control" parent="ViewportWindows/Map/MapUI" unique_id=57788984]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="UI" type="Control" parent="." unique_id=6163037]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("7_yxkbd")
+
+[node name="PartMenuHandler" type="Control" parent="UI" unique_id=1100265305 node_paths=PackedStringArray("contextMenus")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("15_cbqy2")
+contextMenus = NodePath("ContextMenus")
+menuPrefab = ExtResource("17_2vujl")
+buttonPrefab = ExtResource("19_cuu2x")
+
+[node name="ContextMenus" type="Control" parent="UI/PartMenuHandler" unique_id=302155286 node_paths=PackedStringArray("menus")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("15_ue2ba")
+menus = []
+
+[node name="BuildUI" type="Control" parent="UI" unique_id=1081851632 node_paths=PackedStringArray("partListContainer", "partList")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -455,9 +618,9 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("23_hx2xn")
 partListContainer = NodePath("Selector")
-partList = NodePath("Selector/PartSelector/SelectMenu")
+partList = NodePath("Selector/Control/PartSelector/SelectMenu")
 
-[node name="Selector" type="Control" parent="UI/BuildUI"]
+[node name="Selector" type="Control" parent="UI/BuildUI" unique_id=1973749377]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -466,18 +629,35 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="PartSelector" type="Control" parent="UI/BuildUI/Selector"]
+[node name="PreviewContainer" type="Control" parent="UI/BuildUI/Selector" unique_id=739324967]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Control" type="Control" parent="UI/BuildUI/Selector" unique_id=2029293806]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 22.0
+offset_right = 394.0
+offset_bottom = -16.0
+grow_vertical = 2
+
+[node name="PartSelector" type="Control" parent="UI/BuildUI/Selector/Control" unique_id=686071424]
 custom_minimum_size = Vector2(288, 0)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = 106.225
-offset_top = 45.0
-offset_right = 394.225
-offset_bottom = -45.0
+offset_left = 61.0
+offset_right = 349.0
 grow_vertical = 2
 
-[node name="SelectMenu" type="Panel" parent="UI/BuildUI/Selector/PartSelector" node_paths=PackedStringArray("categoryList", "partPreviewContainer", "allButton")]
+[node name="SelectMenu" type="Panel" parent="UI/BuildUI/Selector/Control/PartSelector" unique_id=24945644 node_paths=PackedStringArray("categoryList", "partPreviewContainer", "allButton")]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -490,10 +670,10 @@ buttonPrefab = ExtResource("30_d1dok")
 categoryPrefab = ExtResource("25_51qm0")
 partSelector = ExtResource("23_vd1dx")
 categoryList = NodePath("../../PartCategories/ScrollContainer/CatList")
-partPreviewContainer = NodePath("../../PreviewContainer")
+partPreviewContainer = NodePath("../../../PreviewContainer")
 allButton = NodePath("../../AllButton")
 
-[node name="PartModifiers" type="Panel" parent="UI/BuildUI/Selector/PartSelector"]
+[node name="PartModifiers" type="Panel" parent="UI/BuildUI/Selector/Control/PartSelector" unique_id=1956750359]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -503,7 +683,7 @@ offset_top = -149.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ResizeHandles" type="Control" parent="UI/BuildUI/Selector/PartSelector"]
+[node name="ResizeHandles" type="Control" parent="UI/BuildUI/Selector/Control/PartSelector" unique_id=1937592047]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -512,7 +692,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="R" type="Button" parent="UI/BuildUI/Selector/PartSelector/ResizeHandles"]
+[node name="R" type="Button" parent="UI/BuildUI/Selector/Control/PartSelector/ResizeHandles" unique_id=334656615]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -528,17 +708,15 @@ theme_override_styles/pressed = ExtResource("24_vd1dx")
 theme_override_styles/hover = ExtResource("25_hx2xn")
 script = ExtResource("26_287u4")
 
-[node name="PartCategories" type="Panel" parent="UI/BuildUI/Selector"]
+[node name="PartCategories" type="Panel" parent="UI/BuildUI/Selector/Control" unique_id=1585859983]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = 45.0
-offset_top = 106.0
-offset_right = 103.0
-offset_bottom = -45.0
+offset_top = 64.0
+offset_right = 58.0
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/Selector/PartCategories"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/Selector/Control/PartCategories" unique_id=19543851]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -546,27 +724,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CatList" type="VBoxContainer" parent="UI/BuildUI/Selector/PartCategories/ScrollContainer"]
+[node name="CatList" type="VBoxContainer" parent="UI/BuildUI/Selector/Control/PartCategories/ScrollContainer" unique_id=1865035668]
 layout_mode = 2
 
-[node name="PreviewContainer" type="Control" parent="UI/BuildUI/Selector"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="AllButton" type="Button" parent="UI/BuildUI/Selector"]
+[node name="AllButton" type="Button" parent="UI/BuildUI/Selector/Control" unique_id=1341906821]
 custom_minimum_size = Vector2(58, 58)
 layout_mode = 0
-offset_left = 45.0
-offset_top = 44.0
-offset_right = 103.0
-offset_bottom = 102.0
+offset_right = 58.0
+offset_bottom = 58.0
 
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Selector/AllButton"]
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Selector/Control/AllButton" unique_id=1529589169]
 texture_filter = 4
 layout_mode = 1
 anchors_preset = 15
@@ -578,7 +745,7 @@ texture = ExtResource("32_nej1p")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Misc" type="Control" parent="UI/BuildUI"]
+[node name="Misc" type="Control" parent="UI/BuildUI" unique_id=388528411]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -587,38 +754,39 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="SideButtons" type="Panel" parent="UI/BuildUI/Misc"]
+[node name="Buttons" type="Panel" parent="UI/BuildUI/Misc" unique_id=1590814448]
 layout_mode = 1
-anchors_preset = 11
+anchors_preset = 3
 anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -112.0
-offset_top = 47.0
-offset_right = -46.0
-offset_bottom = -45.0
+offset_left = -204.0
+offset_top = -82.0
+offset_right = -14.0
+offset_bottom = -16.0
 grow_horizontal = 0
-grow_vertical = 2
+grow_vertical = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildUI/Misc/SideButtons"]
+[node name="VBoxContainer" type="HBoxContainer" parent="UI/BuildUI/Misc/Buttons" unique_id=1410406058]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 4.0
 offset_top = 4.0
-offset_right = -4.0
+offset_right = 120.0
 offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LaunchButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer" node_paths=PackedStringArray("contextMenus")]
+[node name="LaunchButton" type="Button" parent="UI/BuildUI/Misc/Buttons/VBoxContainer" unique_id=1297648159 node_paths=PackedStringArray("contextMenus")]
 custom_minimum_size = Vector2(58, 58)
 layout_mode = 2
 script = ExtResource("33_yged2")
 contextMenus = NodePath("../../../../ContextMenus")
 
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/LaunchButton"]
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/Buttons/VBoxContainer/LaunchButton" unique_id=787550104]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -629,12 +797,12 @@ texture = ExtResource("33_8ed1a")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ClearButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer"]
+[node name="ClearButton" type="Button" parent="UI/BuildUI/Misc/Buttons/VBoxContainer" unique_id=262158221]
 custom_minimum_size = Vector2(58, 58)
 layout_mode = 2
 script = ExtResource("35_p24xc")
 
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/ClearButton"]
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/Buttons/VBoxContainer/ClearButton" unique_id=1452579439]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -645,12 +813,12 @@ texture = ExtResource("36_7j3xb")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ExitButton" type="Button" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer"]
+[node name="ExitButton" type="Button" parent="UI/BuildUI/Misc/Buttons/VBoxContainer" unique_id=244411074]
 custom_minimum_size = Vector2(58, 58)
 layout_mode = 2
 script = ExtResource("38_a66g2")
 
-[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/SideButtons/VBoxContainer/ExitButton"]
+[node name="Icon" type="TextureRect" parent="UI/BuildUI/Misc/Buttons/VBoxContainer/ExitButton" unique_id=216336462]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -661,7 +829,7 @@ texture = ExtResource("38_byrdn")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ContextMenus" type="Control" parent="UI/BuildUI" node_paths=PackedStringArray("menus")]
+[node name="ContextMenus" type="Control" parent="UI/BuildUI" unique_id=226681809 node_paths=PackedStringArray("menus")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -672,22 +840,22 @@ mouse_filter = 2
 script = ExtResource("15_ue2ba")
 menus = [NodePath("SiteSelector")]
 
-[node name="SiteSelector" type="Panel" parent="UI/BuildUI/ContextMenus" node_paths=PackedStringArray("buttonContainer")]
+[node name="SiteSelector" type="Panel" parent="UI/BuildUI/ContextMenus" unique_id=1796948748 node_paths=PackedStringArray("buttonContainer")]
 visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -374.0
-offset_top = 47.0
-offset_right = -120.0
-offset_bottom = 247.0
+offset_left = -269.0
+offset_top = 692.0
+offset_right = -15.0
+offset_bottom = 993.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("37_7j3xb")
 buttonContainer = NodePath("ScrollContainer/VBoxContainer")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/ContextMenus/SiteSelector"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/BuildUI/ContextMenus/SiteSelector" unique_id=611963978]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -701,59 +869,557 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_p24xc")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7j3xb")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer" unique_id=936868582]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=641567149]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button2" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button2" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=223723964]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button3" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button3" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1264546627]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button4" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button4" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1743771517]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button5" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button5" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=798699098]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button6" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button6" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=796925157]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button7" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button7" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1687754573]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button8" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button8" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1312778502]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button9" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button9" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=1191022006]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[node name="Button10" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer"]
+[node name="Button10" type="Button" parent="UI/BuildUI/ContextMenus/SiteSelector/ScrollContainer/VBoxContainer" unique_id=639683005]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "TestOption"
 
-[connection signal="pressed" from="UI/MapUI/ContextMenus/ColonyMenu/EnterButton" to="UI/MapUI/ContextMenus/ColonyMenu" method="EnterButtonPressed"]
+[node name="FlightUI" type="Control" parent="UI" unique_id=2070060330]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("39_tucam")
+
+[node name="BottomLeft" type="Panel" parent="UI/FlightUI" unique_id=748240319]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 23.0
+offset_top = -284.0
+offset_right = 493.0
+offset_bottom = -20.0
+grow_vertical = 0
+theme_type_variation = &"CurvedSidePanel"
+
+[node name="Altimeter" type="Panel" parent="UI/FlightUI/BottomLeft" unique_id=1640216627 node_paths=PackedStringArray("label")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -71.0
+offset_right = 227.0
+offset_bottom = -11.0
+theme_type_variation = &"CornerPanel"
+script = ExtResource("40_wkwvl")
+label = NodePath("Switch/RichTextLabel")
+
+[node name="Switch" type="Button" parent="UI/FlightUI/BottomLeft/Altimeter" unique_id=1728877110]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.976
+offset_left = 5.0
+offset_top = 23.0
+offset_right = -6.0
+offset_bottom = -3.5600000000000023
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/FlightUI/BottomLeft/Altimeter/Switch" unique_id=101854120]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "ALTITUDE M"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Indicator" type="RichTextLabel" parent="UI/FlightUI/BottomLeft/Altimeter" unique_id=1631942046]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 4.0
+offset_right = -17.0
+offset_bottom = -39.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 14
+text = "SEA LEVEL"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Speedometer" type="Panel" parent="UI/FlightUI/BottomLeft" unique_id=743718988 node_paths=PackedStringArray("label", "typeLabel")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -137.0
+offset_right = 197.0
+offset_bottom = -77.0
+theme_type_variation = &"CornerPanel"
+script = ExtResource("41_cw7fe")
+label = NodePath("Switch/RichTextLabel")
+typeLabel = NodePath("Indicator")
+
+[node name="Switch" type="Button" parent="UI/FlightUI/BottomLeft/Speedometer" unique_id=1055013222]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.976
+offset_left = 5.0
+offset_top = 23.0
+offset_right = -6.0
+offset_bottom = -3.5600000000000023
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/FlightUI/BottomLeft/Speedometer/Switch" unique_id=1308315951]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+text = "VELOCITY M/S"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Indicator" type="RichTextLabel" parent="UI/FlightUI/BottomLeft/Speedometer" unique_id=28170327]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 4.0
+offset_right = -17.0
+offset_bottom = -39.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 14
+text = "ORBIT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Navball" type="Panel" parent="UI/FlightUI/BottomLeft" unique_id=361601837]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -248.0
+offset_top = -117.0
+offset_right = -14.0
+offset_bottom = 117.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_type_variation = &"CircularPanel"
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="UI/FlightUI/BottomLeft/Navball" unique_id=87912408]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 11.04545454545456
+offset_top = 11.0
+offset_right = -11.04545454545456
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="UI/FlightUI/BottomLeft/Navball/SubViewportContainer" unique_id=1406651591]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(211, 212)
+render_target_update_mode = 0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UI/FlightUI/BottomLeft/Navball/SubViewportContainer/SubViewport" unique_id=331086803]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0)
+material_override = ExtResource("30_ldaci")
+mesh = SubResource("SphereMesh_oe5si")
+script = ExtResource("43_wlh0d")
+
+[node name="Camera3D" type="Camera3D" parent="UI/FlightUI/BottomLeft/Navball/SubViewportContainer/SubViewport" unique_id=995235907]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.499157813288001)
+projection = 1
+
+[node name="OrbitInfo" type="Panel" parent="UI/FlightUI/BottomLeft" unique_id=1078897937]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -250.0
+offset_right = 180.0
+offset_bottom = -146.0
+grow_vertical = 0
+
+[node name="DifferentThingsPanel" type="Panel" parent="UI/FlightUI/BottomLeft/OrbitInfo" unique_id=626843282]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = -7.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="UI/FlightUI/BottomLeft/OrbitInfo/DifferentThingsPanel" unique_id=1274491192 node_paths=PackedStringArray("label")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("30_kqsux")
+label = NodePath("CraftOrbitData")
+
+[node name="CraftOrbitData" type="RichTextLabel" parent="UI/FlightUI/BottomLeft/OrbitInfo/DifferentThingsPanel/Control" unique_id=1584131148]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 14
+text = "orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123
+orbit parameter: 123123123"
+
+[node name="ThrottleContainer" type="Control" parent="UI/FlightUI/BottomLeft" unique_id=1263030631]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -146.0
+offset_top = -191.0
+offset_right = 61.0
+offset_bottom = 132.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="ThrottleBackgSolid" type="TextureRect" parent="UI/FlightUI/BottomLeft/ThrottleContainer" unique_id=643014898]
+modulate = Color(0, 0.015686275, 0.043137256, 0.78431374)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.131
+anchor_top = 0.04
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -147.88299999999998
+offset_top = -11.920000000000002
+offset_right = -1.9999999999999716
+offset_bottom = 58.0
+grow_horizontal = 0
+grow_vertical = 2
+rotation = -0.2879793265790644
+pivot_offset = Vector2(190, 190)
+texture = ExtResource("45_400pm")
+expand_mode = 3
+
+[node name="Throttle" type="TextureRect" parent="UI/FlightUI/BottomLeft/ThrottleContainer" unique_id=1316746889]
+modulate = Color(0.2784314, 0.42352942, 0.5372549, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.131
+anchor_top = 0.04
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -147.883
+offset_top = -11.92
+offset_right = -2.0
+offset_bottom = 58.0
+grow_horizontal = 0
+grow_vertical = 2
+rotation = 2.321287905152458
+pivot_offset = Vector2(190, 190)
+texture = ExtResource("45_400pm")
+expand_mode = 3
+script = ExtResource("46_wsl1x")
+emptyRot = 2.356
+fullRot = -0.288
+
+[node name="ThrottleBackg" type="TextureRect" parent="UI/FlightUI/BottomLeft/ThrottleContainer" unique_id=1587885184]
+modulate = Color(0.17254902, 0.08235294, 0.14901961, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.131
+anchor_top = 0.04
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -147.88299999999998
+offset_top = -11.920000000000002
+offset_right = -1.9999999999999716
+offset_bottom = 58.0
+grow_horizontal = 0
+grow_vertical = 2
+rotation = -0.2879793265790644
+pivot_offset = Vector2(190, 190)
+texture = ExtResource("46_y64qo")
+expand_mode = 3
+
+[node name="Thingy" type="TextureRect" parent="UI/FlightUI/BottomLeft/ThrottleContainer" unique_id=1426174276]
+modulate = Color(0.17254902, 0.08235294, 0.14901961, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.997
+offset_left = 96.0
+offset_top = 321.0
+offset_right = -70.0
+offset_bottom = 4.968999999999994
+texture = SubResource("GradientTexture1D_2aux3")
+expand_mode = 1
+
+[node name="UniversalUI" type="Control" parent="UI" unique_id=564722764]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Time" type="Control" parent="UI/UniversalUI" unique_id=482155313]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+
+[node name="Timewarp" type="Panel" parent="UI/UniversalUI/Time" unique_id=66221609 node_paths=PackedStringArray("buttonContainer", "indicator")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -417.0
+offset_top = 22.0
+offset_right = -274.0
+offset_bottom = 79.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("41_w8340")
+buttonPrefab = ExtResource("42_w8340")
+buttonContainer = NodePath("TimewarpButtons/Buttons")
+indicator = NodePath("Panel2/TimewarpLabel")
+
+[node name="Panel2" type="Panel" parent="UI/UniversalUI/Time/Timewarp" unique_id=1336735906]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.958
+offset_left = 53.0
+offset_top = 9.0
+offset_right = -8.0
+offset_bottom = -6.606000000000002
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="TimewarpLabel" type="RichTextLabel" parent="UI/UniversalUI/Time/Timewarp/Panel2" unique_id=530298296]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "1.0B"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TimewarpButtons" type="PanelContainer" parent="UI/UniversalUI/Time/Timewarp" unique_id=1070911847]
+layout_direction = 3
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 147.0
+offset_right = 167.0
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("32_mtnyg")
+
+[node name="Buttons" type="HBoxContainer" parent="UI/UniversalUI/Time/Timewarp/TimewarpButtons" unique_id=1754673541]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+alignment = 2
+
+[node name="PauseButton" type="Button" parent="UI/UniversalUI/Time/Timewarp" unique_id=728316474]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 9.0
+offset_right = -94.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+toggle_mode = true
+text = "►"
+
+[node name="Display" type="Panel" parent="UI/UniversalUI/Time" unique_id=1743713297]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -270.0
+offset_top = 22.0
+offset_right = -19.0
+offset_bottom = 79.0
+
+[node name="Panel" type="Panel" parent="UI/UniversalUI/Time/Display" unique_id=1680445821 node_paths=PackedStringArray("label")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 9.0
+offset_right = -9.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("42_6b1ya")
+label = NodePath("TimeLabel")
+
+[node name="TimeLabel" type="RichTextLabel" parent="UI/UniversalUI/Time/Display/Panel" unique_id=561874543]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_right = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "999999999999999999999999999s"
+autowrap_mode = 0
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="PartManager" type="Node" parent="." unique_id=1645644584 node_paths=PackedStringArray("temporaryPartDump")]
+process_priority = 3290
+script = ExtResource("6_2c3j4")
+temporaryPartDump = NodePath("TemporaryPartDump")
+
+[node name="TemporaryPartDump" type="Node3D" parent="PartManager" unique_id=254446572]
+
+[node name="CraftManager" type="Node" parent="." unique_id=837445787]
+script = ExtResource("6_ijjgm")
+
+[node name="CraftInputManager" type="Node" parent="CraftManager" unique_id=1193255632]
+script = ExtResource("60_2aux3")
+throttleIncrement = 0.5
+throttleIncreaseAction = &"throttle_increase"
+throttleDecreaseAction = &"throttle_decrease"
+
+[node name="ColonyManager" type="Node" parent="." unique_id=639718792]
+script = ExtResource("8_gxrxs")
+iconPrefab = SubResource("PackedScene_kqsux")
+
+[node name="BuildingManager" type="Node" parent="." unique_id=811713000 node_paths=PackedStringArray("editorPartContainer", "floatingPartContainer", "buildUI")]
+script = ExtResource("14_uc177")
+editorPartContainer = NodePath("EditorParts")
+floatingPartContainer = NodePath("FloatingParts")
+buildUI = NodePath("../UI/BuildUI")
+partMoveSpeed = 42.0
+
+[node name="EditorParts" type="Node3D" parent="BuildingManager" unique_id=923514272]
+
+[node name="FloatingParts" type="Node3D" parent="BuildingManager" unique_id=1573556491]
+
+[node name="OrbitRendererManager" type="Node" parent="." unique_id=1421214884]
+script = ExtResource("15_h7vhn")
+orbitPrecision = 100.0
+rendererPrefab = ExtResource("16_np084")
+
+[node name="Miscellaneous" type="Node" parent="." unique_id=763652581]
+
+[node name="gizmo" parent="Miscellaneous" unique_id=904981576 instance=ExtResource("17_h3s5b")]
+transform = Transform3D(0.03, 0, 0, 0, 0.03, 0, 0, 0, 0.03, 0, 0, 0)
+visible = false
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Miscellaneous" unique_id=1060175846]
+environment = SubResource("Environment_h3s5b")
+
+[node name="Lights" type="Node" parent="." unique_id=390825035]
+script = ExtResource("22_3w3h3")
+lightPrefab = ExtResource("23_mbbrb")
+
+[node name="TestLight" type="DirectionalLight3D" parent="Lights" unique_id=1622771519]
+transform = Transform3D(0.9396926, -0.2620026, 0.21984634, 0, 0.6427876, 0.76604456, -0.34202012, -0.71984625, 0.60402286, 0, 0, 0)
+visible = false
+layers = 3
+shadow_enabled = true
+shadow_bias = 0.075
+directional_shadow_split_1 = 0.02
+directional_shadow_split_2 = 0.05
+directional_shadow_split_3 = 0.4
+directional_shadow_max_distance = 8192.0
+
+[connection signal="pressed" from="ViewportWindows/Map/MapUI/Topbar/UndockButton" to="ViewportWindows/Map/MapUI" method="OnDockButtonPressed"]
+[connection signal="pressed" from="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu/EnterButton" to="ViewportWindows/Map/MapUI/ContextMenus/ColonyMenu" method="EnterButtonPressed"]
+[connection signal="pressed" from="UI/FlightUI/BottomLeft/Speedometer/Switch" to="UI/FlightUI/BottomLeft/Speedometer" method="OnSwitchPressed"]
+[connection signal="toggled" from="UI/UniversalUI/Time/Timewarp/PauseButton" to="UI/UniversalUI/Time/Timewarp" method="OnPauseButtonPressed"]

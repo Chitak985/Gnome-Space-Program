@@ -7,32 +7,23 @@
 	"radius": 69570000,
 	"inverseRotAltitude": 100000
   },
+  "rotation": {
+	"initial": 0,
+	"period": 10000,
+	"tilt": [0, 0, 0],
+  },
+  "light": {
+	"brightness": 1,
+	"colour": [1,1,1]
+  },
   "pqs": {
+	"material": {
+		"unlit": true,
+		"albedo": "Stock/GnobeSystem/Textures/Terrain/Blank/Albedo.png",
+		"normal": "Stock/GnobeSystem/Textures/Terrain/Blank/Normal.png"
+	},
 	"pqsMods": [
-	  {
-		"mod": "fastNoise3D",
-		"type": "cellular",
-		"seed": 0,
-		"noiseOffset": [0,0,0],
-		"deformity": 1200000,
-		"offset": 0,
-		"frequency": 10000,
-		"fractal": {
-		  "type": "fbm",
-		  "octaves": 10,
-		  "lacunarity": 2,
-		  "gain": 0.5,
-		  "weightedStrength": 0,
-		  "pingPongParams": {
-			"pingPongStrength": 2
-		  }
-		},
-		"cellular": {
-		  "distanceFunction": "euclidean",
-		  "jitter": 1,
-		  "returnType": "distance"
-		}
-	  }
+
 	]
   }
 }

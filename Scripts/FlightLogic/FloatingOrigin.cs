@@ -31,7 +31,7 @@ public partial class FloatingOrigin : Node
                 {
                     offset -= currentCraft.GlobalPosition;
                     currentCraft.Position = Vector3.Zero;
-                    foreach (CelestialBody cbody in PlanetSystem.Instance.celestialBodies)
+                    foreach (CelestialBody cbody in CelestialBodyManager.Instance.CelestialBodies)
                     {
                         //cbody.ProcessOrbitalPosition();
                     }

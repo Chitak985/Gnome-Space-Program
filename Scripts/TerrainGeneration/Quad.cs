@@ -21,6 +21,7 @@ public partial class Quad : Node
     public Mesh largeMesh; // this dont change either (DONT ASSIGN ARRAY MESH OR EVERYTHING EXPLODES)
     public StaticBody3D localRenderedMesh;
     public StaticBody3D scaledRenderedMesh;
+    public StaticBody3D mapRenderedMesh;
     public bool rendered = false;
 
     // mesh data

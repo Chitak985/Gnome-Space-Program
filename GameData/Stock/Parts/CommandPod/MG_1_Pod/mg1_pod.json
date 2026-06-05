@@ -6,5 +6,20 @@
     "assets": "Stock/Parts/CommandPod/MG_1_Pod/MG1POD.pck",
     "partScene": "Parts/Assets/MG_1_Pod/PARTMAIN.tscn",
     "listedInSelector": true,
-    "modules": {}
+    "modules": [
+        {
+            "type": "ReactionWheel",
+            "x": [1,0,0],
+            "y": [0,1,0],
+            "z": [0,0,1],
+            "force": 50,
+            "dampForce": 50,
+            "pitchUp": "pitch_up",
+            "pitchDown": "pitch_down",
+            "yawRight": "yaw_right",
+            "yawLeft": "yaw_left",
+            "rollRight": "roll_right",
+            "rollLeft": "roll_left"
+        }
+    ]
 }

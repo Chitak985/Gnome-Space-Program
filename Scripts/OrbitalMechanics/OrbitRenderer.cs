@@ -2,94 +2,74 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class OrbitRenderer : Line2D
+public partial class OrbitRenderer : Node3D
 {
-    [Export] public bool enabled;
-    [Export] public CelestialBody cBody;
-    [Export] public Camera3D camera;
+    [Export] private Line2D line2D;
+    [Export] private SubViewport viewport;
+    [Export] private float margin = 1.1f;
 
-    [Export] public double precision = 100;
+    public OrbitDriver OrbitDriver;
 
-    // Functions to get points with Y as up rather than Z
-    // To Be Eliminated
-    private Vector3 GetPosYUp(Vector3 inputVector)
-    {
-        return new Vector3(inputVector.X,inputVector.Z,inputVector.Y);
-    }
-    
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
-    {
-    }
+    public bool enabled;
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
+    public void Update()
     {
-        if (enabled)
+        KeplerianState.KeplerianElements orbit = OrbitDriver.KeplerState.elements;
+
+        if (OrbitDriver.Enabled)
         {
-            //if (cBody.orbit.eccentricity > 1)
-            //{
-            //	Closed = false;
-            //}else{
-            //	Closed = true;
-            //}
+            //Logger.Print(GetViewport().GetVisibleRect().Size * vpSizeRatio);
 
-            List<Vector3> points = SamplePoints(cBody, precision, camera);
-            Vector2[] points2D = new Vector2[points.Count];
-            for (int i = 0; i < points.Count; i++)
-            {
-                Vector3 point = points[i];
+            viewport.Size = (Vector2I)MapView.Instance.Viewport.Size;
+            //camDist = GetViewport().GetCamera3D().GlobalPosition.DistanceTo(GlobalPosition);
+            double scale = orbit.semiMajorAxis * (1 + orbit.eccentricity) * margin;
 
-                Vector3 floatPos = GetPosYUp(point) + FloatingOrigin.Instance.offset;
+            // Move the plane to match the orbit
+            Scale = new Vector3(scale,scale,scale);
+            GlobalRotation = new Vector3(-orbit.inclination, -orbit.longitudeOfAscendingNode, 0);
 
-                Vector2 position = camera.UnprojectPosition(floatPos);
-
-                points2D[i] = position;
-            }
-            Points = points2D;
+            List<Vector2> pointsList = SamplePoints(orbit);
+            line2D.Points = [.. pointsList];
         }
     }
 
     // Sample multiple points in orbit
-    public static List<Vector3> SamplePoints(CelestialBody body, double precision, Camera3D camera)
+    public List<Vector2> SamplePoints(KeplerianState.KeplerianElements orbit)
     {
-        Orbit orbit = body.orbit;
-        
+        double precision = OrbitRendererManager.Instance.orbitPrecision;
+
         int amount = (int)Math.Round(Math.PI * 2.0 * precision);
         if (orbit.eccentricity > 1)
             amount = (int)Math.Round(Math.Acos(-1 / orbit.eccentricity) / 2 * precision);
 
         double startTrueAn = orbit.trueAnomaly;
-        //if (orbit.eccentricity > 1)
-        //	startTrueAn = -Math.Acos(-1 / orbit.eccentricity);
 
-        List<Vector3> positions = [];
+        List<Vector2> positions = [];
 
         for (int i = 0; i < amount; i++)
         {
-            Orbit newOrbit = new()
+            KeplerianState.KeplerianElements newElems = new()
             {
-                parent = orbit.parent,
-                MU = orbit.MU,
                 semiMajorAxis = orbit.semiMajorAxis,
                 eccentricity = orbit.eccentricity,
                 inclination = orbit.inclination,
                 argumentOfPeriapsis = orbit.argumentOfPeriapsis,
                 longitudeOfAscendingNode = orbit.longitudeOfAscendingNode,
                 trueAnomaly = startTrueAn + i/precision,
-                period = orbit.period
             };
-            // Velocity is not used here so we discard it
-            (Vector3 position, _) = PatchedConics.KOEtoECI(newOrbit);
-            //GD.Print(newOrbit.trueAnomaly);
-            //GD.Print($"{position.X} {position.Y} {position.Z}");
-            //if (!camera.IsPositionBehind(position.GetPosYUp().ToFloat3()))
-            //{
-                positions.Add(position);
-            //}//else{
-            //	positions.Add(position);
-            //}
+            CartesianState.CartesianElements data = Conics.ElemToCart(newElems, OrbitDriver.ParentCBody);
+                
+            Vector3 position = (data.position + OrbitDriver.ParentCBody.AbsolutePosition - MapView.Instance.FocusOffset) / MapView.Instance.ScaleFactor;
+
+            Vector2 projectedPosition = GetViewport().GetCamera3D().UnprojectPosition(position);
+
+            if (!GetViewport().GetCamera3D().IsPositionBehind(position))
+            {
+                positions.Add(projectedPosition);
+            }
         }
+
+        if (positions.Count > 0) positions.Add(positions[0]);
 
         return positions;
     }

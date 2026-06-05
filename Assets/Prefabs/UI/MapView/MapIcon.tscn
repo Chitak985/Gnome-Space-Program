@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://dbvfo1henkgx8"]
+
+[ext_resource type="Texture2D" uid="uid://cj5k58mpu60s8" path="res://Assets/Textures/UserInterface/MapView/defaultMapIcon.svg" id="1_4sfey"]
+[ext_resource type="Script" uid="uid://dhjpx74dj0emp" path="res://Scripts/UserInterface/MapView/MapIcon.cs" id="1_lem85"]
+
+[node name="MapIcon" type="Control" unique_id=946596929 node_paths=PackedStringArray("button", "icon", "flavourText")]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(16, 16)
+script = ExtResource("1_lem85")
+button = NodePath("Button")
+icon = NodePath("Button/Icon")
+flavourText = NodePath("FlavourText")
+effectDuration = 1.0
+
+[node name="Button" type="Button" parent="." unique_id=276389749]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="Icon" type="TextureRect" parent="Button" unique_id=855039438]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(12, 12)
+texture = ExtResource("1_4sfey")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FlavourText" type="RichTextLabel" parent="." unique_id=657685277]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_right = 428.0
+grow_horizontal = 0
+grow_vertical = 2
+text = "Information - Information - Information"
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[connection signal="mouse_entered" from="Button" to="." method="OnMouseEnter"]
+[connection signal="mouse_exited" from="Button" to="." method="OnMouseExit"]
+[connection signal="pressed" from="Button" to="." method="OnMouseClick"]

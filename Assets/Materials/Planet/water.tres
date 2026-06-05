@@ -1,0 +1,29 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dnylotupwudqk"]
+
+[ext_resource type="Shader" uid="uid://dchs7o82vrm81" path="res://Assets/Shaders/Planet/water.gdshader" id="1_qo6t8"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1e75w"]
+frequency = 0.00999999999999999
+fractal_type = 2
+fractal_octaves = 10
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6uerf"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_1e75w")
+seamless = true
+as_normal_map = true
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_qo6t8")
+shader_parameter/time_speed = 0.01
+shader_parameter/albedo = Color(0, 0, 0, 1)
+shader_parameter/roughness = 0.30000001425
+shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
+shader_parameter/specular = 0.2999999932944
+shader_parameter/metallic = 0.0
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_6uerf")
+shader_parameter/normal_scale = 0.3000007742500017
+shader_parameter/uv1_blend_sharpness = 1.0000000475
+shader_parameter/uv1_scale = Vector3(100, 100, 100)

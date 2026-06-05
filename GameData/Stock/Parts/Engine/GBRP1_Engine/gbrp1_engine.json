@@ -6,5 +6,16 @@
     "assets": "Stock/Parts/Engine/GBRP1_Engine/GBRP1ENGINE.pck",
     "partScene": "Parts/Assets/GBRP1_Engine/PARTMAIN.tscn",
     "listedInSelector": true,
-    "modules": {}
+    "modules": [
+        {
+            "type": "RocketEngine",
+            "pivotPos":[0, 0, 0],
+            "thrustDirection": [0, 1, 0],
+            "thrust": 100
+        },
+        {
+            "type": "RocketVisuals",
+            "particlesNodeName": "PARTICLES"
+        }
+    ]
 }

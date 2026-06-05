@@ -52,18 +52,4 @@ public partial class PartMenuHandler : Node
         parent.AddChild(button);
         return button;
     }
-
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (@event is InputEventMouseButton mouseButton)
-        {
-            if (mouseButton.ButtonIndex == MouseButton.Right && mouseButton.Pressed)
-            {
-                if (PartManager.Instance.hoveredPart != null)
-                {
-                    ToggleMenu(PartManager.Instance.hoveredPart);
-                }
-            }
-        }
-    }
 }

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 Technically this class encompasses both colony AND ship parts, as I intend for them to be used interchangeably.
 Why? Because I want players to have the freedom to get up to any sort of shenanigans with these systems.
 */
-public partial class Part : Area3D
+public partial class Part : RigidBody3D
 {
     [Export] public bool enabled = false;
     [Export] public Material glowMat;
@@ -35,21 +35,151 @@ public partial class Part : Area3D
 
     public PartMenu contextMenu;
 
+    // What this part is attached to
+    public Part parentPart;
+    // Attached node (parent)
+    public AttachNode parentNode;
+    // Attached node (current)
+    public AttachNode usedNode;
+    // Parts that are attached to this part
+    public List<Part> childParts = [];
+    // ALL parts that descend from this part
+    public List<Part> descendantParts = [];
+    // Container for the 3D joints that attach the part (null if not connected)
+    public Node3D attachmentJointContainer;
+
+    public bool overrideHover = false;
+
+    public Vector3 ActiveLinearForce { get; private set; }
+    public Vector3 ActiveAngularForce { get; private set; }
+
+    public override void _Ready()
+    {
+        InputEvent += OnInputEvent;
+        MouseEntered += OnMouseEnter;
+        MouseExited += OnMouseExit;
+
+        CustomIntegrator = true;
+    }
+
+    public override void _IntegrateForces(PhysicsDirectBodyState3D state)
+    {
+        if (parentThing is Craft craft)
+        {
+            CelestialBody orbitingBody = craft.OrbitDriver.ParentCBody;
+            double bodyMass = orbitingBody.Config.properties.mass;
+
+            Vector3 center = orbitingBody.GlobalPosition;
+            Vector3 direction = GlobalPosition.DirectionTo(center);
+            double distance = (center - GlobalPosition).Length();
+            double force = Conics.GravConstant * bodyMass / Math.Pow(distance, 2);
+
+            state.LinearVelocity += direction * force * GetProcessDeltaTime();
+            state.LinearVelocity += ActiveLinearForce * GetProcessDeltaTime();
+
+            // Add coriolis and cetrifugal if we're in a rotating reference frame
+            if (RealityTangler.Instance.RotatingReferenceFrame != null)
+            {
+                // Keep the reference frame variable different from orbitingBody just in case we royally fuck up and somehow end up in a situation where those are different
+                CelestialBody reference = RealityTangler.Instance.RotatingReferenceFrame;
+                Vector3 relativePos = GlobalPosition - reference.GlobalPosition;
+                
+                Vector3 coriolis = reference.GetCoriolisAcceleration(state.LinearVelocity);
+                Vector3 centrifugal = reference.GetCentrifugalAcceleration(relativePos);
+
+                state.LinearVelocity += coriolis * GetProcessDeltaTime();
+                state.LinearVelocity += centrifugal * GetProcessDeltaTime();
+            }
+
+            state.AngularVelocity += ActiveAngularForce * GetProcessDeltaTime();
+
+            ActiveLinearForce = Vector3.Zero; // Reset force
+            ActiveAngularForce = Vector3.Zero;
+        }
+    }
+
     public override void _Process(double delta)
     {
-        if (PartMenuHandler.Instance != null)
+        UpdatePartModules();
+    }
+
+    public void AddLinearForce(Vector3 force, Vector3 position)
+    {
+        ActiveLinearForce += force;
+    }
+
+    public void AddAngularForce(Vector3 force)
+    {
+        ActiveAngularForce += force;
+    }
+
+    private void UpdatePartModules()
+    {
+        foreach (PartModule module in partModules)
         {
-            Highlight(PartManager.Instance.hoveredPart == this); 
+            module.PartProcess();
         }
+    }
+
+    private void OnInputEvent(Node camera, InputEvent @event, Vector3 eventPosition, Vector3 normal, long shapeIdx)
+    {
+        if (@event is InputEventMouseButton mouseButton)
+        {
+            if (mouseButton.ButtonIndex == MouseButton.Right && mouseButton.Pressed)
+            {
+                PartMenuHandler.Instance.ToggleMenu(this);
+            }
+        }
+    }
+
+    private void OnMouseEnter()
+    {
+        Highlight(true, true); 
+    }
+
+    private void OnMouseExit()
+    {
+        Highlight(false, true); 
+    }
+
+    public void UpdateChildParts()
+    {
+        childParts = GetChildParts(false);
+        descendantParts = GetChildParts(true);
+    }
+
+    // Get every part that descends from this one
+    public List<Part> GetChildParts(bool recursive)
+    {
+        List<Part> result = [];
+
+        foreach (Node node in GetChildren())
+        {
+            if (node is Part part)
+            {
+                result.Add(part); // Add the immediate part
+
+                // We go all the way down the hierarchy if we want I guess (and pray that we don't end up in a loop)
+                if (recursive)
+                {
+                    List<Part> childResults = part.GetChildParts(recursive);
+                    result.AddRange(childResults); // Add all of its children too
+                }
+            }
+        }
+
+        return result;
     }
 
     public void InitPart()
     {
         contextMenu = PartMenuHandler.Instance.CreateMenu(this);
+
         Godot.Collections.Array moduleData = (Godot.Collections.Array)cachedPart.config["modules"];
         Logger.Print($"(Instance {Name}) Creating part modules...");
         partModules = CreateModules(moduleData);
         Logger.Print($"(Instance {Name}) Got all part modules! Count: {partModules.Count}");
+        
         //InitModules();
     }
     
@@ -80,57 +210,54 @@ public partial class Part : Area3D
         return modules;
     }
 
-    public void ReadData(Dictionary data)
-    {
-        Position = (Vector3)data["position"];
-        RotationDegrees = (Vector3)data["rotation"];
-        id = (int)data["partID"];
-
-        Dictionary attachmentData = (Dictionary)data["attachments"];
-        foreach (KeyValuePair<Variant, Variant> node in attachmentData)
-        {
-            // IMplement lateor
-        }
-    }
-
+    // recursive function that returns a tree descending from this part
+    // reconstruction isn't handled by individual parts so look into Craft.cs or Colony.cs for methods that do that
     public Dictionary GetData()
     {
         Dictionary data = [];
 
         // Throw basic info into here
-        data.Add("position", Position);
+        data.Add("name", cachedPart.name);
+        data.Add("position", Position); // should be relative to attach node
         data.Add("rotation", RotationDegrees);
         data.Add("partID", id);
-
-        // Index - Index of attachment node HERE
-        // Key - ID of the other part
-        // Value - Index of the OTHER attachment node
-        Dictionary attachmentData = [];
-        foreach (AttachNode node in attachNodes)
+    
+        // This will be -1 for the topmost part so be careful
+        // Index of parent's attach node
+        if (parentPart != null)
         {
-            if (node.connectedNode != null)
-            {
-                attachmentData.Add(node.connectedNode.part.id, node.connectedNode.part.attachNodes.IndexOf(node.connectedNode));
-            }
+            data.Add("parentNode", parentPart.attachNodes.IndexOf(parentNode));
+            data.Add("usedNode", attachNodes.IndexOf(usedNode));
+        } else {
+            data.Add("parentNode", -1);
+            data.Add("usedNode", -1);
         }
 
-        data.Add("attachments", attachmentData);
+        Godot.Collections.Array childPartData = [];
+        foreach (Part part in childParts)
+        {
+            // Index of the attachment node, part data
+            childPartData.Add(part.GetData());
+        }
+        data.Add("attachedParts", childPartData);
 
         // Fetch data from every part module
-        // IMPLEMENT C# TOO SOMEDAY pppwwweeaaaaaseeeeeee 
-        Dictionary moduleDataContainer = [];
-        //foreach (Node module in partModules)
-        //{
-        //    Dictionary moduleData = (Dictionary)module.Call("getData");
-        //    moduleDataContainer.Add(module.GetScript(), moduleData);
-        //}
+        Godot.Collections.Array moduleDataContainer = [];
+        foreach (PartModule module in partModules)
+        {
+            Dictionary moduleData = module.FetchData();
+            if (moduleData != null)
+            {
+                moduleDataContainer.Add(moduleData);
+            }
+        }
 
         data.Add("modules", moduleDataContainer);
 
         return data;
     }
 
-    public void Highlight(bool toggle)
+    public void Highlight(bool toggle, bool includeChildren = false)
     {
         if (glowMesh != null)
         {
@@ -141,6 +268,24 @@ public partial class Part : Area3D
                 glowMesh.MaterialOverlay = null;
             }
         }
+
+        // Make child parts glow too
+        if (includeChildren || !toggle)
+        {
+            foreach (Part part in descendantParts)
+            {
+                part.overrideHover = toggle;
+                part.Highlight(toggle);
+            }
+        }
+    }
+
+    // Toggle to make this part have physics or not i guess
+    public void Anchor(bool toggle)
+    {
+        Freeze = toggle;
+        LockRotation = toggle;
+        TopLevel = !toggle;
     }
 
     // Recursive function to get all meshes
@@ -167,6 +312,40 @@ public partial class Part : Area3D
         return meshList;
     }
 
+    // Node0 = this node Node1 = other node
+    public void CreateAttachJoints(AttachNode node0, AttachNode node1)
+    {
+        if (attachmentJointContainer == null)
+        {
+            Node3D container = new();
+            AddChild(container);
+            container.Name = "JointContainer";
+            container.Position = node0.Position;
+
+            // Piece of shit
+
+            Generic6DofJoint3D joint0 = new()
+            {
+                NodeA = GetPath(),
+                NodeB = node1.part.GetPath(),
+            };
+            container.AddChild(joint0);
+
+        }else{
+            Logger.Print($"({cachedPart.name}) Joints already present! Cannot create!");
+        }
+    }
+
+    public void DestroyAttachJoints()
+    {
+        if (attachmentJointContainer != null)
+        {
+            attachmentJointContainer.QueueFree();
+        }else{
+            Logger.Print($"({cachedPart.name}) Joints already present! Cannot destroy!");
+        }
+    }
+
     public Aabb GetAABB()
     {
         List<MeshInstance3D> meshList = GetMeshes(this);
@@ -175,8 +354,7 @@ public partial class Part : Area3D
 
         foreach (MeshInstance3D mesh in meshList)
         {
-            //Logger.Print($"{Name} {mesh.GetAabb()}");
-            aabb.Merge(mesh.GetAabb());
+            aabb = aabb.Merge(mesh.GlobalTransform * mesh.GetAabb());
         }
 
         return aabb;

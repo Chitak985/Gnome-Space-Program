@@ -8,45 +8,54 @@ public partial class ActiveSave : Node3D
 {
 	public static readonly string classTag = "([color=orange]ActiveSave[color=white])";
 	public static ActiveSave Instance { get; private set; }
-	[Export] public PlanetSystem planetSystem;
+	[Export] public CelestialBodyManager celestialBodyManager;
 	[Export] public PartManager partManager;
 	[Export] public ColonyManager colonyManager;
 	[Export] public FlightCamera flightCam;
-	[Export] public Camera3D localCamera;
+	[Export] public StateManager stateManager;
 
     // Spaces
-    [Export] public Node3D localSpace;
+    [Export] public LocalSpace localSpace;
+	[Export] public ScaledSpace scaledSpace;
+	[Export] public MapView mapSpace;
 
-    // The current active thing (craft or colony or NOT ANY)
-    // Also planet (copy this to OrbitManager later)
-    public Node3D activeThing;
-	public CelestialBody activePlanet;
-
-    // Every surface base/colony
-    public List<Colony> colonies = [];
-
-    // Disable this when in map view
-    public bool hideLocal = false;
-
-	// The great dictionary
-	public Dictionary<string, Variant> saveParams;
-
+	// Please NEVER include negative numbers
+    [Export] public Godot.Collections.Array<double> timeSpeedLevels;
+    [Export] public int maxPhysicsSpeedLevel; // Maximum level where physics still applies
+    [Export] private double timeSpeedChangeDuration = 2.0;
 	// This should always be 1.0 upon loading!
 	[Export] public double timeSpeed = 1;
-	// In milliseconds
-	public double saveTime;
+    public int TimeSpeedLevel { get; private set; }
+    public bool TimeSpeedAtSafeLevel { get; private set; } = true;
+    public bool TimePaused { get; private set; }
 
-	public void ReportSelf()
+    // Inputs
+    [Export] private StringName accelTimeEvent;
+    [Export] private StringName deccelTimeEvent;
+
+    // The great dictionary
+    public Dictionary<string, Variant> saveParams;
+
+    // In seconds
+    public double SaveTime { get; private set; }
+	public double UnscaledDelta { get; private set; }
+
+    // Signals
+    [Signal] public delegate void GameInitCompleteEventHandler();
+    [Signal] public delegate void TimeLevelChangedEventHandler(int level);
+    [Signal] public delegate void TimeLevelSafeStateEventHandler(); // Emits when the time level is safe enough to return to normal physics sim
+
+    private double previousEngineTime;
+	
+
+    public override void _EnterTree()
+    {
+        Instance = this;
+    }
+
+    public override void _Ready()
 	{
-		Logger.Print($"{classTag} Here!");
-	}
-
-	public override void _Ready()
-	{
-		Logger.Print($"{classTag} Active save starting...");
-
-		Instance = this;
-		SingletonRegistry.Register(this); // Register self
+        Logger.Print($"{classTag} Active save starting...");
 
 		foreach (KeyValuePair<string, Variant> param in saveParams)
 		{
@@ -55,22 +64,53 @@ public partial class ActiveSave : Node3D
 		Logger.Print($"{classTag} Active save ready for init!");
 	}
 
+	public override void _Process(double delta)
+	{
+        // Custom delta ohh yeahh
+        double engineTime = Time.GetTicksUsec();
+        UnscaledDelta = (engineTime - previousEngineTime) / 1000000.0;
+        previousEngineTime = Time.GetTicksUsec();
+
+        double trueTimeSpeed = timeSpeed;
+        if (TimePaused) trueTimeSpeed = 0;
+
+        // Increment time since save creation (for orbital calculations mostly)
+        SaveTime += UnscaledDelta * 1000 * trueTimeSpeed / 1000;
+
+        // Set physics speed to match time speed
+        Engine.TimeScale = trueTimeSpeed;
+
+        // For craft easing
+        if (!TimeSpeedAtSafeLevel && timeSpeed <= timeSpeedLevels[maxPhysicsSpeedLevel-1])
+        {
+            TimeSpeedAtSafeLevel = true;
+            EmitSignal(SignalName.TimeLevelSafeState);
+        }else if (timeSpeed > timeSpeedLevels[maxPhysicsSpeedLevel-1]){
+            TimeSpeedAtSafeLevel = false;
+        }
+    }
+
 	// Start up all vital systems such as the planet system and whatnot
 	public void InitSave()
 	{
-		// We first initialize the planets
+        // Initialize game state
+        Logger.Print($"{classTag} Starting StateManager");
+        stateManager.Initialize();
+
+		// Initialize the planets
 		Logger.Print($"{classTag} Starting PlanetSystem");
 		Dictionary<string, PlanetPack> planetPacks = SaveManager.GetPlanetPacks();
 		string chosenRootSystem = (string)saveParams["Celestial Bodies/Root System"];
+
 		// !!! ADD EXTRA SYSTEMS IMPLEMENTATION WHEN RELEVANT !!!
 		List<string> planetPackPaths = [];
 		planetPackPaths.Add(planetPacks[chosenRootSystem].path);
-		planetSystem.InitSystem(planetPackPaths);
-		InitCamera();
+		celestialBodyManager.CreateCBodiesFromConfigs(planetPackPaths);
 
 		// Handle part packs
 		Dictionary<string, PartPack> partPacks = SaveManager.GetPartPacks();
         List<PartPack> pPacksToLoad = [];
+
         // Yes hello welcome to hell.
         foreach (KeyValuePair<string, PartPack> partPack in partPacks)
 		{
@@ -88,40 +128,73 @@ public partial class ActiveSave : Node3D
         partManager.LoadPartPacks(pPacksToLoad);
 
 		Logger.Print($"{classTag} Starting ColonyManager");
-        // Handle Colonies (blueprints)
-		foreach (KeyValuePair<string, PlanetPack> pack in planetPacks)
+        colonyManager.Initialize(planetPacks);
+
+        // Loop over all the sweet new colonies we just got
+        foreach (Colony colony in colonyManager.colonies)
 		{
-			colonies.AddRange(colonyManager.ParseColonies(pack.Value.path, true));
+            Logger.Print($"{colony.name}, {colony.initialBase}");
+            // Spawn at the colony marked as "initial"
+            if (colony.initialBase)
+			{
+                Logger.Print($"{classTag} Loading into default colony '{colony.name}'");
+                colony.Enter();
+                break;
+            }
 		}
+
+		// Activate local input after the game starts because it doesn't take effect if enabled by default in the editor for some reason
+        localSpace.Viewport.HandleInputLocally = false;
+        localSpace.Viewport.HandleInputLocally = true;
+
+        EmitSignal(SignalName.GameInitComplete);
     }
 
-	public void InitCamera()
+	// Level must be below the length of timeSpeedLevels
+	public void SetTimeSpeed(int level, double duration)
 	{
-		// Fall back to root body if no focus on load body has been set
-		CelestialBody focusBody;
-		if (planetSystem.focusOnLoadBody != null)
-		{
-			focusBody = planetSystem.focusOnLoadBody;
-		}else{
-			focusBody = planetSystem.rootBody;
-		}
+        TimeSpeedLevel = level;
+        double targetTimeSpeed = timeSpeedLevels[level];
+        EmitSignal(SignalName.TimeLevelChanged, targetTimeSpeed);
 
-		flightCam.TargetObject(focusBody);
+        Tween tween = CreateTween();
+        tween.SetIgnoreTimeScale(true);
+        tween.SetTrans(Tween.TransitionType.Linear);
+        tween.TweenProperty(this, "timeSpeed", targetTimeSpeed, duration);
+    }
 
-		// Default context menu
-		Godot.Collections.Dictionary info = new()
+    public void SetTimeSpeed(int level)
+    {
+        SetTimeSpeed(level, timeSpeedChangeDuration);
+    }
+
+    public void Pause(bool toggle)
+    {
+        TimePaused = toggle;
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        // Time accel keys
+        if (@event.IsActionPressed(accelTimeEvent))
         {
-            { "planet", focusBody }
-        };
-        MapUI.Instance.contextMenus.OpenMenu("PlanetMenu", info, true);
-	}
+            if (TimeSpeedLevel < timeSpeedLevels.Count)
+            {
+                SetTimeSpeed(TimeSpeedLevel + 1, 0.01);
+            }
+        }
+        if (@event.IsActionPressed(deccelTimeEvent))
+        {
+            if (TimeSpeedLevel > 0)
+            {
+                SetTimeSpeed(TimeSpeedLevel - 1, 0.01);
+            }
+        }
+    }
 
-	public override void _Process(double delta)
-	{
-		// Increment time since save creation (for orbital calculations mostly)
-		saveTime += delta * 1000 * timeSpeed / 1000;
-
-		// Set physics speed to match time speed
-		//Engine.TimeScale = timeSpeed;
-	}
+    // Important function
+    public static void SendThoughtsAndPrayers()
+    {
+        Logger.Print($"{classTag} Thoughts and prayers sent.");
+    }
 }

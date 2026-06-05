@@ -39,9 +39,8 @@ public partial class PartSelector : Button
     // Loads a passive version of a part into itself and assigns all the important values
     public void LoadPart()
     {
-        Part partObj = partRef.Instantiate(partContainer);
-        //partObj.Freeze = true;
-        //partObj.enabled = false;
+        Part partObj = partRef.Instantiate(partContainer, anchored:true);
+        partObj.enabled = false;
 
         partObj.GlobalPosition = Vector3.Zero;
 
@@ -95,15 +94,6 @@ public partial class PartSelector : Button
     // You shouldn't use this class at all for cases such as dynamic craft editing.
     public void OnPress()
     {
-        Random RNG = new();
-
-        Node3D partContainer = BuildingManager.Instance.floatingPartContainer; //(Node3D)activeVAB.Get("craftContainer");
-        Part part = partRef.Instantiate(partContainer, true);
-
-        //part.Rotation = BuildingManager.Instance.activeVAB.vab.GlobalRotation;
-
-        part.cachedPart = partRef;
-        part.id = RNG.NextInt64();
-        BuildingManager.Instance.draggingPart = part;
+        BuildingManager.Instance.InsertPart(partRef);
     }
 }

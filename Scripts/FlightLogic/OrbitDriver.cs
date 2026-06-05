@@ -1,62 +1,126 @@
 using Godot;
+using System;
 
-// Class for handing craft motion (which is why it's in the FlightLogic folder and not the OrbitalMechanics folder)
+/*
+    This object handles object motion along a set orbit.
+*/
+
 public partial class OrbitDriver : Node
 {
-    //[Export] public bool enabled;
-    //[Export] public Craft craft;
+    // The node that is "driven" by the driver. This ideally should never change after instantiation.
+    [Export] public Node3D Vehicle { get; private set; }
 
-    //public static readonly string classTag = "([color=cyan]OrbitDriver[color=white])";
+    // This will change if the vehicle enters another SOI (if patching is enabled)
+    [Export] public CelestialBody ParentCBody { get; private set; } // FIX THIS STUPID FUCK TO NOT BE SETTABLE WHEN PLANETS ARE REVAMPED
 
-    /* 
-    Some things to note:
-    1. Cartesian data should NOT be affected by floating origin
-    2. Orbital parameters and cartesian data are relative to the parent body
-    3. As per rule 2, parameters will need to be translated upon SOI change
-    */
-    /*
-    public Orbit orbit = new();
-    public CartesianData cartData = new();
+    public KeplerianState KeplerState { get; private set; }
+    public CartesianState CartState { get; private set; }
 
-    private PlanetSystem pSystem;
+    public bool Enabled = false;
+    public bool OnRails { get; private set; }
 
-    public override void _Ready()
+    // Time when the driver switched to or from an "on-rails" state
+    // 0 for all celestial bodies.
+    public double OnRailsSwithTime { get; private set; }
+
+    // Signal nonsense
+    [Signal] public delegate void ElementsUpdatedEventHandler();
+
+    public void Init(CelestialBody cBody, Node3D vehicle, bool startOnRails = false)
     {
-        pSystem = PlanetSystem.Instance;
-        cartData.position = Double3.Zero;
-        cartData.velocity = Double3.Zero;
+        Name = "OrbitDriver";
+
+        OnRails = startOnRails;
+
+        KeplerState = new();
+        AddChild(KeplerState);
+        KeplerState.Name = "KeplerianState";
+
+        CartState = new();
+        AddChild(CartState);
+        CartState.Name = "CartesianState";
+
+        Vehicle = vehicle;
+        SetParent(cBody);
+
+        vehicle.AddChild(this);
     }
 
-    public void Initialize()
+    public void Update()
     {
-        orbit.parent = craft.currentInfluence;
-        cartData.parent = craft.currentInfluence;
-        enabled = true;
-    }
-
-    public override void _Process(double delta)
-    {
-        if (enabled)
+        if (Enabled)
         {
-            // Use Newtonian motion (game engine physics) if time warp is under 10x
-            cartData.position = Double3.ConvertToDouble3(craft.Position) - craft.currentInfluence.cartesianData.position.GetPosYUp() - FloatingOrigin.Instance.offset;
-            
-            (CelestialBody cBody, Double3 newPosition) = PatchedConics.GetSOI(cartData);
-            if (craft.currentInfluence != cBody)
+            if (OnRails)
             {
-                GD.PrintRich($"{classTag} Craft {craft} has crossed SOI boundary from {craft.currentInfluence} to {cBody}");
-                craft.currentInfluence = cBody;
-                orbit.parent = cBody;
-                cartData.parent = cBody;
-                //craft.Position = newPosition.ToFloat3();
+                PropagateFromKepler();
             }
+        }else{
+            CartState.elements.position = Vector3.Zero;
         }
     }
 
-    public Double3 GetGravForce()
+    public void SetFromElements(KeplerianState.KeplerianElements elements, CelestialBody cBody = null)
     {
-        double force = PatchedConics.GravConstant * (craft.mass * orbit.parent.mass) / cartData.position.DistanceTo(orbit.parent.cartesianData.position);
-        return cartData.position.DirectionTo(orbit.parent.cartesianData.position) * force;
+        // Fall back to parent celestial body if none is supplied
+        cBody ??= ParentCBody;
+
+        KeplerState.elements = elements;
+        CartState.elements = Conics.ElemToCart(elements, cBody);
+
+        EmitSignal(SignalName.ElementsUpdated);
     }
-    */
+
+    public void SetFromElements(CartesianState.CartesianElements elements, CelestialBody cBody = null)
+    {
+        // Fall back to parent celestial body if none is supplied
+        cBody ??= ParentCBody;
+
+        CartState.elements = elements;
+        KeplerState.elements = Conics.CartToElem(elements, cBody);
+
+        EmitSignal(SignalName.ElementsUpdated);
+    }
+
+    public void SetParent(CelestialBody cBody)
+    {
+        ParentCBody = cBody;
+    }
+
+    public void ToggleOnRailsOrbit(bool toggle, bool saveMeanAnomaly = false)
+    {
+        OnRails = toggle;
+
+        OnRailsSwithTime = ActiveSave.Instance.SaveTime;
+
+        if (saveMeanAnomaly)
+        {
+            KeplerState.elements.meanAnomalyAtEpoch = Conics.TrueAnomalyToMeanAnomaly(KeplerState.elements.trueAnomaly, KeplerState.elements.eccentricity);
+        }
+    }
+
+    // Propagates the orbit along the given Keplerian state. 
+    // For when there are no meaningful perturbations on the vehicle.
+    private void PropagateFromKepler()
+    {
+        // Increment true anomaly
+        KeplerState.elements.trueAnomaly = Conics.TimeToTrueAnomaly(KeplerState.elements, ParentCBody, ActiveSave.Instance.SaveTime, OnRailsSwithTime);
+
+        // Update the cartesian
+        CartState.elements = Conics.ElemToCart(KeplerState.elements, ParentCBody);
+    }
+
+    // For when the driver is NOT on rails and the vehicle is being influenced by ordinary physics
+    private void UpdateFromCartesian()
+    {
+        // Update keplerian from the cartesian
+        KeplerState.elements = Conics.CartToElem(CartState.elements, ParentCBody);
+    }
+
+    public override string ToString()
+    {
+        string referenceFrame = $"Reference: {ParentCBody}\n";
+        string cartesianText = $"\nState Vectors: \n\n{CartState}\n";
+        string orbitText = $"\nOrbital Elements: \n\n{KeplerState}";
+        return referenceFrame + cartesianText + orbitText;
+    }
 }

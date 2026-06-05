@@ -1,9 +1,9 @@
 ## NOTES FOR CONTRIBUTORS:
 
 ### 1. Major disclaimer:
-I believe it is important for anybody willing to work on this game that they do so knowing that this game will be sold commercially on Steam or other various platforms.
-However, as is made very clear, this game is open source. By contributing your code/assets you agree to it being placed under the copyleft GPL-3.0 license (you can read more on it here: https://www.gnu.org/licenses/quick-guide-gplv3.html
-If you wish, you may credit yourself in the Contributors JSON file in ``GameData/Misc/Contributors.json``.
+I believe it is important for anybody willing to work on this game that they do so knowing that their contribution may directly be included in paid copies of this game.
+However, as I hope is made very clear, this game is still free and open source. By contributing your code/assets you agree to it being placed under the copyleft GPL-3.0 license (you can read more on it here: https://www.gnu.org/licenses/quick-guide-gplv3.html
+If you wish, you may credit yourself in the Contributors JSON file in ``GameData/Misc/Contributors.json``. This file is displayed ingame.
 
 ### 2. Conventions and "rules" for contributing:
 * You will need to build the Godot editor from source with double precision enabled - see instructions in BuildingGodotEditor.md, and ask on Discord if you need help.

@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://d0ci447d308yk"]
+
+[ext_resource type="Script" uid="uid://ccrdsjlig1sfq" path="res://Scripts/Graphics/Lighting/CBodyLight.cs" id="1_qwiay"]
+
+[node name="CBodyLight" type="Node3D" unique_id=220485097 node_paths=PackedStringArray("localLightContainer", "mapLightContainer")]
+script = ExtResource("1_qwiay")
+localLightContainer = NodePath("LocalLights")
+mapLightContainer = NodePath("LocalLights2")
+
+[node name="LocalLights" type="Node3D" parent="." unique_id=2089062003]
+
+[node name="CloseLight" type="DirectionalLight3D" parent="LocalLights" unique_id=195567879]
+layers = 3
+shadow_enabled = true
+shadow_blur = 0.5
+directional_shadow_split_1 = 0.05
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 1024.0
+
+[node name="LocalLights2" type="Node3D" parent="." unique_id=1994314429]
+
+[node name="MapLight" type="DirectionalLight3D" parent="LocalLights2" unique_id=632845631]
+layers = 3
+shadow_enabled = true
+shadow_bias = 0.075
+directional_shadow_split_1 = 0.02
+directional_shadow_split_2 = 0.05
+directional_shadow_split_3 = 0.4
+directional_shadow_max_distance = 8192.0

@@ -10,11 +10,13 @@ public partial class Colony : Node3D
     */
 
     public CelestialBody parentBody;
-    public ScaledObject scaledObject;
+    public MapObject mapObject;
 
     public string name;
     public Vector3 position;
     public Vector3 rotation;
+
+    public bool initialBase = false;
 
     public Dictionary<string, UnloadedPart> savedRootParts = []; // Only lists the saved root parts
     public Dictionary<string, UnloadedPart> savedParts = [];
@@ -34,7 +36,7 @@ public partial class Colony : Node3D
             // ... Now we need to make a part manager.....
             // ... Okay now that we made a part manager.....
 
-            Part part = data.template.Instantiate(this);
+            Part part = data.template.Instantiate(this, anchored:true);
             allParts.Add(part);
             //part.Freeze = true;
             //part.LockRotation = true;
@@ -64,5 +66,18 @@ public partial class Colony : Node3D
             if (modules.Count > 0) parts.Add(part);
         }
         return parts;
+    }
+
+    // Wrangles control of the game and "enters" the colony
+    public void Enter()
+    {
+        StateManager.Instance.ChangeColonyState(new StateManager.ColonyState() {activeColony = this});
+
+        // Wrangle the reference frame
+        RealityTangler.Instance.SwitchReferenceFrame(parentBody);
+
+        FlightCamera.Instance.TargetObject(this, 100, 1, 10000);
+        MapView.Instance.ToggleMap(false);
+        MapView.Instance.mapCamera.TargetObject(mapObject, 100, 1, 10000);
     }
 }

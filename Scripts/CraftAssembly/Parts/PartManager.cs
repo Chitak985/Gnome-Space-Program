@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+// This sucks
 public partial class PartManager : Node
 {
-    [Export] public PartMenuHandler partMenus;
     [Export] public float rayLength = 1000;
+    [Export] public Node3D temporaryPartDump;
     public static readonly string classTag = "([color=pink]PartManager[color=white])";
     public static PartManager Instance { get; private set; }
 
@@ -127,32 +128,14 @@ public partial class PartManager : Node
         return parts;
     }
 
-    // Returns a dictionary that sums up the information of every part in a given list
-    // This information can be saved as a JSON and is compatible with GDScript
-    // Also used for reading crafts in the editor and "rebuilding" them upon launch
-    public static Dictionary CompilePartData(List<Part> parts)
-    {
-        Dictionary compiledData = [];
-        foreach (Part part in parts)
-        {
-            Dictionary partData = part.GetData();
-            Dictionary wrapper = [];
-
-            wrapper.Add("name", part.cachedPart.name);
-            wrapper.Add("data", partData);
-
-            compiledData.Add(part.id, wrapper);
-        }
-        return compiledData;
-    }
-
     // We shoot a ray occasionally to get the current hovered part. Can be used for all sorts of part selection shenanigans.
+    // P.S this turbo sucks, as for some reason parts don't emit a "mouse entered" signal and I can't fucking fathom why.
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event is InputEventMouseMotion mouseMotion)
         {
             hoveredPart = null;
-            Camera3D camera3D = ActiveSave.Instance.localCamera;
+            Camera3D camera3D = LocalSpace.Instance.Camera;
             PhysicsDirectSpaceState3D spaceState = ActiveSave.Instance.localSpace.GetWorld3D().DirectSpaceState;
 
             Vector3 from = camera3D.ProjectRayOrigin(mouseMotion.Position);
@@ -173,7 +156,6 @@ public partial class PartManager : Node
 
                 if (colliderResult is Part part && part.IsVisibleInTree())
                 {
-                    // Add logic for craft later too
                     if (IsPartSelectable(part))
                     {
                         hoveredPart = part;
@@ -183,6 +165,7 @@ public partial class PartManager : Node
         }
     }
 
+    // WHAT THE HELL>????
     public bool IsPartSelectable(Part part)
     {
         BuildingManager.EditorMode editorMode = BuildingManager.Instance.editorMode;
@@ -195,8 +178,8 @@ public partial class PartManager : Node
                 if (part.inEditor) selectionStatus = true;
                 break;
             default: // Selection logic for if we're not editing
-                if (ActiveSave.Instance.activeThing is Colony colony && part.parentThing == colony) selectionStatus = true;
-                if (ActiveSave.Instance.activeThing is Craft && part.parentThing is not Colony) selectionStatus = true;
+                //if (ActiveSave.Instance.activeThing is Colony colony && part.parentThing == colony) selectionStatus = true;
+                //if (ActiveSave.Instance.activeThing is Craft && part.parentThing is not Colony) selectionStatus = true;
                 break;
         }
 

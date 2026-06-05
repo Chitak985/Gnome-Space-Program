@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://0l4exascpcks"]
+
+[ext_resource type="ArrayMesh" uid="uid://be7lyvbpjpqt1" path="res://Assets/Meshes/OrbitRenderer.obj" id="2_7mng0"]
+[ext_resource type="Shader" uid="uid://dcdtjypldi8fa" path="res://Assets/Shaders/ProjectTexture.gdshader" id="2_xjh6j"]
+[ext_resource type="Script" uid="uid://smi7genli4un" path="res://Scripts/OrbitalMechanics/OrbitRenderer.cs" id="3_7mng0"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_7mng0"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vi1lj"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_xjh6j")
+shader_parameter/tex = SubResource("ViewportTexture_7mng0")
+
+[sub_resource type="Gradient" id="Gradient_7mng0"]
+colors = PackedColorArray(0.38708586, 0.09734466, 0.16840798, 1, 0.38118628, 0.5981125, 0.9040796, 1)
+
+[node name="OrbitRendererEnclosure" type="Node3D" unique_id=382266954 node_paths=PackedStringArray("line2D", "viewport")]
+script = ExtResource("3_7mng0")
+line2D = NodePath("SubViewport/Line2D")
+viewport = NodePath("SubViewport")
+margin = 2.0
+
+[node name="OrbitRendererEnclosure" type="MeshInstance3D" parent="." unique_id=1196450334]
+layers = 2
+material_override = SubResource("ShaderMaterial_vi1lj")
+mesh = ExtResource("2_7mng0")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=2097220211]
+own_world_3d = true
+transparent_bg = true
+size = Vector2i(8192, 8192)
+
+[node name="Line2D" type="Line2D" parent="SubViewport" unique_id=1546271862]
+width = 3.0
+gradient = SubResource("Gradient_7mng0")

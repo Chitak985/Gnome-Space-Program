@@ -3,6 +3,9 @@ using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
+// Most of all this junk should be refactored
+// DEPRECATED !!!! THIS CAN GO 
+/*
 public partial class PlanetSystem : Node3D
 {
     [Export] public PackedScene orbitRendererPrefab;
@@ -29,6 +32,9 @@ public partial class PlanetSystem : Node3D
 
     public List<CelestialBody> celestialBodies = [];
 
+    // WHAT THE HELL
+    [Export] public ShaderMaterial watershader;
+
     // DEBUG SHART
     [Export] public bool DEBUG_startWithGizmo;
     [Export] public PackedScene DEBUG_GizmoPrefab;
@@ -36,39 +42,19 @@ public partial class PlanetSystem : Node3D
     {
         foreach (CelestialBody celestialBody in celestialBodies)
         {
-            Node3D gizmo;
-            if (celestialBody.FindChild("gizmo") == null)
-            {
-                gizmo = (Node3D)DEBUG_GizmoPrefab.Instantiate();
-                gizmo.Scale = Vector3.One * (float)celestialBody.radius * 0.03f;
-
-                foreach (Node node in gizmo.GetChildren())
-                {
-                    if (node is MeshInstance3D mesh)
-                    {
-                        mesh.SetLayerMaskValue(1, true);
-                        mesh.SetLayerMaskValue(2, true);
-                    }
-                }
-
-                celestialBody.scaledSphere.AddChild(gizmo);
-            }else{
-                gizmo = (Node3D)celestialBody.FindChild("gizmo");
-            }
-
-            gizmo.Visible = toggle;
+            celestialBody.ToggleGizmo(toggle);
         }
     }
 
     // Called when the node enters the scene tree for the first time.
-    /*public override void _Ready()
-    {
-        Instance = this;
-        localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");
-        localSpacePlanets = (Node3D)localSpace.FindChild("Planets");
-        orbitRenderers = (Control)GetTree().GetFirstNodeInGroup("OrbitRenderers");
-        CreateSystem(GetPlanetConfigs(ConfigPath));
-    }*/
+    //public override void _Ready()
+    //{
+    //    Instance = this;
+    //    localSpace = (Node3D)GetTree().GetFirstNodeInGroup("LocalSpace");
+    //    localSpacePlanets = (Node3D)localSpace.FindChild("Planets");
+    //    orbitRenderers = (Control)GetTree().GetFirstNodeInGroup("OrbitRenderers");
+    //    CreateSystem(GetPlanetConfigs(ConfigPath));
+    //}
 
     // Start the Planet System for this particular save
     public void InitSystem(List<string> chosenPacks)
@@ -90,8 +76,7 @@ public partial class PlanetSystem : Node3D
         Logger.Print($"{classTag} System created successfully!");
 
         // Debug pass
-
-        if (DEBUG_startWithGizmo) ToggleGizmo(true);
+        ToggleGizmo(DEBUG_startWithGizmo);
     }
 
     public void CreateSystem(List<string> configs)
@@ -108,7 +93,7 @@ public partial class PlanetSystem : Node3D
     {
         foreach (CelestialBody cBody in celestialBodies)
         {
-            if (cBody.name == name) return cBody;
+            if (cBody.cBodyName == name) return cBody;
         }
         Logger.Print($"{classTag} Couldn't find CelestialBody with name '{name}'");
         return null;
@@ -162,40 +147,27 @@ public partial class PlanetSystem : Node3D
     {
         foreach (CelestialBody cBody in celestialBodies)
         {
-            CelestialBody parent = FindCBodyByName(cBody.parentName);
-            if (parent != null)
-            {
-                cBody.orbit.parent = parent;
-                if (cBody.orbit.sphereOfInfluence <= 0) // 14959800320 * ((5.289772250524424*10^22) / (1.7565459*10^28))^(2/5)
-                    cBody.orbit.sphereOfInfluence = cBody.orbit.semiMajorAxis * Math.Pow(5.289772250524424e22 / 1.7565459e28, 2f/5f);
-                cBody.cartesianData.parent = parent;
-                parent.childPlanets.Add(cBody);
-            }
-
             localSpacePlanets.AddChild(cBody);
-            cBody.Name = cBody.name;
-
-            ScaledObject scaledBody = new() { Name = $"{cBody.name}_Scaled" };
-            scaledSpace.AddChild(scaledBody);
-            //scaledBody.Scale = new Vector3(
-            //	(float)(1.0 / scaledSpace.scaleFactor),
-            //    (float)(1.0 / scaledSpace.scaleFactor),
-            //    (float)(1.0 / scaledSpace.scaleFactor));
-            cBody.scaledSphere = scaledBody;
-
-            if (planetIconPrefab != null && planetIcons != null)
-            {
-                PlanetIcon icon = (PlanetIcon)planetIconPrefab.Instantiate();
-                icon.planet = cBody;
-                icon.camera = localCamera;
-                planetIcons.AddChild(icon);
-            }
+            cBody.Name = cBody.cBodyName;
 
             if (cBody.focusOnload) focusOnLoadBody = cBody;
 
+            CelestialBody parent = FindCBodyByName(cBody.parentName);
+            if (parent != null)
+            {
+                cBody.OrbitDriver.ParentCBody = parent;
+                if (cBody.sphereOfInfluence <= 0) // 14959800320 * ((5.289772250524424*10^22) / (1.7565459*10^28))^(2/5)
+                    cBody.sphereOfInfluence = cBody.OrbitDriver.KeplerState.elements.semiMajorAxis * Math.Pow(5.289772250524424e22 / 1.7565459e28, 2f/5f);
+                parent.childPlanets.Add(cBody);
+            }
+
+            cBody.OrbitDriver.Update();
+
             // Assign orbital process to RealityTangler
-            RealityTangler.Instance.OrbitProcess += cBody.ProcessOrbitalPosition;
+            RealityTangler.Instance.OrbitProcess += cBody.ProcessTransform;
             RealityTangler.Instance.OriginReset += cBody.ResetOrigin;
+
+            cBody.InitializeSelf();
         }
     }
 
@@ -204,21 +176,7 @@ public partial class PlanetSystem : Node3D
         CelestialBody cBody = ParseConfig(configPath);
         // Add cBody to the great planetary list (and set as root body if it is)
         celestialBodies.Add(cBody);
-        if (cBody.orbit != null)
-        {
-            //OrbitRenderer renderer = (OrbitRenderer)orbitRendererPrefab.Instantiate();
-            //renderer.cBody = cBody;
-            //renderer.camera = ((RemoteCam)GetTree().GetFirstNodeInGroup("Camera")).localCamera;
-            //orbitRenderers.AddChild(renderer);
-        }
         if (cBody.isRoot) rootBody = cBody;
-        cBody.pqsSphere = new TerrainGen
-        {
-            cBody = cBody,
-            runInSeparateThread = false,
-            radius = (float)cBody.radius
-        };
-        cBody.AddChild(cBody.pqsSphere);
     }
 
     public static CelestialBody ParseConfig(string path)
@@ -230,50 +188,75 @@ public partial class PlanetSystem : Node3D
         // Handle "properties" dictionary
         if (ConfigUtility.TryGetDictionary("properties", data, out Dictionary properties))
         {
-            cBody.name = properties.TryGetValue("name", out var name) ? (string)name : MissingString(path, "name"); //GetValue("Properties", "name");
+            cBody.cBodyName = properties.TryGetValue("name", out var name) ? (string)name : MissingString(path, "name"); //GetValue("Properties", "name");
             Logger.Print($"{classTag} Parsing config for: {name}");
             cBody.focusOnload = properties.TryGetValue("focusOnload", out var fuck) && (bool)fuck;
             // only mass or geeASL is required, the unassigned one will be calculated based off one of the values.
             cBody.mass = properties.TryGetValue("mass", out var mass) ? (double)mass : -1;
             cBody.geeASL = properties.TryGetValue("geeASL", out var geeASL) ? (double)geeASL : -1;
             cBody.radius = properties.TryGetValue("radius", out var radius) ? (double)radius : MissingNum(path, "radius");
+            cBody.inverseRotAltitude = properties.TryGetValue("inverseRotAltitude", out var inverseRotAltitude) ? (double)inverseRotAltitude : MissingNum(path, "inverseRotAltitude");
 
             if (cBody.mass < 0)
             {
                 if (cBody.geeASL < 0) MissingNum(path, "geeASL");
-                cBody.mass = cBody.geeASL * PatchedConics.EarthGravity * Mathf.Pow(cBody.radius, 2f) / PatchedConics.GravConstant;
+                cBody.mass = cBody.geeASL * Conics.EarthGravity * Mathf.Pow(cBody.radius, 2f) / Conics.GravConstant;
             }
             if (cBody.geeASL < 0)
             {
                 if (cBody.mass < 0) MissingNum(path, "mass");
-                cBody.geeASL = cBody.mass * PatchedConics.GravConstant / Mathf.Pow(cBody.radius, 2f) / PatchedConics.EarthGravity;
+                cBody.geeASL = cBody.mass * Conics.GravConstant / Mathf.Pow(cBody.radius, 2f) / Conics.EarthGravity;
             }
         }else{
             Logger.Print($"Properties dictionary does not exist in planet config {path}");
             return null;
         }
 
+        // Handle rotation data
+        if (ConfigUtility.TryGetDictionary("rotation", data, out Dictionary rotation))
+        {
+            cBody.initialRot = rotation.TryGetValue("initial", out var iRot) ? (double)iRot : MissingNum(path, "orbit/initial");
+            cBody.rotPeriod = rotation.TryGetValue("period", out var rot) ? (double)rot : MissingNum(path, "orbit/period");
+            if (ConfigUtility.TryGetArray("tilt", rotation, out Godot.Collections.Array tilt))
+            {
+                cBody.tilt = new Vector3((float)tilt[0],(float)tilt[1],(float)tilt[2]);
+            }
+        }else{
+            Logger.Print($"{classTag} CBody {cBody.cBodyName} is missing its rotation!");
+        }
+
+        // Handle "lights" if they're present (just forget about it if they're not)
+        if (ConfigUtility.TryGetDictionary("light", data, out Dictionary light))
+        {
+            CBodyLight cBodyLight = LightingManager.Instance.CreateLight(cBody);
+            cBody.light = cBodyLight;
+            cBodyLight.brightness = (float)(light.TryGetValue("brightness", out var brt) ? (float)brt : MissingNum(path, "light/brightness"));
+            if (ConfigUtility.TryGetArray("colour", light, out Godot.Collections.Array colour))
+            {
+                cBodyLight.colour = new Color((float)colour[0], (float)colour[1], (float)colour[2], 1);
+            }
+        }
+
+        cBody.OrbitDriver = new();
         // The "parent" parameter is set in a different function because the parent might be parsed after this one
-        // Chitak I appreciate you trying to improve the game but the disabled parameter is redundant.
-        // - Sincerely, and with no ill intent, Sushut.
         if (ConfigUtility.TryGetDictionary("orbit", data, out Dictionary orbit))
         {
             cBody.parentName = orbit.TryGetValue("parent", out var pnm) ? (string)pnm : null;
-            cBody.orbit = new Orbit{
+            cBody.OrbitDriver.KeplerState.elements = new (){
                 semiMajorAxis = orbit.TryGetValue("semiMajorAxis", out var sma) ? (double)sma : MissingNum(path, "orbit/semiMajorAxis"),
-                inclination = orbit.TryGetValue("inclination", out var inc) ? (double)inc + Math.PI : MissingNum(path, "orbit/inclination"),
+                inclination = orbit.TryGetValue("inclination", out var inc) ? (double)inc : MissingNum(path, "orbit/inclination"),
                 eccentricity = orbit.TryGetValue("eccentricity", out var ecc) ? (double)ecc : MissingNum(path, "orbit/eccentricity"),
                 argumentOfPeriapsis = orbit.TryGetValue("argumentOfPeriapsis", out var arp) ? (double)arp : MissingNum(path, "orbit/argumentOfPeriapsis"),
                 longitudeOfAscendingNode = orbit.TryGetValue("longitudeOfAscendingNode", out var lon) ? (double)lon : MissingNum(path, "orbit/longitudeOfAscendingNode"),
                 trueAnomaly = orbit.TryGetValue("trueAnomaly", out var tra) ? (double)tra : 0,
-                trueAnomalyAtEpoch = orbit.TryGetValue("trueAnomalyAtEpoch", out var tre) ? (double)tre : MissingNum(path, "orbit/trueAnomalyAtEpoch"),
-                sphereOfInfluence = orbit.TryGetValue("sphereOfInfluence", out var soi) ? (double)soi : -1,
+                meanAnomalyAtEpoch = orbit.TryGetValue("meanAnomalyAtEpoch", out var tre) ? (double)tre : MissingNum(path, "orbit/meanAnomalyAtEpoch"),
             };
+            cBody.sphereOfInfluence = orbit.TryGetValue("sphereOfInfluence", out var soi) ? (double)soi : -1;
         }else{
-            Logger.Print($"{classTag} CBody {cBody.name} is missing its orbit! If this is intended, then disregard this message.");
+            Logger.Print($"{classTag} CBody {cBody.cBodyName} is missing its orbit! If this is intended, then disregard this message.");
         }
         // Same here too
-        cBody.cartesianData = new()
+        cBody.OrbitDriver.CartState.elements = new()
         {
             position = Vector3.Zero,
             velocity = Vector3.Zero
@@ -282,12 +265,26 @@ public partial class PlanetSystem : Node3D
         // Oceans
         if (ConfigUtility.TryGetDictionary("ocean", data, out Dictionary ocean))
         {
-            
+            cBody.hasOcean = true;
+            if (ConfigUtility.TryGetArray("colour", ocean, out Godot.Collections.Array oceanColour))
+            {
+                Color colour = new((float)oceanColour[0], (float)oceanColour[1], (float)oceanColour[2]);
+                cBody.oceanColour = colour;
+            }else{
+                Color colour = new(1, 1, 1);
+                cBody.oceanColour = colour;
+            }
         }
 
         // PQS
         if (ConfigUtility.TryGetDictionary("pqs", data, out Dictionary pqs))
         {
+            if (ConfigUtility.TryGetDictionary("material", pqs, out Dictionary material))
+            {
+                cBody.terrain_unlit = material.TryGetValue("unlit", out var unl) && (bool)unl;
+                cBody.terrain_albedopath = material.TryGetValue("albedo", out var alb) ? (string)alb : "";
+                cBody.terrain_normalpath = material.TryGetValue("normal", out var nml) ? (string)nml : "";
+            }
             if (ConfigUtility.TryGetArray("pqsMods", pqs, out Godot.Collections.Array pqsMods))
             {
                 // Initialize pqs mods for the cBody
@@ -333,3 +330,4 @@ public partial class PlanetSystem : Node3D
         return double.NaN;
     }
 }
+*/

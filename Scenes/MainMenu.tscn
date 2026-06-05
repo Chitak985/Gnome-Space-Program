@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://buejer35m8rkv"]
+[gd_scene format=3 uid="uid://buejer35m8rkv"]
 
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="1_tt5f1"]
 [ext_resource type="Script" uid="uid://bgouhll36gh8m" path="res://Scripts/Utility/SaveSettingsManager.cs" id="2_853f1"]
@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://cr4hilbfgb761" path="res://Assets/Prefabs/UI/mainmenu_multiselect.tscn" id="9_loo7a"]
 [ext_resource type="PackedScene" uid="uid://cel2ae06btb45" path="res://Assets/Prefabs/UI/mainmenu_checkbutton.tscn" id="10_if7li"]
 
-[node name="MainMenuUI" type="Control"]
+[node name="MainMenuUI" type="Control" unique_id=842709813]
 z_index = 10
 layout_mode = 3
 anchors_preset = 15
@@ -23,7 +23,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("1_tt5f1")
 
-[node name="SaveManager" type="Control" parent="."]
+[node name="SaveManager" type="Control" parent="." unique_id=895146440]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,20 +32,22 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="SavePanel" type="Panel" parent="SaveManager"]
+[node name="SavePanel" type="Panel" parent="SaveManager" unique_id=203698247]
 visible = false
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 755.0
-offset_top = 365.0
-offset_right = -755.0
-offset_bottom = -365.0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -205.0
+offset_top = -175.0
+offset_right = 205.0
+offset_bottom = 175.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="SaveManager/SavePanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="SaveManager/SavePanel" unique_id=1924767960]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -54,64 +56,64 @@ offset_top = 10.0
 offset_right = -8.0
 offset_bottom = -50.0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="SaveManager/SavePanel/ScrollContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="SaveManager/SavePanel/ScrollContainer" unique_id=316807740]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=2031070975]
 layout_mode = 2
 text = "A funny silly wacky goofy game"
 
-[node name="Button8" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button8" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=410221730]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button9" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button9" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=1682705861]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button10" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button10" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=1288042601]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button11" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button11" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=1096877996]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button12" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button12" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=892743611]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button13" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button13" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=1962213613]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button14" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button14" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=1613609345]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button15" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button15" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=2048673561]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button16" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button16" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=1546385722]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button17" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button17" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=1431915092]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button18" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button18" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=1105151213]
 layout_mode = 2
 text = "Test Save"
 
-[node name="Button19" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2"]
+[node name="Button19" type="Button" parent="SaveManager/SavePanel/ScrollContainer/VBoxContainer2" unique_id=807061686]
 layout_mode = 2
 text = "Test Save"
 
-[node name="CreateButton" type="Button" parent="SaveManager/SavePanel" node_paths=PackedStringArray("toClose", "toOpen")]
+[node name="CreateButton" type="Button" parent="SaveManager/SavePanel" unique_id=1107397500 node_paths=PackedStringArray("toClose", "toOpen")]
 layout_mode = 0
 anchor_left = 0.979
 anchor_top = 1.0
@@ -126,7 +128,7 @@ script = ExtResource("2_xim88")
 toClose = NodePath("..")
 toOpen = NodePath("../../SaveCreation")
 
-[node name="CancelButton" type="Button" parent="SaveManager/SavePanel" node_paths=PackedStringArray("toClose", "toOpen")]
+[node name="CancelButton" type="Button" parent="SaveManager/SavePanel" unique_id=277003869 node_paths=PackedStringArray("toClose", "toOpen")]
 layout_mode = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -139,16 +141,18 @@ script = ExtResource("2_xim88")
 toClose = NodePath("..")
 toOpen = NodePath("../../../MainPanel")
 
-[node name="SaveCreation" type="Panel" parent="SaveManager" node_paths=PackedStringArray("saveParamList", "rootNode")]
+[node name="SaveCreation" type="Panel" parent="SaveManager" unique_id=1187818406 node_paths=PackedStringArray("saveParamList", "rootNode")]
 visible = false
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 767.0
-offset_top = 291.0
-offset_right = -767.0
-offset_bottom = -291.0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -193.0
+offset_top = -249.0
+offset_right = 193.0
+offset_bottom = 249.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_853f1")
@@ -161,7 +165,7 @@ checkButtonPrefab = ExtResource("10_if7li")
 lineEditPrefab = ExtResource("8_koqhg")
 rootNode = NodePath("../..")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="SaveManager/SaveCreation"]
+[node name="ScrollContainer" type="ScrollContainer" parent="SaveManager/SaveCreation" unique_id=2006789474]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -173,12 +177,12 @@ offset_bottom = -49.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SaveManager/SaveCreation/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SaveManager/SaveCreation/ScrollContainer" unique_id=1298336669]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="CancelButton" type="Button" parent="SaveManager/SaveCreation" node_paths=PackedStringArray("toClose", "toOpen")]
+[node name="CancelButton" type="Button" parent="SaveManager/SaveCreation" unique_id=1162359958 node_paths=PackedStringArray("toClose", "toOpen")]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -193,7 +197,7 @@ script = ExtResource("2_xim88")
 toClose = NodePath("..")
 toOpen = NodePath("../../SavePanel")
 
-[node name="StartButton" type="Button" parent="SaveManager/SaveCreation"]
+[node name="StartButton" type="Button" parent="SaveManager/SaveCreation" unique_id=1419887731]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -208,23 +212,25 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "Start"
 
-[node name="CreditsPanel" type="Panel" parent="." node_paths=PackedStringArray("creditContainer")]
+[node name="CreditsPanel" type="Panel" parent="." unique_id=1694440649 node_paths=PackedStringArray("creditContainer")]
 visible = false
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 719.0
-offset_top = 162.0
-offset_right = -719.0
-offset_bottom = -173.0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.495
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -893.0
+offset_top = -481.6
+offset_right = 893.0
+offset_bottom = 476.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_cmrfp")
 creditContainer = NodePath("ScrollContainer/VBoxContainer/VBoxContainer")
 personRole = ExtResource("4_loo7a")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CreditsPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CreditsPanel" unique_id=231073493]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -236,21 +242,21 @@ offset_bottom = -45.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CreditsPanel/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CreditsPanel/ScrollContainer" unique_id=867578630]
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="CreditsPanel/ScrollContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="CreditsPanel/ScrollContainer/VBoxContainer" unique_id=1447394843]
 layout_mode = 2
 size_flags_vertical = 3
 text = "GNOME AEROSPACE"
 horizontal_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CreditsPanel/ScrollContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CreditsPanel/ScrollContainer/VBoxContainer" unique_id=684525630]
 layout_mode = 2
 
-[node name="Back" type="Button" parent="CreditsPanel" node_paths=PackedStringArray("toClose", "toOpen")]
+[node name="Back" type="Button" parent="CreditsPanel" unique_id=1507608279 node_paths=PackedStringArray("toClose", "toOpen")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.002
@@ -264,20 +270,22 @@ script = ExtResource("2_xim88")
 toClose = NodePath("..")
 toOpen = NodePath("../../MainPanel")
 
-[node name="MainPanel" type="Panel" parent="."]
+[node name="MainPanel" type="Panel" parent="." unique_id=1566403002]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 754.0
-offset_top = 475.0
-offset_right = -754.0
-offset_bottom = -495.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -225.0
+offset_top = -56.0
+offset_right = 225.0
+offset_bottom = 54.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel" unique_id=988667110]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -289,28 +297,28 @@ offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Start" type="Button" parent="MainPanel/VBoxContainer" node_paths=PackedStringArray("toClose", "toOpen")]
+[node name="Start" type="Button" parent="MainPanel/VBoxContainer" unique_id=1946854970 node_paths=PackedStringArray("toClose", "toOpen")]
 layout_mode = 2
 text = "Start"
 script = ExtResource("2_xim88")
 toClose = NodePath("../..")
 toOpen = NodePath("../../../SaveManager/SavePanel")
 
-[node name="Settings" type="Button" parent="MainPanel/VBoxContainer" node_paths=PackedStringArray("toClose", "toOpen")]
+[node name="Settings" type="Button" parent="MainPanel/VBoxContainer" unique_id=543333528 node_paths=PackedStringArray("toClose", "toOpen")]
 layout_mode = 2
 text = "Settings (MAKE THIS DO SMTH)"
 script = ExtResource("2_xim88")
 toClose = NodePath("../..")
 toOpen = NodePath("../../../SaveManager/SavePanel")
 
-[node name="Credits" type="Button" parent="MainPanel/VBoxContainer" node_paths=PackedStringArray("toClose", "toOpen")]
+[node name="Credits" type="Button" parent="MainPanel/VBoxContainer" unique_id=956698306 node_paths=PackedStringArray("toClose", "toOpen")]
 layout_mode = 2
 text = "Credits"
 script = ExtResource("2_xim88")
 toClose = NodePath("../..")
 toOpen = NodePath("../../../CreditsPanel")
 
-[node name="Label" type="Label" parent="MainPanel"]
+[node name="Label" type="Label" parent="MainPanel" unique_id=1598381345]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0

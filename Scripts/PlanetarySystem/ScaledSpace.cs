@@ -14,9 +14,8 @@ public partial class ScaledSpace : Node3D
     // Obligatory.
     public static ScaledSpace Instance { get; private set; }
     // By how much the scale is divided by
-    [Export] public float scaleFactor = 10000;
-    [Export] public float moveForward = 0.1f;
-    [Export] public FlightCamera flightCamera;
+    [Export] public float ScaleFactor { get; private set; } = 10000;
+    [Export] public float MoveForward { get; private set; } = 0.1f;
 
     public override void _Ready()
     {
@@ -38,30 +37,13 @@ public partial class ScaledSpace : Node3D
         {
             if (node is ScaledObject scaledObject)
             {
-                // Handle ScaledSpace differently if in map view
-                if (!flightCamera.inMap)
-                {
-                    // We're using floats here because fuck
-                    
-                    Vector3 objPos = scaledObject.truePosition;
-                    Vector3 camDir = objPos.DirectionTo(flightCamera.camNode.GlobalPosition);
+                Vector3 objPos = scaledObject.truePosition;
+                Vector3 camDir = objPos.DirectionTo(FlightCamera.Instance.CamNode.GlobalPosition);
 
-                    double magnitude = (objPos - flightCamera.camNode.GlobalPosition).Length();
+                double magnitude = (objPos - FlightCamera.Instance.CamNode.GlobalPosition).Length();
 
-                    scaledObject.GlobalPosition = objPos + camDir * (magnitude/(1+(moveForward/1000f)));// + offsetPosition;
-                    scaledObject.Scale = scaledObject.originalScale / scaleFactor;
-                }else{
-                    Node3D camObject = flightCamera.target;
-                    Vector3 focusObjectPos = Vector3.Zero;
-                    // Check if the camera is focusing on either a ScaledObject or another thing that isn't implemented yet
-                    if (camObject is ScaledObject scaledCamObj)
-                    {
-                        focusObjectPos = scaledCamObj.truePosition;
-                    }
-                
-                    scaledObject.GlobalPosition = scaledObject.truePosition / scaleFactor - (focusObjectPos / scaleFactor);
-                    scaledObject.Scale = scaledObject.originalScale / scaleFactor;
-                }
+                scaledObject.GlobalPosition = objPos + camDir * (magnitude/(1+(MoveForward/1000f)));// + offsetPosition;
+                scaledObject.Scale = scaledObject.originalScale / ScaleFactor;
             }
         }
     }

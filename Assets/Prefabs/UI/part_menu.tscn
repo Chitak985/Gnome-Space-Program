@@ -1,12 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://c8odi3kjvqxhl"]
+[gd_scene format=3 uid="uid://c8odi3kjvqxhl"]
 
 [ext_resource type="Script" uid="uid://cu3f6xtxbkvyi" path="res://Scripts/UserInterface/ContextMenus/PartMenu.cs" id="1_dewu6"]
 [ext_resource type="Theme" uid="uid://b4ia03110swah" path="res://Assets/Materials/GeneralUI/Theme.tres" id="1_pyjmw"]
-[ext_resource type="Script" uid="uid://drrsx2qsfqgck" path="res://Scripts/UserInterface/DraggablePanel.cs" id="2_pyjmw"]
+[ext_resource type="Script" uid="uid://drrsx2qsfqgck" path="res://Scripts/UserInterface/Windows/DraggablePanel.cs" id="2_pyjmw"]
 [ext_resource type="StyleBox" uid="uid://cmyfacsvlil8r" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_normal.tres" id="3_t0q6y"]
 [ext_resource type="StyleBox" uid="uid://didwclm676g4f" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_press.tres" id="4_0cy5t"]
 [ext_resource type="StyleBox" uid="uid://d2x1glka2wnkb" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_hover.tres" id="5_njfyn"]
-[ext_resource type="Script" uid="uid://drlfgjufqytvn" path="res://Scripts/UserInterface/ResizeHandle.cs" id="6_j2os7"]
+[ext_resource type="Script" uid="uid://drlfgjufqytvn" path="res://Scripts/UserInterface/Windows/ResizeHandle.cs" id="6_j2os7"]
 
 [node name="PartMenu" type="Control" node_paths=PackedStringArray("title", "itemList", "dragMenu")]
 layout_mode = 3

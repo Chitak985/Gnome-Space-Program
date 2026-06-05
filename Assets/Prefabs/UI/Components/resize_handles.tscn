@@ -1,0 +1,145 @@
+[gd_scene format=3 uid="uid://bwoopux77w7qj"]
+
+[ext_resource type="Script" uid="uid://d1f86wbdvp35e" path="res://Scripts/UserInterface/Windows/Resizer.cs" id="1_gqeg7"]
+[ext_resource type="StyleBox" uid="uid://cmyfacsvlil8r" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_normal.tres" id="1_in6ln"]
+[ext_resource type="StyleBox" uid="uid://didwclm676g4f" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_press.tres" id="2_gqeg7"]
+[ext_resource type="StyleBox" uid="uid://d2x1glka2wnkb" path="res://Assets/Materials/GeneralUI/ResizeHandle/handle_hover.tres" id="3_1p6k0"]
+[ext_resource type="Script" uid="uid://drlfgjufqytvn" path="res://Scripts/UserInterface/Windows/ResizeHandle.cs" id="4_hb8sa"]
+
+[node name="ResizeHandles" type="Control" unique_id=365995451]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_gqeg7")
+
+[node name="U" type="Button" parent="." unique_id=462455371]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -11.0
+offset_bottom = -1.0
+grow_horizontal = 2
+mouse_default_cursor_shape = 9
+theme_override_styles/normal = ExtResource("1_in6ln")
+theme_override_styles/pressed = ExtResource("2_gqeg7")
+theme_override_styles/hover = ExtResource("3_1p6k0")
+script = ExtResource("4_hb8sa")
+direction = Vector2(0, -1)
+
+[node name="D" type="Button" parent="." unique_id=168362672]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 1.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_default_cursor_shape = 9
+theme_override_styles/normal = ExtResource("1_in6ln")
+theme_override_styles/pressed = ExtResource("2_gqeg7")
+theme_override_styles/hover = ExtResource("3_1p6k0")
+script = ExtResource("4_hb8sa")
+
+[node name="L" type="Button" parent="." unique_id=538180849]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = -11.0
+offset_right = -1.0
+grow_vertical = 2
+mouse_default_cursor_shape = 10
+theme_override_styles/normal = ExtResource("1_in6ln")
+theme_override_styles/pressed = ExtResource("2_gqeg7")
+theme_override_styles/hover = ExtResource("3_1p6k0")
+script = ExtResource("4_hb8sa")
+direction = Vector2(-1, 0)
+
+[node name="R" type="Button" parent="." unique_id=1646801020]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 11.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_default_cursor_shape = 10
+theme_override_styles/normal = ExtResource("1_in6ln")
+theme_override_styles/pressed = ExtResource("2_gqeg7")
+theme_override_styles/hover = ExtResource("3_1p6k0")
+script = ExtResource("4_hb8sa")
+direction = Vector2(1, 0)
+
+[node name="DR" type="Button" parent="." unique_id=640374905]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 11.0
+offset_bottom = 11.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_default_cursor_shape = 12
+theme_override_styles/normal = ExtResource("1_in6ln")
+theme_override_styles/pressed = ExtResource("2_gqeg7")
+theme_override_styles/hover = ExtResource("3_1p6k0")
+script = ExtResource("4_hb8sa")
+direction = Vector2(1, 1)
+
+[node name="UR" type="Button" parent="." unique_id=1767761051]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 1.0
+offset_top = -11.0
+offset_right = 11.0
+offset_bottom = -1.0
+grow_horizontal = 0
+mouse_default_cursor_shape = 11
+theme_override_styles/normal = ExtResource("1_in6ln")
+theme_override_styles/pressed = ExtResource("2_gqeg7")
+theme_override_styles/hover = ExtResource("3_1p6k0")
+script = ExtResource("4_hb8sa")
+direction = Vector2(1, -1)
+
+[node name="UL" type="Button" parent="." unique_id=761787738]
+layout_mode = 1
+offset_left = -11.0
+offset_top = -11.0
+offset_right = -1.0
+offset_bottom = -1.0
+mouse_default_cursor_shape = 12
+theme_override_styles/normal = ExtResource("1_in6ln")
+theme_override_styles/pressed = ExtResource("2_gqeg7")
+theme_override_styles/hover = ExtResource("3_1p6k0")
+script = ExtResource("4_hb8sa")
+direction = Vector2(-1, -1)
+
+[node name="DL" type="Button" parent="." unique_id=1142253937]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -11.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = 11.0
+grow_vertical = 0
+mouse_default_cursor_shape = 11
+theme_override_styles/normal = ExtResource("1_in6ln")
+theme_override_styles/pressed = ExtResource("2_gqeg7")
+theme_override_styles/hover = ExtResource("3_1p6k0")
+script = ExtResource("4_hb8sa")
+direction = Vector2(-1, 1)

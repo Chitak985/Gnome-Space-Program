@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://ljsvwdkcmhft"]
+[gd_scene format=4 uid="uid://ljsvwdkcmhft"]
 
 [ext_resource type="Script" uid="uid://2jguooep700o" path="res://Scripts/CraftAssembly/Parts/Part.cs" id="1_xpmpa"]
 [ext_resource type="Material" uid="uid://cq16nvjct50k6" path="res://Assets/Materials/HoverGlow2.tres" id="2_bttj8"]
@@ -75,35 +75,36 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_d7aiu")
 
-[node name="1X05_FuelTank" type="Area3D" node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+[node name="1X05_FuelTank" type="RigidBody3D" unique_id=1088457294 node_paths=PackedStringArray("glowMesh", "attachNodes", "colliders")]
+continuous_cd = true
 script = ExtResource("1_xpmpa")
 glowMat = ExtResource("2_bttj8")
 glowMesh = NodePath("1x05_FuelTank_Ver1/Tank")
 attachNodes = [NodePath("AttachNodes/AttachmentNode"), NodePath("AttachNodes/AttachmentNode2")]
 colliders = [NodePath("Collider")]
 
-[node name="Collider" type="CollisionShape3D" parent="."]
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=121365989]
 shape = SubResource("CylinderShape3D_3iijt")
 
-[node name="AttachNodes" type="Node3D" parent="."]
+[node name="AttachNodes" type="Node3D" parent="." unique_id=935077509]
 
-[node name="AttachmentNode" type="Node3D" parent="AttachNodes" node_paths=PackedStringArray("part")]
+[node name="AttachmentNode" type="Node3D" parent="AttachNodes" unique_id=829869437 node_paths=PackedStringArray("part")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 script = ExtResource("5_iyj4f")
 part = NodePath("../..")
 
-[node name="AttachmentNode2" type="Node3D" parent="AttachNodes" node_paths=PackedStringArray("part")]
+[node name="AttachmentNode2" type="Node3D" parent="AttachNodes" unique_id=2063456292 node_paths=PackedStringArray("part")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 script = ExtResource("5_iyj4f")
 part = NodePath("../..")
 
-[node name="1x05_FuelTank_Ver1" type="Node3D" parent="."]
+[node name="1x05_FuelTank_Ver1" type="Node3D" parent="." unique_id=862982071]
 
-[node name="Tank" type="MeshInstance3D" parent="1x05_FuelTank_Ver1"]
+[node name="Tank" type="MeshInstance3D" parent="1x05_FuelTank_Ver1" unique_id=1235147186]
 mesh = SubResource("ArrayMesh_tlfcp")
 skeleton = NodePath("")
 
-[node name="Tubes" type="MeshInstance3D" parent="1x05_FuelTank_Ver1"]
+[node name="Tubes" type="MeshInstance3D" parent="1x05_FuelTank_Ver1" unique_id=1948370079]
 transform = Transform3D(-0.045181274, 0, 0, 0, -0.045181274, 0, 0, 0, -0.045181274, 0, 0, 0)
 mesh = SubResource("ArrayMesh_uhs1f")
 skeleton = NodePath("")

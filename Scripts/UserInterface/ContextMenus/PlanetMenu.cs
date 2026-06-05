@@ -16,10 +16,10 @@ public partial class PlanetMenu : ContextMenu
         if ((Node)info["planet"] is CelestialBody cBody)
         {
             cBodyInQuestion = cBody;
-            title.Text = cBody.name;
-            radius.Text = $"Radius: {cBody.radius} m";
-            mass.Text = $"Mass: {cBody.mass} kg";
-            gravity.Text = $"Gee ASL: {cBody.geeASL} g";
+            title.Text = cBody.Config.properties.name;
+            radius.Text = $"Radius: {cBody.Config.properties.radius} m";
+            mass.Text = $"Mass: {cBody.Config.properties.mass} kg";
+            gravity.Text = $"Gee ASL: {cBody.Config.properties.geeASL} g";
         }
     }
 }

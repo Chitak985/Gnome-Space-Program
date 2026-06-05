@@ -2,35 +2,68 @@
   "configType": "cBody",
   "properties": {
 	"name": "Gnobe",
-	"focusOnload": true,
+	"focusOnLoad": true,
 	"geeASL": 1,
 	"radius": 600000,
-	"inverseRotAltitude": 100000
+	"inverseRotAltitude": 70000
+  },
+  "rotation": {
+	"initial": -0.5,
+	"period": 36000,
+	"tilt": [0, 0, 20],
   },
   "orbit": {
 	"parent": "Sun",
 	"semiMajorAxis": 14959800320,
-	"inclination": 0,
+	"inclination": 3.14159,
 	"eccentricity": 0.0167086,
 	"argumentOfPeriapsis": 0,
 	"longitudeOfAscendingNode": 0,
-	"trueAnomalyAtEpoch": 0
+	"meanAnomalyAtEpoch": 0
   },
   "ocean": {
-	"radius": 600000
+	"colour": [0.01, 0.05, 0.1]
   },
   "pqs": {
+	"material": {
+		"albedo": "Stock/GnobeSystem/Textures/Terrain/Grass/Albedo.png",
+		"normal": "Stock/GnobeSystem/Textures/Terrain/Grass/Normal.png"
+	},
 	"pqsMods": [
 	  {
 		"mod": "fastNoise3D",
 		"type": "perlin",
 		"seed": 0,
 		"noiseOffset": [0,0,0],
-		"deformity": 12000,
-		"offset": -6000,
-		"frequency": 2810,
+		"deformity": 20000,
+		"offset": -10000,
+		"frequency": 500,
 		"fractal": {
-		  "type": "pingPong",
+		  "type": "fbm",
+		  "octaves": 10,
+		  "lacunarity": 2,
+		  "gain": 0.5,
+		  "weightedStrength": 0,
+		  "pingPongParams": {
+			"pingPongStrength": 2
+		  }
+		},
+		"cellular": {
+		  "distanceFunction": "euclidean",
+		  "jitter": 1,
+		  "returnType": "distance"
+		}
+	  },
+	  {
+		"mod": "fastNoise3D",
+		"type": "perlin",
+		"seed": 0,
+		"noiseOffset": [0,0,0],
+		"deformity": 4000,
+		"offset": -2000,
+		"frequency": 5000,
+		"fractal": {
+		  "type": "fbm",
 		  "octaves": 10,
 		  "lacunarity": 2,
 		  "gain": 0.5,
